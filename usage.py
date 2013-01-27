@@ -70,7 +70,7 @@ class TaskUsage:
 
 			if self.dect_eof():
 				if self.has_next():
-					self.open_next() # considera-se que o próximo arquivo tenha pelo menos uma linha
+					self.open_next() # considera-se que o proximo arquivo tenha pelo menos uma linha
 				else:
 					keep_going = False
 			else:

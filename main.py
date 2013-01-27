@@ -1,20 +1,24 @@
-#!/usr/bin/pypy
+#!/usr/bin/python
 
 import simulator, usage, machine, sets
+import methods.randommethod
 
 class BalancerSimulator:
 
-	def __init__(self):
-		self.taskusage      = usage.TaskUsage("/home/max/Src/google_cluster/trace/task_usage", 0)
-		self.macevents      = machine.MachineEvent("/home/max/Src/google_cluster/trace/machine_events", 0)
-		self.time           = 0
-		self.interval       = 300
-		self.tasks_to_run   = sets.Set([]) # evita entradas repetidas
-		self.machines_ready = sets.Set([])
-		self.max_time       = 8000
+	def __init__(self, balacing_method):
+		self.taskusage       = usage.TaskUsage("/home/max/Src/google_cluster/trace/task_usage", 0)
+		self.macevents       = machine.MachineEvent("/home/max/Src/google_cluster/trace/machine_events", 0)
+		self.time            = 0
+		self.interval        = 300
+		self.tasks_to_run    = sets.Set([]) # evita entradas repetidas
+		self.machines_ready  = sets.Set([])
+		self.max_time        = 8000
+		self.balacing_method = balacing_method
 
 	def balance(self):
-		print "Balancear " + str(len(self.tasks_to_run)) + " tarefas em " + str(len(self.machines_ready)) + " máquinas"
+		print "Balancear " + str(len(self.tasks_to_run)) + " tarefas em " + str(len(self.machines_ready)) + " maquinas"
+
+		self.balacing_method.balance(self.machines_ready, self.tasks_to_run, None)
 		self.tasks_to_run.clear()
 
 	@staticmethod
@@ -42,8 +46,10 @@ class BalancerSimulator:
 		if balsim.time < balsim.max_time:
 			sim.add_event(simulator.Event(balsim.time, BalancerSimulator.add_event, (sim, balsim)))
 
+rand_method = methods.randommethod.RandomMethod()
+
 sim = simulator.Simulator()
-balsim = BalancerSimulator()
+balsim = BalancerSimulator(rand_method)
 
 sim.add_event(simulator.Event(0., BalancerSimulator.add_event, (sim, balsim)))
 

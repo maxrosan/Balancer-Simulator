@@ -20,7 +20,7 @@ class MachineEventRegister:
 		return self.machine_ID
 
 	def __eq__(self, other):
-		return (self.machine_ID == other.machine_ID) # evita registros repetidos
+		return (self.machine_ID == other.machine_ID) # evita registros repetidos	
 
 	def print_info(self):
 		e = ""
@@ -51,7 +51,7 @@ class MachineEvent:
 		fn = self.name_format(self.part + 1)
 		e = os.path.exists(fn)
 		#if not e:
-		#	print "Não existe " + fn
+		#	print "Nao existe " + fn
 		return e
 	def open_next(self):
 		self.part = self.part + 1
@@ -84,7 +84,7 @@ class MachineEvent:
 
 			if self.dect_eof():
 				if self.has_next():
-					self.open_next() # considera-se que o próximo arquivo tenha pelo menos uma linha
+					self.open_next() # considera-se que o proximo arquivo tenha pelo menos uma linha
 				else:
 					keep_going = False
 			else:
