@@ -6,7 +6,7 @@ import methods.randommethod
 class BalancerSimulator:
 
 	def __init__(self, balacing_method):
-		main_path            = "/home/maxrosan/src/gs_cluster/"
+		main_path            = "/home/max/Src/gsutil/"
 		self.taskusage       = usage.TaskUsage(main_path + "task_usage", 0)
 		self.macevents       = machine.MachineEvent(main_path + "machine_events", 0)
 		self.time            = 0
