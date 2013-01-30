@@ -50,8 +50,8 @@ class MachineEvent:
 	def has_next(self):
 		fn = self.name_format(self.part + 1)
 		e = os.path.exists(fn)
-		#if not e:
-		#	print "Nao existe " + fn
+		if not e:
+			print "Nao existe " + fn
 		return e
 	def open_next(self):
 		self.part = self.part + 1

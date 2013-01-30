@@ -6,8 +6,9 @@ import methods.randommethod
 class BalancerSimulator:
 
 	def __init__(self, balacing_method):
-		self.taskusage       = usage.TaskUsage("/home/max/Src/google_cluster/trace/task_usage", 0)
-		self.macevents       = machine.MachineEvent("/home/max/Src/google_cluster/trace/machine_events", 0)
+		main_path            = "/home/maxrosan/src/gs_cluster/"
+		self.taskusage       = usage.TaskUsage(main_path + "task_usage", 0)
+		self.macevents       = machine.MachineEvent(main_path + "machine_events", 0)
 		self.time            = 0
 		self.interval        = 300
 		self.tasks_to_run    = sets.Set([]) # evita entradas repetidas
@@ -16,9 +17,8 @@ class BalancerSimulator:
 		self.balacing_method = balacing_method
 
 	def balance(self):
-		print "Balancear " + str(len(self.tasks_to_run)) + " tarefas em " + str(len(self.machines_ready)) + " maquinas"
-
 		self.balacing_method.balance(self.machines_ready, self.tasks_to_run, None)
+		self.balacing_method.print_balacing_results_verbose()
 		self.tasks_to_run.clear()
 
 	@staticmethod
