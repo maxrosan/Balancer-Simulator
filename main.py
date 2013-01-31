@@ -1,7 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/pypy
 
 import simulator, usage, machine, sets
-import methods.randommethod
+import methods.randommethod, methods.multiknapsackmethod
+import sys
 
 class BalancerSimulator:
 
@@ -46,10 +47,15 @@ class BalancerSimulator:
 		if balsim.time < balsim.max_time:
 			sim.add_event(simulator.Event(balsim.time, BalancerSimulator.add_event, (sim, balsim)))
 
-rand_method = methods.randommethod.RandomMethod()
+method = None
+
+if sys.argv[1] == "knapsack":
+	method = methods.multiknapsackmethod.MultiKnapsackMethod()
+else:
+	method = methods.randommethod.RandomMethod()
 
 sim = simulator.Simulator()
-balsim = BalancerSimulator(rand_method)
+balsim = BalancerSimulator(method)
 
 sim.add_event(simulator.Event(0., BalancerSimulator.add_event, (sim, balsim)))
 
