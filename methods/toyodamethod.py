@@ -49,7 +49,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				if P[i][0] <= (1 - Pu[0]) and P[i][1] <= (1 - Pu[1]):
 					Tc.append(i)
 
-			print "2"
+			#print "2"
 
 			# step 3
 			# terminate if Tc = empty
@@ -72,7 +72,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 						d    = numpy.dot(P[i], E)
 						G[i] = tasks[i].CPU_usage / d
 
-				print "4"
+				#print "4"
 
 				# step 5
 				v_max = -1
@@ -83,7 +83,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 						i_max = i
 
 
-				print "5"
+				#print "5"
 				# step 6
 				Tu.append(i_max)
 				Td.remove(i_max)
