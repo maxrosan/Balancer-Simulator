@@ -101,7 +101,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.reset_stats()
 
 		## sorting the machine in non-incresing order using the CPU capacity value
-		mac_list = sorted(list(mac_list), key=lambda mac: mac.capacity_CPU, reverse=True)
+		mac_list = sorted(list(machines_ready), key=lambda mac: mac.capacity_CPU, reverse=True)
 		tasks_list = list(tasks_to_run)
 
 		if len(tasks_list) > 0:
