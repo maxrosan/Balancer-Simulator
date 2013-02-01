@@ -135,7 +135,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 	def __init__(self):
 		loadbalacing.LoadBalacing.__init__(self)
-		self.n_threads = 4
+		self.n_threads = 8
 
 	def balance(self, machines_ready, tasks_to_run, tasks_constraints): 
 		
