@@ -6,17 +6,6 @@ import math
 
 import threading, multiprocessing
 
-class TMThread(threading.Thread):
-	
-	def __init__(self, number, mac, tasks):
-		threading.Thread.__init__(self)
-		self.thread_id = number
-		self.tasks = tasks
-		self.mac = mac
-
-	def run(self):
-		ToyodaMethod.balance_partial(self.mac, self.tasks)
-
 # RandomMethod selects a task randomly to run
 #
 class ToyodaMethod(loadbalacing.LoadBalacing):
@@ -139,6 +128,10 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 	def balance(self, machines_ready, tasks_to_run, tasks_constraints): 
 		
+		def work(workn, macs, tasks):
+			ToyodaMethod.balance_partial(macs, tasks)
+			print "P%d OK" % (workn)
+		
 		self.n_round = self.n_round + 1
 		self.reset_stats()
 
@@ -154,32 +147,19 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		if n_tasks == 0:
 			return
 
-		#threads   = []
-
-		def work():
-			print "W"
-
 		procs = []
-		for i in range(0, self.n_threads):
-			p = multiprocessing.Process(target = work, args = None)
-			procs.append(procs)
-			p.start()
-
-		for p in procs:
-			p.join()
-
-		exit()
 
 		for i in range(0, self.n_threads):
 			t = None
 			if i < (self.n_threads - 1):
-				t = TMThread(i, mac_list[mac_div*i:mac_div*(i+1)], tasks_list[tasks_div*i:tasks_div*(i + 1)])
-				t.start()
-				threads.append(t)
+				p = multiprocessing.Process(target = work, 
+				  args = (i, mac_list[mac_div*i:mac_div*(i+1)], tasks_list[tasks_div*i:tasks_div*(i + 1)]))
+				p.start()
+				procs.append(p)
 			else:
 				ToyodaMethod.balance_partial(mac_list[mac_div*i:n_macs], tasks_list[tasks_div*i:n_tasks])
 
-		for t in threads:
-			t.join()
+		for p in procs:
+			p.join()
 
 		exit()
