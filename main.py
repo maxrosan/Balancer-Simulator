@@ -1,13 +1,12 @@
-#!/usr/bin/pypy
+#!/usr/bin/python
 
 import simulator, usage, machine, sets
-import methods.randommethod, methods.multiknapsackmethod
+import methods.randommethod, methods.multiknapsackmethod, methods.toyodamethod
 import sys
 
 class BalancerSimulator:
 
-	def __init__(self, balacing_method):
-		main_path            = "/home/max/Src/gsutil/"
+	def __init__(self, main_path, balacing_method):
 		self.taskusage       = usage.TaskUsage(main_path + "task_usage", 0)
 		self.macevents       = machine.MachineEvent(main_path + "machine_events", 0)
 		self.time            = 0
@@ -24,7 +23,8 @@ class BalancerSimulator:
 
 	@staticmethod
 	def add_task_usage(balsim, task):
-		balsim.tasks_to_run.add(task)
+		if task.CPU_usage > 0.:
+			balsim.tasks_to_run.add(task)
 
 	@staticmethod
 	def add_machine_event(balsim, mac):
@@ -51,11 +51,15 @@ method = None
 
 if sys.argv[1] == "knapsack":
 	method = methods.multiknapsackmethod.MultiKnapsackMethod()
+elif sys.argv[1] == "toyoda":
+	method = methods.toyodamethod.ToyodaMethod()
 else:
 	method = methods.randommethod.RandomMethod()
 
+#main_path            = "/home/max/Src/gsutil/"
+
 sim = simulator.Simulator()
-balsim = BalancerSimulator(method)
+balsim = BalancerSimulator(sys.argv[2], method)
 
 sim.add_event(simulator.Event(0., BalancerSimulator.add_event, (sim, balsim)))
 

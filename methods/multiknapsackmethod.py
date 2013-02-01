@@ -1,5 +1,5 @@
 import loadbalacing, random, usageclass
-import numpy
+import numpy, math
 #import multiprocessing as mp
 import threading as thr
 
@@ -18,7 +18,7 @@ class MultiKnapsackMethod(loadbalacing.LoadBalacing):
 
 	def __init__(self):
 		loadbalacing.LoadBalacing.__init__(self)
-		self.n_threads = 2
+		self.n_threads = 1
 
 	@staticmethod
 	def run_dp(mac_list, tasks_to_run):
@@ -29,24 +29,55 @@ class MultiKnapsackMethod(loadbalacing.LoadBalacing):
 		if len(tasks_to_run) == 0:
 			return
 
+		n = len(tasks_to_run)
+
+		dp  = numpy.zeros(1001, float)
+		lastAdded = numpy.zeros(1001, int)
+		can = set([])
+
 		for mac in mac_list:
-			cpu_cap = mac.capacity_CPU * 1000
-			mem_cap = mac.capacity_memory * 1000
+			mem_cap = int(mac.capacity_memory * 1000)
+			cpu_cap = 1.5 * mac.capacity_CPU
 
-			dp  = numpy.zeros((1001,1001), float)
-			par = numpy.zeros((1001,1001), int)
+			dp.fill(-1000)
+			lastAdded.fill(-1)
+			can.clear()
 
-			print "Processing ", mac.machine_ID
+			print "Processing %d w/ (%d, %f)" % (mac.machine_ID, mem_cap, cpu_cap)
 
+			i = 0
+			dp[0] = 0
+			maxw = 0
 			for task in tasks_to_run:
-				cpu_task = int(1000 * task.CPU_usage)
-				mem_task = int(1000 * task.mem_usage)
-				gain_task = task.CPU_usage
-				
-				for cpu in reversed(range(cpu_task, 1001)):
-					for mem in reversed(range(mem_task, 1001)):
-						dp[cpu][mem] = max(dp[cpu - cpu_task][mem - mem_task] + gain_task, dp[cpu][mem])
-						
+				mem_task = int(task.mem_usage * 1000)
+				cpu_task = task.CPU_usage
+
+				if mem_task == 0:
+					mem_task = 1
+
+				if not (task.task_ID in can):
+					can.add(task.task_ID)
+				else:
+					continue
+
+				for mem in reversed(range(mem_task, mem_cap + 1)):
+					if dp[mem - mem_task] != -1000 and dp[mem] < (dp[mem - mem_task] + cpu_task):
+						dp[mem] = dp[mem - mem_task] + cpu_task
+						lastAdded[mem] = i
+						maxw = max(maxw, mem)
+
+				i = i + 1
+
+			mem = maxw
+			while lastAdded[mem] != -1:
+				i = lastAdded[mem]
+				task = tasks_to_run[i]
+				mem_task = int(task.mem_usage * 1000)
+				if mem_task == 0:
+					mem_task = 1
+				print mem, " ", task.task_ID	
+				mem = mem - mem_task
+			break
 
 	
 	def balance(self, machines_ready, tasks_to_run, tasks_constraints): 
@@ -64,16 +95,18 @@ class MultiKnapsackMethod(loadbalacing.LoadBalacing):
 		threads = []
 		tasks_div = len(tasks_to_run) / self.n_threads
 		mac_div   = len(mac_list) / self.n_threads
-		for i in range(0, self.n_threads):
-			print "Processing ", i
+		#for i in range(0, self.n_threads):
+		#	print "Processing ", i
+		#	t = MKThread(i, mac_list[mac_div*i:mac_div*(i+1)], tasks_list[tasks_div*i:tasks_div*(i + 1)])
+		#	t.start()
+		#	threads.append(t)
 
-			t = MKThread(i, mac_list[mac_div*i:mac_div*(i+1)], tasks_list[tasks_div*i:tasks_div*(i + 1)])
-			t.start()
-			threads.append(t)
+		
 
+		MultiKnapsackMethod.run_dp(list(mac_list), list(tasks_to_run))
 		#XXX: tem que verificar o resto ainda
 
-		for t in threads:
-			t.join()
+		#for t in threads:
+		#	t.join()
 	
 		return
