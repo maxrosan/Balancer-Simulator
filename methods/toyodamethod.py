@@ -91,8 +91,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				Z  = Z + tasks[i_max].CPU_usage
 
 
-		print "(%f, %f)" % (mac.capacity_CPU, mac.capacity_memory)
-		print Pu
+		#print "(%f, %f)" % (mac.capacity_CPU, mac.capacity_memory)
+		#print Pu
 
 		return Tu
 		
@@ -106,11 +106,18 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		mac_list = sorted(list(machines_ready), key=lambda mac: mac.capacity_CPU, reverse=True)
 		tasks_list = list(tasks_to_run)
 
-		if len(tasks_list) > 0:
-			for mac in mac_list:
-				tasks = self.run(tasks_list, mac)
-				tasks_to_remove = []
-				for t in tasks:
-					tasks_to_remove.append(tasks_list[t])
-				for t in tasks_to_remove:
-					tasks_list.remove(t)
+		mac_used = 0
+
+		for mac in mac_list:
+			if len(tasks_list) == 0:
+				break
+			mac_used = mac_used + 1
+			tasks = self.run(tasks_list, mac)
+			tasks_to_remove = []
+			for t in tasks:
+				tasks_to_remove.append(tasks_list[t])
+			for t in tasks_to_remove:
+				tasks_list.remove(t)
+
+		print "used = %d" % mac_used
+		if mac_used > 0: exit()
