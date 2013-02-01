@@ -4,7 +4,7 @@ import loadbalacing, random, usageclass
 import numpy
 import math
 
-import threading, multiprocessing
+import threading, multiprocessing, time, sys
 
 # RandomMethod selects a task randomly to run
 #
@@ -96,16 +96,24 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		return Tu
 		
 	@staticmethod
-	def balance_partial(machines, tasks):
+	def balance_partial(method, idwork, machines, tasks):
 		
 		## sorting the machine in non-incresing order using the CPU capacity value
 		mac_list   = sorted(list(machines), key=lambda mac: mac.capacity_CPU, reverse=True)
 		tasks_list = list(tasks)
 		mac_used   = 0
 
+		i = 0
+		n_macs = len(machines)
+
 		for mac in mac_list:
-			if len(tasks_list) == 0:
+			n_tasks = len(tasks_list)
+			if n_tasks == 0:
 				break
+
+			print "\r work %d processing machine %d of %d with %d tasks" % (idwork, i, n_macs, n_tasks),
+			sys.stdout.flush()
+			i = i + 1
 
 			tasks = ToyodaMethod.run(tasks_list, mac)
 
@@ -120,18 +128,15 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			for t in tasks_to_remove:
 				tasks_list.remove(t)
 
-		print mac_used, " x ", len(tasks)
-
 	def __init__(self):
 		loadbalacing.LoadBalacing.__init__(self)
 		self.n_threads = 8
 
 	def balance(self, machines_ready, tasks_to_run, tasks_constraints): 
 		
-		def work(workn, macs, tasks):
-			ToyodaMethod.balance_partial(macs, tasks)
-			print "P%d OK" % (workn)
-		
+		def work(method, workn, macs, tasks):
+			ToyodaMethod.balance_partial(method, workn, macs, tasks)
+	
 		self.n_round = self.n_round + 1
 		self.reset_stats()
 
@@ -153,11 +158,11 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			t = None
 			if i < (self.n_threads - 1):
 				p = multiprocessing.Process(target = work, 
-				  args = (i, mac_list[mac_div*i:mac_div*(i+1)], tasks_list[tasks_div*i:tasks_div*(i + 1)]))
+				  args = (self, i, mac_list[mac_div*i:mac_div*(i+1)], tasks_list[tasks_div*i:tasks_div*(i + 1)]))
 				p.start()
 				procs.append(p)
 			else:
-				ToyodaMethod.balance_partial(mac_list[mac_div*i:n_macs], tasks_list[tasks_div*i:n_tasks])
+				ToyodaMethod.balance_partial(self, i, mac_list[mac_div*i:n_macs], tasks_list[tasks_div*i:n_tasks])
 
 		for p in procs:
 			p.join()
