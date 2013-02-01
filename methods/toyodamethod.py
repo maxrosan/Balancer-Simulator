@@ -4,7 +4,7 @@ import loadbalacing, random, usageclass
 import numpy
 import math
 
-import threading
+import threading, multiprocessing
 
 class TMThread(threading.Thread):
 	
@@ -154,7 +154,21 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		if n_tasks == 0:
 			return
 
-		threads   = []
+		#threads   = []
+
+		def work():
+			print "W"
+
+		procs = []
+		for i in range(0, self.n_threads):
+			p = multiprocessing.Process(target = work, args = None)
+			procs.append(procs)
+			p.start()
+
+		for p in procs:
+			p.join()
+
+		exit()
 
 		for i in range(0, self.n_threads):
 			t = None
