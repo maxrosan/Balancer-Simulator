@@ -38,8 +38,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		cnt = math.sqrt(2)
 
 		while keep_going :
-
-			print "%d, %d" % (len(Tu), len(Td))
 	
 			# step 2
 			del Tc
@@ -91,7 +89,10 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				Z  = Z + tasks[i_max].CPU_usage
 
 
-		print Tu
+		print "(%f, %f)" % (mac.capacity_CPU, mac.capacity_memory)
+		print Pu
+
+		return Tu
 		
 
 	def balance(self, machines_ready, tasks_to_run, tasks_constraints): 
@@ -100,5 +101,5 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.reset_stats()
 
 		for mac in machines_ready:
-			self.run(list(tasks_to_run), mac)	
+			tasks = self.run(list(tasks_to_run), mac)
 			break
