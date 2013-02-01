@@ -100,6 +100,15 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.n_round = self.n_round + 1
 		self.reset_stats()
 
-		for mac in machines_ready:
-			tasks = self.run(list(tasks_to_run), mac)
-			break
+		## sorting the machine in non-incresing order using the CPU capacity value
+		mac_list = sorted(list(mac_list), key=lambda mac: mac.capacity_CPU, reverse=True)
+		tasks_list = list(tasks_to_run)
+
+		if len(tasks_list) > 0:
+			for mac in mac_list:
+				tasks = self.run(tasks_list, mac)
+				tasks_to_remove = []
+				for t in tasks:
+					tasks_to_remove.append(tasks_list[t])
+				for t in tasks_to_remove:
+					tasks_list.remove(t)
