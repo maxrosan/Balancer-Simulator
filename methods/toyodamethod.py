@@ -4,15 +4,25 @@ import loadbalacing, random, usageclass
 import numpy
 import math
 
+import threading
+
+class TMThread(threading.Thread):
+	
+	def __init__(self, number, mac, tasks):
+		threading.Thread.__init__(self)
+		self.thread_id = number
+		self.tasks = tasks
+		self.mac = mac
+
+	def run(self):
+		ToyodaMethod.balance_partial(self.mac, self.tasks)
+
 # RandomMethod selects a task randomly to run
 #
 class ToyodaMethod(loadbalacing.LoadBalacing):
 
-	def __init__(self):
-		loadbalacing.LoadBalacing.__init__(self)
-	
-
-	def run(self, tasks, mac):
+	@staticmethod
+	def run(tasks, mac):
 		
 		n = len(tasks)
 
@@ -37,7 +47,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		cnt = math.sqrt(2)
 
-		print "MAC = %d, ntasks = %d" % (mac.machine_ID, n)
+		#print "MAC = %d, ntasks = %d" % (mac.machine_ID, n)
 
 		while keep_going :
 	
@@ -96,28 +106,66 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		return Tu
 		
+	@staticmethod
+	def balance_partial(machines, tasks):
+		
+		## sorting the machine in non-incresing order using the CPU capacity value
+		mac_list   = sorted(list(machines), key=lambda mac: mac.capacity_CPU, reverse=True)
+		tasks_list = list(tasks)
+		mac_used   = 0
+
+		for mac in mac_list:
+			if len(tasks_list) == 0:
+				break
+
+			tasks = ToyodaMethod.run(tasks_list, mac)
+
+			if len(tasks) > 0:
+				mac_used = mac_used + 1
+
+			tasks_to_remove = []
+
+			for t in tasks:
+				tasks_to_remove.append(tasks_list[t])
+
+			for t in tasks_to_remove:
+				tasks_list.remove(t)
+
+		print mac_used, " x ", len(tasks)
+
+	def __init__(self):
+		loadbalacing.LoadBalacing.__init__(self)
+		self.n_threads = 4
 
 	def balance(self, machines_ready, tasks_to_run, tasks_constraints): 
 		
 		self.n_round = self.n_round + 1
 		self.reset_stats()
 
-		## sorting the machine in non-incresing order using the CPU capacity value
-		mac_list = sorted(list(machines_ready), key=lambda mac: mac.capacity_CPU, reverse=True)
+		mac_list   = list(machines_ready)
 		tasks_list = list(tasks_to_run)
 
-		mac_used = 0
+		n_tasks   = len(tasks_to_run)
+		n_macs    = len(mac_list)
+		tasks_div = n_tasks / self.n_threads
+		mac_div   = n_macs / self.n_threads
 
-		for mac in mac_list:
-			if len(tasks_list) == 0:
-				break
-			mac_used = mac_used + 1
-			tasks = self.run(tasks_list, mac)
-			tasks_to_remove = []
-			for t in tasks:
-				tasks_to_remove.append(tasks_list[t])
-			for t in tasks_to_remove:
-				tasks_list.remove(t)
 
-		print "used = %d" % mac_used
-		if mac_used > 0: exit()
+		if n_tasks == 0:
+			return
+
+		threads   = []
+
+		for i in range(0, self.n_threads):
+			t = None
+			if i < (self.n_threads - 1):
+				t = TMThread(i, mac_list[mac_div*i:mac_div*(i+1)], tasks_list[tasks_div*i:tasks_div*(i + 1)])
+				t.start()
+				threads.append(t)
+			else:
+				ToyodaMethod.balance_partial(mac_list[mac_div*i:n_macs], tasks_list[tasks_div*i:n_tasks])
+
+		for t in threads:
+			t.join()
+
+		exit()
