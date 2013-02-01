@@ -37,6 +37,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		cnt = math.sqrt(2)
 
+		print "MAC = %d, ntasks = %d" % (mac.machine_ID, n)
+
 		while keep_going :
 	
 			# step 2
