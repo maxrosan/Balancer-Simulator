@@ -111,8 +111,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			if n_tasks == 0:
 				break
 
-			print "\r work %d processing machine %d of %d with %d tasks" % (idwork, i, n_macs, n_tasks),
-			sys.stdout.flush()
+			#print "\r work %d processing machine %d of %d with %d tasks" % (idwork, i, n_macs, n_tasks),
+			#sys.stdout.flush()
+			method.queue.put((idwork, i, n_macs, n_tasks))
 			i = i + 1
 
 			tasks = ToyodaMethod.run(tasks_list, mac)
@@ -141,7 +142,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		def work_status(method, arg):
 			
 			keep_going = True
-			hash_work  = [(0, 0, 0, 0)] * method.n_threads
+			hash_work  = [(0, 0, 1, 0)] * method.n_threads
+			time_start = time.time()
 
 			while keep_going:	
 				if not method.queue.empty():
@@ -150,15 +152,17 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 						keep_going = False
 					else:
 						#(proc_id, machine_index, n_machines, n_tasks) = item
-						hash_work[proc_id] = item
+						hash_work[item[0]] = item
 				
 
-				print "\r",
-				for i in hash_work:
-					print "work[%d] (%d, %d, %d)\t" % (i, hash_work[i][1], hash_work[i][2], hash_work[i][3]),
+				status = "\r[%f] " % (time.time() - time_start)
+				for i in range(0, self.n_threads):
+					status = status + ("w[%d]=(%3.2f, %d) " % (i, 100. * float(hash_work[i][1] + 1)/hash_work[i][2], hash_work[i][3]))
 
+				print status,
+				sys.stdout.flush()
 
-				sleep(2)
+				time.sleep(2)
 	
 	
 		self.n_round = self.n_round + 1
