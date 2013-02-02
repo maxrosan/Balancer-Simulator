@@ -111,9 +111,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			if n_tasks == 0:
 				break
 
-			#print "\r work %d processing machine %d of %d with %d tasks" % (idwork, i, n_macs, n_tasks),
-			#sys.stdout.flush()
-			method.queue.put((idwork, i, n_macs, n_tasks))
+			print "\r work %d processing machine %d of %d with %d tasks" % (idwork, i, n_macs, n_tasks),
+			sys.stdout.flush()
+			
 			i = i + 1
 
 			tasks = ToyodaMethod.run(tasks_list, mac)
@@ -129,6 +129,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			for t in tasks_to_remove:
 				tasks_list.remove(t)
 
+
+		method.queue.put(tasks_list)
+
 	def __init__(self):
 		loadbalacing.LoadBalacing.__init__(self)
 		self.n_threads = 8
@@ -138,31 +141,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		
 		def work(method, workn, macs, tasks):
 			ToyodaMethod.balance_partial(method, workn, macs, tasks)
-
-		def work_status(method, arg):
-			
-			keep_going = True
-			hash_work  = [(0, 0, 1, 0)] * method.n_threads
-			time_start = time.time()
-
-			while keep_going:	
-				if not method.queue.empty():
-					item = method.queue.get(False)
-					if item == None:
-						keep_going = False
-					else:
-						#(proc_id, machine_index, n_machines, n_tasks) = item
-						hash_work[item[0]] = item
-				
-
-				status = "\r[%.5d] " % int(time.time() - time_start)
-				for i in range(0, self.n_threads):
-					status = status + ("w[%d]=(%3.2f, %d) " % (i, 100. * float(hash_work[i][1] + 1)/hash_work[i][2], hash_work[i][3]))
-
-				print status,
-				sys.stdout.flush()
-
-				time.sleep(2)
 	
 	
 		self.n_round = self.n_round + 1
@@ -180,11 +158,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		if n_tasks == 0:
 			return
 
-
-		status_proc = multiprocessing.Process(target = work_status, args = (self, None))
-		status_proc.start()
-
-		procs = [status_proc]
+		procs = []
 
 		for i in range(0, self.n_threads):
 			t = None
@@ -196,9 +170,13 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			else:
 				ToyodaMethod.balance_partial(self, i, mac_list[mac_div*i:n_macs], tasks_list[tasks_div*i:n_tasks])
 
-		self.queue.put(None)
-
 		for p in procs:
 			p.join()
+
+		tasks_remaining = []
+		while not self.queue.empty():
+			tasks_remaining.append(self.queue.get(False))
+
+		print "tarefas restantes = ", tasks_remaining
 
 		exit()
