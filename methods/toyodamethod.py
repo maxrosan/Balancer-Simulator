@@ -131,11 +131,35 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 	def __init__(self):
 		loadbalacing.LoadBalacing.__init__(self)
 		self.n_threads = 8
+		self.queue     = multiprocessing.Queue()
 
 	def balance(self, machines_ready, tasks_to_run, tasks_constraints): 
 		
 		def work(method, workn, macs, tasks):
 			ToyodaMethod.balance_partial(method, workn, macs, tasks)
+
+		def work_status(method, arg):
+			
+			keep_going = True
+			hash_work  = [(0, 0, 0, 0)] * method.n_threads
+
+			while keep_going:	
+				if not method.queue.empty():
+					item = method.queue.get(False)
+					if item == None:
+						keep_going = False
+					else:
+						#(proc_id, machine_index, n_machines, n_tasks) = item
+						hash_work[proc_id] = item
+				
+
+				print "\r",
+				for i in hash_work:
+					print "work[%d] (%d, %d, %d)\t" % (i, hash_work[i][1], hash_work[i][2], hash_work[i][3]),
+
+
+				sleep(2)
+	
 	
 		self.n_round = self.n_round + 1
 		self.reset_stats()
@@ -152,7 +176,11 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		if n_tasks == 0:
 			return
 
-		procs = []
+
+		status_proc = multiprocessing.Process(target = work_status, args = (self, None))
+		status_proc.start()
+
+		procs = [status_proc]
 
 		for i in range(0, self.n_threads):
 			t = None
@@ -163,6 +191,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				procs.append(p)
 			else:
 				ToyodaMethod.balance_partial(self, i, mac_list[mac_div*i:n_macs], tasks_list[tasks_div*i:n_tasks])
+
+		self.queue.put(None)
 
 		for p in procs:
 			p.join()
