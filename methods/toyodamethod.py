@@ -155,7 +155,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 						hash_work[item[0]] = item
 				
 
-				status = "\r[%f] " % (time.time() - time_start)
+				status = "\r[%.5d] " % int(time.time() - time_start)
 				for i in range(0, self.n_threads):
 					status = status + ("w[%d]=(%3.2f, %d) " % (i, 100. * float(hash_work[i][1] + 1)/hash_work[i][2], hash_work[i][3]))
 
