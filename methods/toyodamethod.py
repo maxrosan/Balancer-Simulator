@@ -111,8 +111,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			if n_tasks == 0:
 				break
 
-			print "\r work %d processing machine %d of %d with %d tasks" % (idwork, i, n_macs, n_tasks),
-			sys.stdout.flush()
+			#print "\r work %d processing machine %d of %d with %d tasks" % (idwork, i, n_macs, n_tasks),
+			#sys.stdout.flush()
 			
 			i = i + 1
 
@@ -130,7 +130,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				tasks_list.remove(t)
 
 
-		method.queue.put(tasks_list)
+		method.queue.put((mac_used, tasks_list))
 
 	def __init__(self):
 		loadbalacing.LoadBalacing.__init__(self)
@@ -173,10 +173,18 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		for p in procs:
 			p.join()
 
+		#print "----"
+
 		tasks_remaining = []
+		mac_total_used  = 0
 		while not self.queue.empty():
-			tasks_remaining.append(self.queue.get(False))
+			(mac_used, tasks) = self.queue.get(False)
+			
+			tasks_remaining = tasks_remaining + tasks
+			mac_total_used = mac_total_used + mac_used
 
-		print "tarefas restantes = ", tasks_remaining
+		self.task_mapped_successfully = n_tasks - len(tasks_remaining)
+		self.task_failed_to_map       = len(tasks_remaining)
+		self.machines_used            = mac_total_used
+		self.machines_not_used        = n_mac - mac_total_used
 
-		exit()
