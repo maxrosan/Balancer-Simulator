@@ -123,19 +123,27 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 			tasks_to_remove = []
 
+			cpu_usage = 0
+			mem_usage = 0
 			for t in tasks:
-				tasks_to_remove.append(tasks_list[t])
+				task = tasks_list[t]
+				cpu_usage = cpu_usage + task.CPU_usage
+				mem_usage = mem_usage + task.mem_usage
+				tasks_to_remove.append(task)
+
+
+			#method.hash_queue.put((mac.machine_ID, cpu_usage, mem_usage))
 
 			for t in tasks_to_remove:
 				tasks_list.remove(t)
-
 
 		method.queue.put((mac_used, tasks_list))
 
 	def __init__(self):
 		loadbalacing.LoadBalacing.__init__(self)
-		self.n_threads = 8
-		self.queue     = multiprocessing.Queue()
+		self.n_threads  = 8
+		self.queue      = multiprocessing.Queue()
+		self.hash_queue = multiprocessing.Queue()
 
 	def balance(self, machines_ready, tasks_to_run, tasks_constraints): 
 		
@@ -183,8 +191,14 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			tasks_remaining = tasks_remaining + tasks
 			mac_total_used = mac_total_used + mac_used
 
+
+#		hash_machine = { }
+#		while not self.hash_queue.empty():
+#			(mac_id, cpu, mem) = self.hash_queue.get(False)
+#			hash_machine[mac_id] = (cpu, mem)
+
 		self.task_mapped_successfully = n_tasks - len(tasks_remaining)
 		self.task_failed_to_map       = len(tasks_remaining)
 		self.machines_used            = mac_total_used
-		self.machines_not_used        = n_mac - mac_total_used
+		self.machines_not_used        = n_macs - mac_total_used
 
