@@ -3,7 +3,6 @@
 import loadbalacing, random, usageclass
 import numpy
 import math
-
 import threading, multiprocessing, time, sys
 
 # RandomMethod selects a task randomly to run
@@ -205,7 +204,12 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		i = 0
 		while i < (self.n_threads - 1):
-			proc_nid = self.end_queue.get(True)
+
+			while self.end_queue.empty():
+				time.sleep(1)
+
+			proc_nid = self.end_queue.get(False)
+
 			if proc_nid < (self.n_threads - 1):
 				print "Terminate %d" % proc_nid
 				procs[proc_nid].terminate()
