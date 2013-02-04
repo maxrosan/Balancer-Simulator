@@ -197,6 +197,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		print "--OK 1--"
 
 		for p in procs:
+			print p
 			p.join()
 
 		print "--OK 2--"
