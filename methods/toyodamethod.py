@@ -194,10 +194,12 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			else:
 				ToyodaMethod.balance_partial(self, i, mac_list[mac_div*i:n_macs], tasks_list[tasks_div*i:n_tasks])
 
+		print "--OK 1--"
+
 		for p in procs:
 			p.join()
 
-		print "--OK--"
+		print "--OK 2--"
 
 		tasks_remaining    = []
 		mac_total_used     = 0
