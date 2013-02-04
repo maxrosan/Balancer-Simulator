@@ -154,7 +154,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				tasks_list.remove(t)
 
 		method.queue.put((mac_used, tasks_list, migrations, task_machine_map))
-		method.queue.close()
+	
+		if idwork < (method.n_threads - 1):
+			method.queue.close()
 
 	def __init__(self):
 		loadbalacing.LoadBalacing.__init__(self)
