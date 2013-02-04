@@ -109,6 +109,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		migrations = 0
 		new_tasks  = 0
 
+		task_machine_map = {}
+
 		for mac in mac_list:
 			n_tasks = len(tasks_list)
 			if n_tasks == 0:
@@ -130,16 +132,20 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			mem_usage = 0
 			for t in tasks:
 
+				task = tasks_list[t]
+
 				if task.machine_ID == -1:
 					new_tasks = new_tasks + 1
 				elif task.machine_ID != mac.machine_ID:
 					migrations = migrations + 1
-					task.machine_ID = mac.machine_ID
+				
+				task_machine_map[task.getID()] = mac.machine_ID
 
-				task = tasks_list[t]
-				cpu_usage = cpu_usage + task.CPU_usage
-				mem_usage = mem_usage + task.mem_usage
+				cpu_usage       = cpu_usage + task.CPU_usage
+				mem_usage       = mem_usage + task.mem_usage
+
 				tasks_to_remove.append(task)
+				
 
 
 			#method.hash_queue.put((mac.machine_ID, cpu_usage, mem_usage))
@@ -147,7 +153,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			for t in tasks_to_remove:
 				tasks_list.remove(t)
 
-		method.queue.put((mac_used, tasks_list, migrations, new_tasks))
+		method.queue.put((mac_used, tasks_list, migrations, task_machine_map))
 
 	def __init__(self):
 		loadbalacing.LoadBalacing.__init__(self)
@@ -191,19 +197,25 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		for p in procs:
 			p.join()
 
-		#print "----"
+		print "--OK--"
 
-		tasks_remaining  = []
-		mac_total_used   = 0
-		migrations_total = 0
-		new_tasks_total  = 0
+		tasks_remaining    = []
+		mac_total_used     = 0
+		migrations_total   = 0
+		new_tasks_total    = 0
+		map_task_mac_final = {}
+
 		while not self.queue.empty():
-			(mac_used, tasks, migrations, new_tasks) = self.queue.get(False)
+			(mac_used, tasks, migrations, new_tasks, map_task_mac) = self.queue.get(False)
 			
 			tasks_remaining = tasks_remaining + tasks
 			mac_total_used = mac_total_used + mac_used
 			new_tasks_total = new_tasks_total + new_tasks
+			map_task_mac_final.update(map_task_mac)
 
+		for task in task_to_run:
+			if task.getID() in map_task_mac_final:
+				task.machine_ID = map_task_mac_final[task.getID()]
 
 		self.task_mapped_successfully = n_tasks - len(tasks_remaining)
 		self.task_failed_to_map       = len(tasks_remaining)
