@@ -16,9 +16,12 @@ class BalancerSimulator:
 		self.max_time        = 8000
 		self.balacing_method = balacing_method
 
+		self.balacing_method.open_log_file("balacing.log")
+
 	def balance(self):
 		self.balacing_method.balance(self.machines_ready, self.tasks_to_run, None)
 		self.balacing_method.print_balacing_results_verbose()
+		self.balacing_method.print_log_file()
 		self.tasks_to_run.clear()
 
 	@staticmethod

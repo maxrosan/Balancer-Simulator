@@ -1,9 +1,12 @@
 
+import io
+
 class LoadBalacing:
 	
 	def __init__(self):
 		self.mac_usage                = {}
 		self.n_round                  = 0
+		self.fobj                     = None
 		self.reset_stats()
 
 	def reset_stats(self):
@@ -16,6 +19,10 @@ class LoadBalacing:
 	def balance(self, machines_ready, tasks_to_run, tasks_constraints):
 		pass
 
+	def open_log_file(self, filename):
+		self.fobj = open(filename, "w")
+		
+
 	def print_balacing_results_verbose(self):
 		print "--------- Round %d ------------------------" % self.n_round
 		print "Task mapped: ", self.task_mapped_successfully
@@ -23,3 +30,9 @@ class LoadBalacing:
 		print "Machines used: ", self.machines_used
 		print "Machines not used", self.machines_not_used
 		print "-------------------------------------------"
+
+	def print_log_file(self):
+		if self.fobj != None:
+			self.fobj.write("%d %d %d %d %d\n" % (self.n_round, self.task_mapped_successfully, self.task_failed_to_map,
+			 self.machines_used, self.machines_not_used))
+			self.fobj.flush()
