@@ -205,8 +205,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		while not self.end_queue.empty():
 			proc_nid = self.end_queue.get(True)
-			print "Terminate %d" % proc_nid
-			procs[proc_nid].terminate()
+			if proc_nid < (self.n_threads - 1):
+				print "Terminate %d" % proc_nid
+				procs[proc_nid].terminate()
 
 		print "--OK 2--"
 
