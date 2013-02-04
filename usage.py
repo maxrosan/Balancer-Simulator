@@ -13,8 +13,11 @@ class TaskUsageRegister:
 		self.CPU_usage  = 0.0
 		self.mem_usage  = 0.0
 
-	def __hash__(self):
+	def getID(self):
 		return ((self.job_ID << 64) + self.task_ID) # python trata isso 
+
+	def __hash__(self):
+		return self.getID()
 
 	def __eq__(self, other):
 		return ((self.job_ID == other.job_ID) and (self.task_ID == other.task_ID))
@@ -79,7 +82,7 @@ class TaskUsage:
 				task.end_time   = float(self.line[1])/1000000.
 				task.job_ID     = int(self.line[2])
 				task.task_ID    = int(self.line[3])
-				task.machine_ID = int(self.line[4])
+				task.machine_ID = -1 # int(self.line[4])
 				task.CPU_usage  = float(self.line[5])
 				task.mem_usage  = float(self.line[6])
 

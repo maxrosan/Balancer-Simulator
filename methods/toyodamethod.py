@@ -106,6 +106,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		i = 0
 		n_macs = len(machines)
 
+		migrations = 0
+		new_tasks  = 0
+
 		for mac in mac_list:
 			n_tasks = len(tasks_list)
 			if n_tasks == 0:
@@ -126,6 +129,13 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			cpu_usage = 0
 			mem_usage = 0
 			for t in tasks:
+
+				if task.machine_ID == -1:
+					new_tasks = new_tasks + 1
+				elif task.machine_ID != mac.machine_ID:
+					migrations = migrations + 1
+					task.machine_ID = mac.machine_ID
+
 				task = tasks_list[t]
 				cpu_usage = cpu_usage + task.CPU_usage
 				mem_usage = mem_usage + task.mem_usage
@@ -137,15 +147,15 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			for t in tasks_to_remove:
 				tasks_list.remove(t)
 
-		method.queue.put((mac_used, tasks_list))
+		method.queue.put((mac_used, tasks_list, migrations, new_tasks))
 
 	def __init__(self):
 		loadbalacing.LoadBalacing.__init__(self)
-		self.n_threads  = 8
+		self.n_threads  = self.n_jobs
 		self.queue      = multiprocessing.Queue()
 		self.hash_queue = multiprocessing.Queue()
 
-	def balance(self, machines_ready, tasks_to_run, tasks_constraints): 
+	def balance(self, machines_ready, tasks_to_run, state): 
 		
 		def work(method, workn, macs, tasks):
 			ToyodaMethod.balance_partial(method, workn, macs, tasks)
@@ -183,22 +193,22 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		#print "----"
 
-		tasks_remaining = []
-		mac_total_used  = 0
+		tasks_remaining  = []
+		mac_total_used   = 0
+		migrations_total = 0
+		new_tasks_total  = 0
 		while not self.queue.empty():
-			(mac_used, tasks) = self.queue.get(False)
+			(mac_used, tasks, migrations, new_tasks) = self.queue.get(False)
 			
 			tasks_remaining = tasks_remaining + tasks
 			mac_total_used = mac_total_used + mac_used
+			new_tasks_total = new_tasks_total + new_tasks
 
-
-#		hash_machine = { }
-#		while not self.hash_queue.empty():
-#			(mac_id, cpu, mem) = self.hash_queue.get(False)
-#			hash_machine[mac_id] = (cpu, mem)
 
 		self.task_mapped_successfully = n_tasks - len(tasks_remaining)
 		self.task_failed_to_map       = len(tasks_remaining)
 		self.machines_used            = mac_total_used
 		self.machines_not_used        = n_macs - mac_total_used
 
+		self.task_new                 = new_tasks_total
+		self.n_migrations             = migrations_total

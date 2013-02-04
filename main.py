@@ -12,7 +12,9 @@ class BalancerSimulator:
 		self.time            = 0
 		self.interval        = 300
 		self.tasks_to_run    = sets.Set([]) # evita entradas repetidas
+		self.tasks_executed  = {}
 		self.machines_ready  = sets.Set([])
+		self.machines_state  = {}
 		self.max_time        = 84600
 		self.balacing_method = balacing_method
 
@@ -22,11 +24,20 @@ class BalancerSimulator:
 		self.balacing_method.balance(self.machines_ready, self.tasks_to_run, None)
 		self.balacing_method.print_balacing_results_verbose()
 		self.balacing_method.print_log_file()
-		self.tasks_to_run.clear()
 
+		self.tasks_executed.clear()
+		for task in self.tasks_to_run:
+			self.tasks_executed[task.getID()] = task.machine_ID
+
+		self.tasks_to_run.clear()
+				
+
+	# If the task that requested to run have the same ID as a task executed in last round, it is considered that two tasks are the same
 	@staticmethod
 	def add_task_usage(balsim, task):
 		if task.CPU_usage > 0.:
+			if task.getID() in balsim.tasks_executed:
+				task.machine_ID = balsim.tasks_executed[task.getID()]
 			balsim.tasks_to_run.add(task)
 
 	@staticmethod
@@ -50,9 +61,14 @@ class BalancerSimulator:
 		if balsim.time < balsim.max_time:
 			sim.add_event(simulator.Event(balsim.time, BalancerSimulator.add_event, (sim, balsim)))
 
+### ./main.py <balancing load method> <Google workload path> <number of threads>
+
 method = None
 
-if sys.argv[1] == "knapsack":
+if sys.argv[1] == "help":
+	print "./main.py <balancing load method> <Google workload path> <number of threads>"
+	exit()
+elif sys.argv[1] == "knapsack":
 	method = methods.multiknapsackmethod.MultiKnapsackMethod()
 elif sys.argv[1] == "toyoda":
 	method = methods.toyodamethod.ToyodaMethod()
@@ -60,6 +76,8 @@ else:
 	method = methods.randommethod.RandomMethod()
 
 #main_path            = "/home/max/Src/gsutil/"
+
+method.n_jobs = int(sys.argv[3])
 
 sim = simulator.Simulator()
 balsim = BalancerSimulator(sys.argv[2], method)
