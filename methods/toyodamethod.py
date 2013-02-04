@@ -157,7 +157,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 	def __init__(self):
 		loadbalacing.LoadBalacing.__init__(self)
-		self.n_threads  = self.n_jobs
 		self.queue      = multiprocessing.Queue()
 		self.hash_queue = multiprocessing.Queue()
 
@@ -166,6 +165,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		def work(method, workn, macs, tasks):
 			ToyodaMethod.balance_partial(method, workn, macs, tasks)
 	
+		self.n_threads  = self.n_jobs
 	
 		self.n_round = self.n_round + 1
 		self.reset_stats()
