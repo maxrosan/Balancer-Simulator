@@ -111,7 +111,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		task_machine_map = {}
 
-		print "## Thread OK"
+		print "%d ## Thread OK" % idwork
 
 		for mac in mac_list:
 			n_tasks = len(tasks_list)
@@ -155,9 +155,11 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			for t in tasks_to_remove:
 				tasks_list.remove(t)
 
-		print  "## OK"
+		print  "%d ## OK" % idwork
 
 		method.queue.put((mac_used, tasks_list, migrations, task_machine_map))
+
+		print "%d @@" % idwork
 
 	def __init__(self):
 		loadbalacing.LoadBalacing.__init__(self)
