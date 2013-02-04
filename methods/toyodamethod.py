@@ -157,6 +157,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 	
 		if idwork < (method.n_threads - 1):
 			method.queue.close()
+			method.queue.cancel_join_thread()
 
 	def __init__(self):
 		loadbalacing.LoadBalacing.__init__(self)
@@ -200,6 +201,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		print "--OK 1--"
 
 		for p in procs:
+			print p
 			p.join()
 
 		print "--OK 2--"
