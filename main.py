@@ -65,6 +65,8 @@ class BalancerSimulator:
 
 method = None
 
+method.n_jobs = int(sys.argv[3])
+
 if sys.argv[1] == "help":
 	print "./main.py <balancing load method> <Google workload path> <number of threads>"
 	exit()
@@ -76,8 +78,6 @@ else:
 	method = methods.randommethod.RandomMethod()
 
 #main_path            = "/home/max/Src/gsutil/"
-
-method.n_jobs = int(sys.argv[3])
 
 sim = simulator.Simulator()
 balsim = BalancerSimulator(sys.argv[2], method)
