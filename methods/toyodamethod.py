@@ -3,6 +3,7 @@
 import loadbalacing, random, usageclass
 import numpy
 import math
+
 import threading, multiprocessing, time, sys
 
 # RandomMethod selects a task randomly to run
@@ -110,8 +111,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		task_machine_map = {}
 
-		print "%d ## Thread OK" % idwork
-
 		for mac in mac_list:
 			n_tasks = len(tasks_list)
 			if n_tasks == 0:
@@ -154,17 +153,13 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			for t in tasks_to_remove:
 				tasks_list.remove(t)
 
-		print  "%d ## OK" % idwork
-
 		method.queue.put((mac_used, tasks_list, migrations, task_machine_map))
-		method.end_queue.put(idwork)
-
-		print "%d @@" % idwork
+		method.queue.close()
 
 	def __init__(self):
 		loadbalacing.LoadBalacing.__init__(self)
 		self.queue      = multiprocessing.Queue()
-		self.end_queue  = multiprocessing.Queue()
+		self.hash_queue = multiprocessing.Queue()
 
 	def balance(self, machines_ready, tasks_to_run, state): 
 		
@@ -202,18 +197,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		print "--OK 1--"
 
-		i = 0
-		while i < (self.n_threads - 1):
-
-			while self.end_queue.empty():
-				time.sleep(1)
-
-			proc_nid = self.end_queue.get(False)
-
-			if proc_nid < (self.n_threads - 1):
-				print "Terminate %d" % proc_nid
-				procs[proc_nid].terminate()
-				i = i + 1
+		for p in procs:
+			p.join()
 
 		print "--OK 2--"
 
