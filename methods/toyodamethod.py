@@ -158,13 +158,14 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		print  "%d ## OK" % idwork
 
 		method.queue.put((mac_used, tasks_list, migrations, task_machine_map))
+		method.end_queue.put(idwork)
 
 		print "%d @@" % idwork
 
 	def __init__(self):
 		loadbalacing.LoadBalacing.__init__(self)
 		self.queue      = multiprocessing.Queue()
-		self.hash_queue = multiprocessing.Queue()
+		self.end_queue  = multiprocessing.Queue()
 
 	def balance(self, machines_ready, tasks_to_run, state): 
 		
@@ -202,9 +203,11 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		print "--OK 1--"
 
-		for p in procs:
-			print p
-			p.join()
+		while not self.end_queue.empty():
+			proc_nid = self.end_queue.get(True)
+			procs[proc_nid].terminate()
+
+			print "Terminate %d" % proc_nid
 
 		print "--OK 2--"
 
