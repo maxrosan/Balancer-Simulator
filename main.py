@@ -13,7 +13,7 @@ class BalancerSimulator:
 		self.interval        = 300
 		self.tasks_to_run    = sets.Set([]) # evita entradas repetidas
 		self.machines_ready  = sets.Set([])
-		self.max_time        = 8000
+		self.max_time        = 84600
 		self.balacing_method = balacing_method
 
 		self.balacing_method.open_log_file("balacing.log")
