@@ -172,8 +172,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 	def balance(self, machines_ready, tasks_to_run, state): 
 		
-		def work(method, workn, macs, tasks):
-			ToyodaMethod.balance_partial(method, workn, macs, tasks)
+		def work(method, conn, workn, macs, tasks):
+			ToyodaMethod.balance_partial(method, conn, workn, macs, tasks)
 	
 		self.n_threads  = self.n_jobs
 	
