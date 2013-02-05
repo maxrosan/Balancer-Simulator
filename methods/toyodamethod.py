@@ -198,7 +198,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				p.start()
 				procs.append(p)
 			else:
-				(mac_used, tasks, migrations, new_tasks, map_task_mac) = ToyodaMethod.balance_partial(self, None, i, mac_list[mac_div*i:n_macs], tasks_list[tasks_div*i:n_tasks])
+				(mac_total_used, tasks_remaining, migrations_total, new_tasks_total, map_task_mac_final) = ToyodaMethod.balance_partial(self, None, i, mac_list[mac_div*i:n_macs], tasks_list[tasks_div*i:n_tasks])
 
 		for i in range(0, self.n_threads - 1):
 			(mac_used, tasks, migrations, new_tasks, map_task_mac) = conns[i].recv()
@@ -208,6 +208,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			mac_total_used = mac_total_used + mac_used
 			new_tasks_total = new_tasks_total + new_tasks
 			map_task_mac_final.update(map_task_mac)
+			migrations_total = migrations_total + migrations
 
 		for task in tasks_to_run:
 			if task.getID() in map_task_mac_final:
