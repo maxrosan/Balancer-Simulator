@@ -237,7 +237,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		#	new_tasks_total = new_tasks_total + new_tasks
 		#	map_task_mac_final.update(map_task_mac)
 
-		for task in task_to_run:
+		for task in tasks_to_run:
 			if task.getID() in map_task_mac_final:
 				task.machine_ID = map_task_mac_final[task.getID()]
 
