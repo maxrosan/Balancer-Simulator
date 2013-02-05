@@ -193,7 +193,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			return
 
 		procs = []
-		conns = []
+		conns = [None] * self.n_threads
 
 		tasks_remaining    = []
 		mac_total_used     = 0
