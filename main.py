@@ -33,9 +33,10 @@ class BalancerSimulator:
 				
 
 	# If the task that requested to run have the same ID as a task executed in last round, it is considered that two tasks are the same
+	# The Google's workload has some invalid values, so it is necessary to check if the values are in the range from 0 to 1
 	@staticmethod
 	def add_task_usage(balsim, task):
-		if task.CPU_usage > 0.:
+		if task.CPU_usage > 0. and task.CPU_usage <= 1. and task.mem_usage <= 1.:
 			if task.getID() in balsim.tasks_executed:
 				task.machine_ID = balsim.tasks_executed[task.getID()]
 			balsim.tasks_to_run.add(task)
