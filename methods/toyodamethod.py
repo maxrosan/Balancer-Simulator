@@ -96,7 +96,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		return Tu
 		
 	@staticmethod
-	def balance_partial(method, idwork, machines, tasks):
+	def balance_partial(method, conn, idwork, machines, tasks):
 		
 		## sorting the machine in non-incresing order using the CPU capacity value
 		mac_list   = sorted(list(machines), key=lambda mac: mac.capacity_CPU, reverse=True)
@@ -153,16 +153,22 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			for t in tasks_to_remove:
 				tasks_list.remove(t)
 
-		method.queue.put((mac_used, tasks_list, migrations, task_machine_map))
+		#method.queue.put((mac_used, tasks_list, migrations, task_machine_map))
+
+		if conn != None:
+			conn.send((mac_used, tasks_list, migrations, task_machine_map))
+			return None
+
+		return (mac_used, tasks_list, migrations, task_machine_map)
 	
-		if idwork < (method.n_threads - 1):
-			method.queue.close()
-			method.queue.cancel_join_thread()
+		#if idwork < (method.n_threads - 1):
+		#	method.queue.close()
+		#	method.queue.cancel_join_thread()
 
 	def __init__(self):
 		loadbalacing.LoadBalacing.__init__(self)
-		self.queue      = multiprocessing.Queue()
-		self.hash_queue = multiprocessing.Queue()
+		#self.queue      = multiprocessing.Queue()
+		#self.hash_queue = multiprocessing.Queue()
 
 	def balance(self, machines_ready, tasks_to_run, state): 
 		
@@ -187,24 +193,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			return
 
 		procs = []
-
-		for i in range(0, self.n_threads):
-			t = None
-			if i < (self.n_threads - 1):
-				p = multiprocessing.Process(target = work, 
-				  args = (self, i, mac_list[mac_div*i:mac_div*(i+1)], tasks_list[tasks_div*i:tasks_div*(i + 1)]))
-				p.start()
-				procs.append(p)
-			else:
-				ToyodaMethod.balance_partial(self, i, mac_list[mac_div*i:n_macs], tasks_list[tasks_div*i:n_tasks])
-
-		print "--OK 1--"
-
-		for p in procs:
-			print p
-			p.join()
-
-		print "--OK 2--"
+		conns = []
 
 		tasks_remaining    = []
 		mac_total_used     = 0
@@ -212,13 +201,42 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		new_tasks_total    = 0
 		map_task_mac_final = {}
 
-		while not self.queue.empty():
-			(mac_used, tasks, migrations, new_tasks, map_task_mac) = self.queue.get(False)
-			
+		for i in range(0, self.n_threads):
+			t = None
+			if i < (self.n_threads - 1):
+				conns[i], child_conn = multiprocessing.Pipe()
+				p = multiprocessing.Process(target = work, 
+				  args = (self, child_conn, i, mac_list[mac_div*i:mac_div*(i+1)], tasks_list[tasks_div*i:tasks_div*(i + 1)]))
+				p.start()
+				procs.append(p)
+			else:
+			(mac_used, tasks, migrations, new_tasks, map_task_mac) = ToyodaMethod.balance_partial(self, None, 
+			 i, mac_list[mac_div*i:n_macs], tasks_list[tasks_div*i:n_tasks])
+
+		print "--OK 1--"
+
+		for i in range(0, self.n_threads - 1):
+			(mac_used, tasks, migrations, new_tasks, map_task_mac) = conns[i].recv()
+			procs[i].join()
+
 			tasks_remaining = tasks_remaining + tasks
 			mac_total_used = mac_total_used + mac_used
 			new_tasks_total = new_tasks_total + new_tasks
 			map_task_mac_final.update(map_task_mac)
+
+
+
+		print "--OK 2--"
+
+		print "Gathering info"
+
+		#while not self.queue.empty():
+		#	(mac_used, tasks, migrations, new_tasks, map_task_mac) = self.queue.get(False)
+		#	
+		#	tasks_remaining = tasks_remaining + tasks
+		#	mac_total_used = mac_total_used + mac_used
+		#	new_tasks_total = new_tasks_total + new_tasks
+		#	map_task_mac_final.update(map_task_mac)
 
 		for task in task_to_run:
 			if task.getID() in map_task_mac_final:
