@@ -38,6 +38,6 @@ class LoadBalacing:
 
 	def print_log_file(self):
 		if self.fobj != None:
-			self.fobj.write("%d %d %d %d %d\n" % (self.n_round, self.task_mapped_successfully, self.task_failed_to_map,
-			 self.machines_used, self.machines_not_used))
+			self.fobj.write("%d %d %d %d %d %d\n" % (self.n_round, self.task_mapped_successfully, self.task_failed_to_map,
+			 self.machines_used, self.machines_not_used, self.n_migrations))
 			self.fobj.flush()

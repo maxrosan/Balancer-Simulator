@@ -32,7 +32,8 @@ class BalancerSimulator:
 		self.tasks_to_run.clear()
 				
 
-	# If the task that requested to run have the same ID as a task executed in last round, it is considered that two tasks are the same
+	# If the task that requested to run have the same ID as a task executed in last round, it is considered that two tasks are the same.
+	# However, the values of CPU and memory usage are updated according to the last registry
 	# The Google's workload has some invalid values, so it is necessary to check if the values are in the range from 0 to 1
 	@staticmethod
 	def add_task_usage(balsim, task):
