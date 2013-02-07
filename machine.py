@@ -14,7 +14,9 @@ class MachineEventRegister:
 		self.platform_ID = 0
 		self.capacity_CPU = 0.
 		self.capacity_memory = 0.
-
+		self.CPU_usage = 0
+		self.mem_usage = 0
+		self.used = 0
 
 	def __hash__(self):
 		return self.machine_ID

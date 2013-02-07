@@ -101,7 +101,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		## sorting the machine in non-incresing order using the CPU capacity value
 		mac_list   = sorted(list(machines), key=lambda mac: mac.capacity_CPU, reverse=True)
 		tasks_list = list(tasks)
-		mac_used   = 0
 
 		i = 0
 		n_macs = len(machines)
@@ -111,9 +110,13 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		task_machine_map = {}
 
+		mac_used_list     = []
+		mac_not_used_list = []
+
 		for mac in mac_list:
 			n_tasks = len(tasks_list)
 			if n_tasks == 0:
+				mac_not_used_list = mac_not_used_list + mac_list[i:]
 				break
 
 			#print "\r work %d processing machine %d of %d with %d tasks" % (idwork, i, n_macs, n_tasks),
@@ -122,9 +125,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			i = i + 1
 
 			tasks = ToyodaMethod.run(tasks_list, mac)
-
-			if len(tasks) > 0:
-				mac_used = mac_used + 1
 
 			tasks_to_remove = []
 
@@ -145,15 +145,26 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				mem_usage       = mem_usage + task.mem_usage
 
 				tasks_to_remove.append(task)
+
+			mac.CPU_usage = cpu_usage
+			mac.mem_usage = mem_usage
+
+			if len(tasks) > 0:
+				mac_used_list.append(mac)
+			else:
+				mac_not_used_list.append(mac)
 				
 			for t in tasks_to_remove:
 				tasks_list.remove(t)
 
+		return_value = (tasks_list, migrations, new_tasks, task_machine_map, mac_used_list, mac_not_used_list)
+
+
 		if conn != None:
-			conn.send((mac_used, tasks_list, migrations, new_tasks, task_machine_map))
+			conn.send(return_value)
 			return None
 
-		return (mac_used, tasks_list, migrations, new_tasks, task_machine_map)	
+		return return_value
 
 	def __init__(self):
 		loadbalacing.LoadBalacing.__init__(self)
@@ -183,11 +194,12 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		procs = []
 		conns = [None] * self.n_threads
 
-		tasks_remaining    = []
-		mac_total_used     = 0
-		migrations_total   = 0
-		new_tasks_total    = 0
-		map_task_mac_final = {}
+		tasks_remaining          = []
+		migrations_total         = 0
+		new_tasks_total          = 0
+		map_task_mac_final       = {}
+		mac_used_list_final      = []
+		mac_not_used_list_final  = []
 
 		for i in range(0, self.n_threads):
 			t = None
@@ -198,17 +210,25 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				p.start()
 				procs.append(p)
 			else:
-				(mac_total_used, tasks_remaining, migrations_total, new_tasks_total, map_task_mac_final) = ToyodaMethod.balance_partial(self, None, i, mac_list[mac_div*i:n_macs], tasks_list[tasks_div*i:n_tasks])
+				(tasks_remaining, migrations_total, new_tasks_total, map_task_mac_final, mac_used_list_final, mac_not_used_list_final) = ToyodaMethod.balance_partial(self, None, i, mac_list[mac_div*i:n_macs], tasks_list[tasks_div*i:n_tasks])
 
 		for i in range(0, self.n_threads - 1):
-			(mac_used, tasks, migrations, new_tasks, map_task_mac) = conns[i].recv()
+			(mac_used, tasks, migrations, new_tasks, map_task_mac, mac_used_list, mac_not_used_list) = conns[i].recv()
 			procs[i].join()
 
 			tasks_remaining = tasks_remaining + tasks
-			mac_total_used = mac_total_used + mac_used
 			new_tasks_total = new_tasks_total + new_tasks
+
 			map_task_mac_final.update(map_task_mac)
-			migrations_total = migrations_total + migrations
+
+			migrations_total        = migrations_total + migrations
+			mac_used_list_final     = mac_used_list_final + mac_used_list
+			mac_not_used_list_final = mac_not_used_list_final + mac_not_used_lis
+
+		# check if there is task that wasn't scheduled, schedule those tasks.
+		#if len(tasks_remaining) > 0:
+		#	pass
+		
 
 		for task in tasks_to_run:
 			if task.getID() in map_task_mac_final:
@@ -216,8 +236,12 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		self.task_mapped_successfully = n_tasks - len(tasks_remaining)
 		self.task_failed_to_map       = len(tasks_remaining)
-		self.machines_used            = mac_total_used
-		self.machines_not_used        = n_macs - mac_total_used
+		self.machines_used            = len(mac_used_list_final)
+		self.machines_not_used        = len(mac_not_used_list_final)
 
 		self.task_new                 = new_tasks_total
 		self.n_migrations             = migrations_total
+
+		print "#### %d %d" % (self.machines_used, self.machines_not_used)
+
+		exit()
