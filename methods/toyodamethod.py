@@ -183,6 +183,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				if (mac.capacity_CPU - mac.CPU_usage) >= task.CPU_usage:
 					i = i + 1
 					at_least_one_task_scheduled = True
+					mac.CPU_usage = mac.CPU_usage + task.CPU_usage
 				else:
 					break
 			
