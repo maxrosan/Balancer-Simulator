@@ -175,15 +175,15 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		i = 0
 
 		macs_used   = []
-		tasks_sched = []
 
 		for mac in macs:
 			at_least_one_task_scheduled = False
 			for task in tasks:
-				if (mac.capacity_CPU - mac.CPU_usage) >= task.CPU_usage:
+				if (mac.capacity_CPU - mac.CPU_usage) >= task.CPU_usage and (mac.capacity_memory - mac.mem_usage) >= task.mem_usage:
 					i = i + 1
 					at_least_one_task_scheduled = True
 					mac.CPU_usage = mac.CPU_usage + task.CPU_usage
+					mac.mem_usage = mac.mem_usage + task.mem_usage
 				else:
 					break
 			
@@ -194,7 +194,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			else:
 				macs_used.append(mac)
 
-		return (mac_useds, tasks)
+		return (macs_used, tasks)
 
 	def balance(self, machines_ready, tasks_to_run, state): 
 		
