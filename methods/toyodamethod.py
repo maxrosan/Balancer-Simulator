@@ -242,6 +242,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.task_new                 = new_tasks_total
 		self.n_migrations             = migrations_total
 
-		print "#### %d %d" % (self.machines_used, self.machines_not_used)
+		print "#### %d %d %d" % (self.task_failed_to_map, self.machines_used, self.machines_not_used)
 
 		exit()
