@@ -223,7 +223,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 			migrations_total        = migrations_total + migrations
 			mac_used_list_final     = mac_used_list_final + mac_used_list
-			mac_not_used_list_final = mac_not_used_list_final + mac_not_used_lis
+			mac_not_used_list_final = mac_not_used_list_final + mac_not_used_list
 
 		# check if there is task that wasn't scheduled, schedule those tasks.
 		#if len(tasks_remaining) > 0:
