@@ -169,6 +169,32 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 	def __init__(self):
 		loadbalacing.LoadBalacing.__init__(self)
 
+	def __first_fit(self, macs, tasks):
+		macs   = sorted(list(macs), key=lambda mac: (mac.capacity_CPU - mac.CPU_usage), reverse=True)
+		tasks  = sorted(list(tasks), key=lambda task: task.CPU_usage, reverse=False)
+		i = 0
+
+		macs_used   = []
+		tasks_sched = []
+
+		for mac in macs:
+			at_least_one_task_scheduled = False
+			for task in tasks:
+				if (mac.capacity_CPU - mac.CPU_usage) >= task.CPU_usage:
+					i = i + 1
+					at_least_one_task_scheduled = True
+				else:
+					break
+			
+			tasks = tasks[i:]
+
+			if not at_least_one_task_scheduled:
+				break
+			else:
+				macs_used.append(mac)
+
+		return (mac_useds, tasks)
+
 	def balance(self, machines_ready, tasks_to_run, state): 
 		
 		def work(method, conn, workn, macs, tasks):
@@ -225,10 +251,11 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			mac_used_list_final     = mac_used_list_final + mac_used_list
 			mac_not_used_list_final = mac_not_used_list_final + mac_not_used_list
 
+		print "Checking"
+
 		# check if there is task that wasn't scheduled, schedule those tasks.
-		#if len(tasks_remaining) > 0:
-		#	pass
-		
+		if len(tasks_remaining) > 0:
+			(_, tasks_remaining) = self.__first_fit(mac_used_list_final, tasks_remaining)
 
 		for task in tasks_to_run:
 			if task.getID() in map_task_mac_final:
