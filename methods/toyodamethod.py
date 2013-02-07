@@ -260,6 +260,11 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		# check if there is task that wasn't scheduled, schedule those tasks.
 		if len(tasks_remaining) > 0:
 			(_, tasks_remaining) = self.__first_fit(mac_used_list_final, tasks_remaining)
+			if len(tasks_remaining) > 0:
+				(mac_used, tasks_remaining) = self.__first_fit(mac_not_used_list_final, tasks_remaining)
+				for mac in mac_used:
+					mac_not_used_list_final.remove(mac)
+				mac_used_list_final = mac_used_list_final + mac_used
 
 		for task in tasks_to_run:
 			if task.getID() in map_task_mac_final:
