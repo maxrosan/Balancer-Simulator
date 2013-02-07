@@ -213,9 +213,12 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		tasks_div = n_tasks / self.n_threads
 		mac_div   = n_macs / self.n_threads
 
-
 		if n_tasks == 0:
 			return
+
+		for mac in machines_ready:
+			mac.CPU_usage = 0
+			mac.mem_usage = 0
 
 		procs = []
 		conns = [None] * self.n_threads
