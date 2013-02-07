@@ -213,7 +213,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				(tasks_remaining, migrations_total, new_tasks_total, map_task_mac_final, mac_used_list_final, mac_not_used_list_final) = ToyodaMethod.balance_partial(self, None, i, mac_list[mac_div*i:n_macs], tasks_list[tasks_div*i:n_tasks])
 
 		for i in range(0, self.n_threads - 1):
-			(mac_used, tasks, migrations, new_tasks, map_task_mac, mac_used_list, mac_not_used_list) = conns[i].recv()
+			(tasks, migrations, new_tasks, map_task_mac, mac_used_list, mac_not_used_list) = conns[i].recv()
 			procs[i].join()
 
 			tasks_remaining = tasks_remaining + tasks
