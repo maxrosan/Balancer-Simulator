@@ -191,10 +191,11 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			del tasks
 			tasks = list(tasks_not_scheduled)
 
-			if not at_least_one_task_scheduled:
-				break
-			else:
+			if at_least_one_task_scheduled:
 				macs_used.append(mac)
+
+			if len(tasks) == 0:
+				break
 
 		return (macs_used, tasks)
 
