@@ -188,6 +188,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				else:
 					tasks_not_scheduled.append(task)
 			
+			del tasks
 			tasks = list(tasks_not_scheduled)
 
 			if not at_least_one_task_scheduled:
