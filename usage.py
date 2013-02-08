@@ -81,7 +81,7 @@ class TaskUsage:
 		return -1
 		
 		
-	def read_until(self, instant_from, instant, callback, arg): # callback(arg, TaskUsageRegister)
+	def read_until(self, instant, callback, arg): # callback(arg, TaskUsageRegister)
 
 		keep_going = True
 
@@ -103,12 +103,7 @@ class TaskUsage:
 				task.task_ID    = int(self.line[3])
 				task.machine_ID = -1 # int(self.line[4])
 				task.CPU_usage  = float(self.line[5])
-				task.mem_usage  = float(self.line[6])
-		
-				if task.start_time < instant_from:
-					self.line = None
-					print "\r Jumping %d / %d" % (self.num_lines, task.start_time),
-					continue
+				task.mem_usage  = float(self.line[6])	
 
 				if task.start_time <= instant:
 					callback(arg, task)

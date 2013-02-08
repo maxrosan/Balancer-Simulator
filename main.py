@@ -15,10 +15,12 @@ class BalancerSimulator:
 		self.tasks_executed  = {}
 		self.machines_ready  = sets.Set([])
 		self.machines_state  = {}
+		self.start_time      = 0
 		self.max_time        = 84600
 		self.balacing_method = balacing_method
 
 		self.balacing_method.open_log_file("balacing.log")
+		#self.initial_part = self.taskusage.search_for_instant(self.start_time)
 
 	def balance(self):
 		self.balacing_method.balance(self.machines_ready, self.tasks_to_run, None)
@@ -56,7 +58,7 @@ class BalancerSimulator:
 	def add_event((sim, balsim)):
 
 		balsim.macevents.read_until(balsim.time, BalancerSimulator.add_machine_event, balsim)
-		balsim.taskusage.read_until(51900, balsim.time, BalancerSimulator.add_task_usage, balsim)
+		balsim.taskusage.read_until(balsim.time, BalancerSimulator.add_task_usage, balsim)
 		balsim.balance()
 
 		balsim.time = balsim.time + balsim.interval
