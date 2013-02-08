@@ -1,6 +1,6 @@
 #!/usr/bin/pypy
 
-import io, sys, os
+import io, sys, os, commands
 
 class TaskUsageRegister:
 
@@ -32,6 +32,7 @@ class TaskUsage:
 		self.folder = folder
 		self.part = part - 1
 		self.fd = None
+		self.num_lines = 0
 	
 	def name_format(self, part):
 		num_str = str(part)
@@ -61,8 +62,26 @@ class TaskUsage:
 			self.line = None
 		else:
 			self.line = ln.split(',',18)
+
+		self.num_lines = self.num_lines + 1
+
+
+	def search_for_instant(self, instant):
+		part = 0
+
+		op = commands.getstatusoutput('tail -n 1 ' + self.name_format(part))
+		while op[0] == 0:
+			start_time = float(op[1].split(',',18)[0])/1000000.
+			if start_time > instant:
+				return part
+			else:
+				part = part + 1
+				op = commands.getstatusoutput('tail -n 1 ' + self.name_format(part))
+
+		return -1
 		
-	def read_until(self, instant, callback, arg): # callback(arg, TaskUsageRegister)
+		
+	def read_until(self, instant_from, instant, callback, arg): # callback(arg, TaskUsageRegister)
 
 		keep_going = True
 
@@ -85,8 +104,13 @@ class TaskUsage:
 				task.machine_ID = -1 # int(self.line[4])
 				task.CPU_usage  = float(self.line[5])
 				task.mem_usage  = float(self.line[6])
+		
+				if task.start_time < instant_from:
+					self.line = None
+					print "\r Jumping %d / %d" % (self.num_lines, task.start_time),
+					continue
 
-				if (task.start_time <= instant):
+				if task.start_time <= instant:
 					callback(arg, task)
 					self.line = None				
 				else:
@@ -96,8 +120,10 @@ class TaskUsage:
 
 if __name__ == "__main__":
 
-	def task_info(arg, task):
-		task.print_info()
+	#def task_info(arg, task):
+	#	task.print_info()
 	
 	taskuse = TaskUsage(sys.argv[1], 0)
-	taskuse.read_until(5613., task_info, None)
+	#taskuse.read_until(5613., task_info, None)
+
+	print taskuse.search_for_instant(51900)
