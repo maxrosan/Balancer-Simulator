@@ -170,9 +170,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		loadbalacing.LoadBalacing.__init__(self)
 
 	def __first_fit(self, macs, tasks):
-		macs   = sorted(list(macs), key=lambda mac: (mac.capacity_CPU - mac.CPU_usage), reverse=True)
-		tasks  = sorted(list(tasks), key=lambda task: task.CPU_usage, reverse=False)
-		i = 0
+		macs       = sorted(list(macs), key=lambda mac: (mac.capacity_CPU - mac.CPU_usage), reverse=True)
+		tasks      = sorted(list(tasks), key=lambda task: task.CPU_usage, reverse=False)
+		migrations = 0
 
 		macs_used   = []
 
@@ -181,10 +181,17 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			tasks_not_scheduled = []
 			for task in tasks:
 				if (mac.capacity_CPU - mac.CPU_usage) >= task.CPU_usage and (mac.capacity_memory - mac.mem_usage) >= task.mem_usage:
-					i = i + 1
 					at_least_one_task_scheduled = True
+
 					mac.CPU_usage = mac.CPU_usage + task.CPU_usage
 					mac.mem_usage = mac.mem_usage + task.mem_usage
+
+					if task.machine_ID != -1 and mac.machine_ID != task.machine_ID:
+						migrations = migrations + 1
+
+					
+					task.machine_ID = mac.machine_ID
+
 				else:
 					tasks_not_scheduled.append(task)
 			
@@ -197,7 +204,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			if len(tasks) == 0:
 				break
 
-		return (macs_used, tasks)
+		return (macs_used, tasks, migrations)
 
 	def balance(self, machines_ready, tasks_to_run, state): 
 		
@@ -262,12 +269,14 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		# check if there is task that wasn't scheduled, schedule those tasks.
 		if len(tasks_remaining) > 0:
-			(_, tasks_remaining) = self.__first_fit(mac_used_list_final, tasks_remaining)
+			(_, tasks_remaining, migrations) = self.__first_fit(mac_used_list_final, tasks_remaining)
+			migrations_total = migrations_total + migrations
 			if len(tasks_remaining) > 0:
-				(mac_used, tasks_remaining) = self.__first_fit(mac_not_used_list_final, tasks_remaining)
+				(mac_used, tasks_remaining, migrations) = self.__first_fit(mac_not_used_list_final, tasks_remaining)
 				for mac in mac_used:
 					mac_not_used_list_final.remove(mac)
 				mac_used_list_final = mac_used_list_final + mac_used
+				migrations_total = migrations_total + migrations
 
 		for task in tasks_to_run:
 			if task.getID() in map_task_mac_final:
