@@ -11,8 +11,8 @@ import threading, multiprocessing, time, sys
 class ToyodaMethod(loadbalacing.LoadBalacing):
 
 	@staticmethod
-	def run(tasks, mac):
-		
+	def run(tasks, mac):	
+
 		n = len(tasks)
 
 		Tu = []
@@ -102,7 +102,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		machines          = []
 
 		for mac in machs:
-			if (mac.capacity_CPU - mac.CPU_usage) < 1e-5 and (mac.capacity_memory - mac.mem_usage) < 1e-5:
+			if (mac.capacity_CPU - mac.CPU_usage) < 1e-10 or (mac.capacity_memory - mac.mem_usage) < 1e-10:
 				mac_not_used_list.append(mac)
 			else:
 				machines.append(mac)
