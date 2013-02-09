@@ -35,6 +35,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		keep_going = True
 
 		cnt = math.sqrt(2)
+		w_cpu = 0.6
+		w_mem = 1 - w_cpu
 
 		#print "MAC = %d, ntasks = %d" % (mac.machine_ID, n)
 
@@ -61,7 +63,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				if (numpy.dot(Pu, Pu) == 0.):
 					for i in Tc:
 						d    = sum(P[i])
-						G[i] = (tasks[i].CPU_usage * cnt)/d
+						G[i] = ((tasks[i].CPU_usage * w_cpu + tasks[i].mem_usage * w_mem) * cnt)/d
 				# (b)
 				else:
 					mod_Pu = math.sqrt(numpy.dot(Pu, Pu))
@@ -69,7 +71,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				
 					for i in Tc:
 						d    = numpy.dot(P[i], E)
-						G[i] = tasks[i].CPU_usage / d
+						G[i] = (tasks[i].CPU_usage * w_cpu + tasks[i].mem_usage * w_mem) / d
 
 				#print "4"
 
@@ -321,15 +323,15 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.task_new                 = new_tasks_total
 		self.n_migrations             = migrations_total
 
-		print "tasks remaining: ", 
-		for task in tasks_remaining:
-			print " (%.5f %.5f)" % (task.CPU_usage, task.mem_usage)
-		print "#"
+#		print "tasks remaining: ", 
+#		for task in tasks_remaining:
+#			print " (%.5f %.5f)" % (task.CPU_usage, task.mem_usage)
+#		print "#"
 
-		print "machines remaining: ", 
-		for mac in  sorted(mac_not_used_list_final, key=lambda mac: mac.capacity_memory, reverse=True)[:10]:
-			print " (%.5f %.5f)" % (mac.capacity_CPU, mac.capacity_memory)
-		print "#"
+#		print "machines remaining: ", 
+#		for mac in  sorted(mac_not_used_list_final, key=lambda mac: mac.capacity_memory, reverse=True)[:10]:
+#			print " (%.5f %.5f)" % (mac.capacity_CPU, mac.capacity_memory)
+#		print "#"
 
 		#print "#### %d %d %d" % (self.task_failed_to_map, self.machines_used, self.machines_not_used)
 		#exit()
