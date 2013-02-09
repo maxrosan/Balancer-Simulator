@@ -326,5 +326,10 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			print " (%.5f %.5f)" % (task.CPU_usage, task.mem_usage)
 		print "#"
 
+		print "machines remaining: ", 
+		for mac in self.machines_not_used[:10]:
+			print " (%.5f %.5f)" % (mac.capacity_CPU, mac.capacity_memory)
+		print "#"
+
 		#print "#### %d %d %d" % (self.task_failed_to_map, self.machines_used, self.machines_not_used)
 		#exit()
