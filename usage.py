@@ -22,6 +22,9 @@ class TaskUsageRegister:
 	def __eq__(self, other):
 		return ((self.job_ID == other.job_ID) and (self.task_ID == other.task_ID))
 
+	def __str__(self):
+		return  "[%d %d [%d/%d] %.5f %.5f]" % (self.start_time, self.end_time, self.job_ID, self.task_ID, self.CPU_usage, self.mem_usage)
+
 	def print_info(self):
 		print "%d %d [%d/%d] %.5f %.5f" % (self.start_time, self.end_time, self.job_ID, self.task_ID, self.CPU_usage, self.mem_usage)
 
