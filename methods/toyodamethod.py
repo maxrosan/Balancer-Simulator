@@ -327,7 +327,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		print "#"
 
 		print "machines remaining: ", 
-		for mac in mac_not_used_list_final[:10]:
+		for mac in  sorted(mac_not_used_list_final, key=lambda mac: mac.capacity_memory, reverse=True)[:10]:
 			print " (%.5f %.5f)" % (mac.capacity_CPU, mac.capacity_memory)
 		print "#"
 
