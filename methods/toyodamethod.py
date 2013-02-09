@@ -323,7 +323,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		print "tasks remaining: ", 
 		for task in tasks_remaining:
-			print "(%.5f %.5f) " % (task.CPU_usage, task.mem_usage)
+			print " (%.5f %.5f)" % (task.CPU_usage, task.mem_usage)
 		print "#"
 
 		#print "#### %d %d %d" % (self.task_failed_to_map, self.machines_used, self.machines_not_used)
