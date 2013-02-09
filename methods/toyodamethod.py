@@ -301,6 +301,14 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				mac_used_list_final = mac_used_list_final + mac_used_list
 				mac_not_used_list_final = list(mac_not_used_list)
 
+			if len(tasks_remaining) > 0:
+				(mac_used, tasks_remaining, migrations, map_tasks) = self.__first_fit(mac_not_used_list_final, tasks_remaining)
+				for mac in mac_used:
+					mac_not_used_list_final.remove(mac)
+				mac_used_list_final = mac_used_list_final + mac_used
+				migrations_total = migrations_total + migrations
+				map_task_mac_final.update(map_tasks)
+
 		for task in tasks_to_run:
 			if task.getID() in map_task_mac_final:
 				task.machine_ID = map_task_mac_final[task.getID()]
