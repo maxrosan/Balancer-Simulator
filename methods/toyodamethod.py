@@ -309,8 +309,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			else:
 				mac_used_list_final.append(mac)
 
-		del mac_used_list_final
-		mac_used_list_final = mac_not_used_update
+		del mac_not_used_list_final
+		mac_not_used_list_final = mac_not_used_update
 
 		if len(tasks_remaining) > 0:
 			(tasks_remaining, migrations, new_tasks, map_task_mac, mac_used_list, mac_not_used_list) = ToyodaMethod.balance_partial(self, None, 0, mac_used_list_final, tasks_remaining)
