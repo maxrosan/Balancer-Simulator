@@ -38,7 +38,7 @@ class LoadBalacing:
 	def add_mac_usage(self, mac, task):
 		if not (mac.machine_ID in self.mac_usage):
 			self.mac_usage[mac.machine_ID] = (mac, [])
-		self.mac_usage[mac_id][1].append(task)
+		self.mac_usage[mac.machine_ID][1].append(task)
 		
 
 	def print_balacing_results_verbose(self):
