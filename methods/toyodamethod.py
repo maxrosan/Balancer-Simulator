@@ -305,9 +305,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		mac_not_used_update = []
 		for mac in mac_not_used_list_final:
 			if not (mac.machine_ID in mac_used):
-				mac_not_used_update.add(mac)
+				mac_not_used_update.append(mac)
 			else:
-				mac_used_list_final.add(mac)
+				mac_used_list_final.append(mac)
 
 		del mac_used_list_final
 		mac_used_list_final = mac_not_used_update
