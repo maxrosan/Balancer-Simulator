@@ -291,7 +291,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			procs[i].join()
 
 			tasks_remaining = tasks_remaining + tasks
-			new_tasks_total = new_tasks_total + new_tasks
+			#new_tasks_total = new_tasks_total + new_tasks
 
 			map_task_mac_final.update(map_task_mac)
 
@@ -316,7 +316,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			(tasks_remaining, migrations, new_tasks, map_task_mac, mac_used_list, mac_not_used_list) = ToyodaMethod.balance_partial(self, None, 0, mac_used_list_final, tasks_remaining)
 			migrations_total = migrations_total + migrations
 			map_task_mac_final.update(map_task_mac)
-			new_tasks_total = new_tasks + new_tasks_total
+			#new_tasks_total = new_tasks + new_tasks_total
 	
 			if len(tasks_remaining) > 0:
 				(tasks_remaining, migrations, new_tasks, map_task_mac, mac_used_list, mac_not_used_list) = ToyodaMethod.balance_partial(self, None, 0, mac_not_used_list_final, tasks_remaining)
@@ -324,7 +324,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				map_task_mac_final.update(map_task_mac)
 				mac_used_list_final = mac_used_list_final + mac_used_list
 				mac_not_used_list_final = list(mac_not_used_list)
-				new_tasks_total = new_tasks + new_tasks_total
+				#new_tasks_total = new_tasks + new_tasks_total
 
 
 		self.stop_timing()
@@ -333,7 +333,12 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			macs_id[mac.machine_ID] = mac
 
 
+		new_tasks_total = 0
 		for task in tasks_to_run:
+
+			if task.machine_ID == -1:
+				new_tasks_total = new_tasks_total + 1
+
 			if task.getID() in map_task_mac_final:
 				task.machine_ID = map_task_mac_final[task.getID()]
 				self.add_mac_usage(macs_id[task.machine_ID], task)
