@@ -36,7 +36,7 @@ class LoadBalacing:
 		self.mapping_fobj   = open(filename_mapping, "w+")
 
 	def add_mac_usage(self, mac, task):
-		if not (mac.machine_ID in mac_usage):
+		if not (mac.machine_ID in self.mac_usage):
 			self.mac_usage[mac.machine_ID] = (mac, [])
 		self.mac_usage[mac_id][1].append(task)
 		
