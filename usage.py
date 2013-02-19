@@ -107,7 +107,8 @@ class TaskUsage:
 				task.task_ID    = int(self.line[3])
 				task.machine_ID = -1 # int(self.line[4])
 				task.CPU_usage  = float(self.line[5])
-				task.mem_usage  = float(self.line[6])	
+				task.mem_usage  = float(self.line[6])
+				task.age        = 0
 
 				if task.start_time <= instant:
 					callback(arg, task)
