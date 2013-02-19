@@ -226,6 +226,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.n_round = self.n_round + 1
 		self.reset_stats()
 
+		self.start_timing()
+
 		mac_list   = list(machines_ready)
 		tasks_list = list(tasks_to_run)
 
@@ -236,6 +238,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		if n_tasks == 0:
 			return
+
+		macs_id = {}
 
 		for mac in machines_ready:
 			mac.CPU_usage = 0
@@ -303,9 +307,17 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				mac_used_list_final = mac_used_list_final + mac_used_list
 				mac_not_used_list_final = list(mac_not_used_list)
 
+
+		self.stop_timing()
+
+		for mac in mac_used_list_final:
+			macs_id[mac.machine_ID] = mac
+
+
 		for task in tasks_to_run:
 			if task.getID() in map_task_mac_final:
 				task.machine_ID = map_task_mac_final[task.getID()]
+				self.add_mac_usage(macs_id[task.machine_ID], task)
 
 		self.task_mapped_successfully = n_tasks - len(tasks_remaining)
 		self.task_failed_to_map       = len(tasks_remaining)

@@ -19,7 +19,7 @@ class BalancerSimulator:
 		self.max_time        = 84600
 		self.balacing_method = balacing_method
 
-		self.balacing_method.open_log_file("balacing.log")
+		self.balacing_method.open_log_file("balancing.log", "mapping.log")
 		#self.initial_part = self.taskusage.search_for_instant(self.start_time)
 
 	def balance(self):
