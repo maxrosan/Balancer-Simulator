@@ -179,6 +179,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 	def __init__(self):
 		loadbalacing.LoadBalacing.__init__(self)
 
+		self.threshold_migration = 600
+
 	def __first_fit(self, macs, tasks):
 		macs       = sorted(list(macs), key=lambda mac: (mac.capacity_CPU - mac.CPU_usage), reverse=True)
 		tasks      = sorted(list(tasks), key=lambda task: task.CPU_usage, reverse=False)
@@ -226,8 +228,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.n_round = self.n_round + 1
 		self.reset_stats()
 
-		self.start_timing()
-
 		mac_list   = list(machines_ready)
 		tasks_list = list(tasks_to_run)
 
@@ -255,6 +255,26 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		mac_used_list_final      = []
 		mac_not_used_list_final  = []
 
+		# Check what tasks can't be moved
+
+		self.start_timing()
+
+		mac_used = {}
+
+		for task in tasks_to_run:
+			if task.age > self.threshold_migration: # If the task is old, then it isn't supposed to migrate anymore
+				if not (task.machine_ID in mac_used):
+					mac_used[task.machine_ID] = (0, 0)
+				mac_used[task.machine_ID][0] = mac_used[task.machine_ID][0] + task.CPU_usage
+				mac_used[task.machine_ID][1] = mac_used[task.machine_ID][1] + task.mem_usage
+				map_task_mac_final[task.getID()] = task.machine_ID
+				tasks_list.remove(task.getID())
+
+		for mac in mac_list:
+			if mac.machine_ID in mac_used:
+				(mac.CPU_usage, mac.mem_usage) = mac_used[task.machine_ID]
+		# end
+
 		for i in range(0, self.n_threads):
 			t = None
 			if i < (self.n_threads - 1):
@@ -281,19 +301,16 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		print "Checking"
 
-		# check if there is task that wasn't scheduled, schedule those tasks.
-		#if len(tasks_remaining) > 0:
-		#	(_, tasks_remaining, migrations, map_tasks) = self.__first_fit(mac_used_list_final, tasks_remaining)
-		#	migrations_total = migrations_total + migrations
-		#	map_task_mac_final.update(map_tasks)
-		#	if len(tasks_remaining) > 0:
-		#		(mac_used, tasks_remaining, migrations, map_tasks) = self.__first_fit(mac_not_used_list_final, tasks_remaining)
-		#		for mac in mac_used:
-		#			mac_not_used_list_final.remove(mac)
-		#		mac_used_list_final = mac_used_list_final + mac_used
-		#		migrations_total = migrations_total + migrations
-		#		map_task_mac_final.update(map_tasks)
+		# Checks if the machine with old tasks is counted as not used machine provided that it was not counted as used machine before the balancing
+		mac_not_used_update = []
+		for mac in mac_not_used_list_final:
+			if not (mac.machine_ID in mac_used):
+				mac_not_used_update.add(mac)
+			else:
+				mac_used_list_final.add(mac)
 
+		del mac_used_list_final
+		mac_used_list_final = mac_not_used_update
 
 		if len(tasks_remaining) > 0:
 			(tasks_remaining, migrations, new_tasks, map_task_mac, mac_used_list, mac_not_used_list) = ToyodaMethod.balance_partial(self, None, 0, mac_used_list_final, tasks_remaining)

@@ -18,7 +18,7 @@ class BalancerSimulator:
 		self.start_time      = 0
 		self.max_time        = 84600
 		self.balacing_method = balacing_method
-
+		
 		self.balacing_method.open_log_file("balancing.log", "mapping.log")
 		#self.initial_part = self.taskusage.search_for_instant(self.start_time)
 
@@ -29,7 +29,7 @@ class BalancerSimulator:
 
 		self.tasks_executed.clear()
 		for task in self.tasks_to_run:
-			self.tasks_executed[task.getID()] = task.machine_ID
+			self.tasks_executed[task.getID()] = (task.machine_ID, task.age)
 
 		self.tasks_to_run.clear()
 				
@@ -41,7 +41,8 @@ class BalancerSimulator:
 	def add_task_usage(balsim, task):
 		if task.CPU_usage > 0. and task.CPU_usage <= 1. and task.mem_usage <= 1.:
 			if task.getID() in balsim.tasks_executed:
-				task.machine_ID = balsim.tasks_executed[task.getID()]
+				(task.machine_ID, task.age) = balsim.tasks_executed[task.getID()]
+				task.age = task.age + balsim.interval # Updates the age of a task
 			balsim.tasks_to_run.add(task)
 
 	@staticmethod

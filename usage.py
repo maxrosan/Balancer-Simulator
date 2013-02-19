@@ -12,6 +12,7 @@ class TaskUsageRegister:
 		self.machine_ID = 0
 		self.CPU_usage  = 0.0
 		self.mem_usage  = 0.0
+		self.age        = 0
 
 	def getID(self):
 		return ((self.job_ID << 64) + self.task_ID) # python trata isso 
