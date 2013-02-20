@@ -271,7 +271,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		for mac in mac_list:
 			if mac.machine_ID in mac_used:
-				(mac.CPU_usage, mac.mem_usage) = mac_used[task.machine_ID]
+				(mac.CPU_usage, mac.mem_usage) = mac_used[mac.machine_ID]
 		# end
 
 		for i in range(0, self.n_threads):
