@@ -42,18 +42,28 @@ class BalancerSimulator:
 		if task.CPU_usage > 0. and task.CPU_usage <= 1. and task.mem_usage <= 1.:
 			if task.getID() in balsim.tasks_executed:
 				(task.machine_ID, task.age) = balsim.tasks_executed[task.getID()]
-				task.age = task.age + balsim.interval # Updates the age of a task
+				if task.machine_ID in self.machines_state: # Check if the machine is still running
+					if self.machine_state[task.machine_ID].capacity_CPU >= task.CPU_usage and self.machine_state[task.machine_ID].capacity_memory >= task.mem_usage: # Check if the task still fits the server
+						task.age = task.age + balsim.interval # Updates the age of a task
+					else:
+						task.age = 0 # If the task doesn't fit the server anymore it is necessary to move it
+				else:
+					# If the machine is not running it is necessary to move the task
+					task.age = 0 # It makes the task able to move
 			balsim.tasks_to_run.add(task)
 
 	@staticmethod
 	def add_machine_event(balsim, mac):
 		if mac.event_type == machine.MachineEventRegister.ADD_EVENT:
 			balsim.machines_ready.add(mac)
+			balsim.machines_state[mac.machine_ID] = mac
 		elif mac.event_type == machine.MachineEventRegister.UPDATE_EVENT:
 			balsim.machines_ready.discard(mac)
 			balsim.machines_ready.add(mac)
+			balsim.machines_state[mac.machine_ID] = mac
 		else:
 			balsim.machines_ready.discard(mac)
+			del balsim.machines_state[mac.machine_ID]
 
 	@staticmethod
 	def add_event((sim, balsim)):
