@@ -43,7 +43,7 @@ class BalancerSimulator:
 			if task.getID() in balsim.tasks_executed:
 				(task.machine_ID, task.age) = balsim.tasks_executed[task.getID()]
 				if task.machine_ID in balsim.machines_state: # Check if the machine is still running
-					if balsim.machine_state[task.machine_ID].capacity_CPU >= task.CPU_usage and balsim.machine_state[task.machine_ID].capacity_memory >= task.mem_usage: # Check if the task still fits the server
+					if balsim.machines_state[task.machine_ID].capacity_CPU >= task.CPU_usage and balsim.machines_state[task.machine_ID].capacity_memory >= task.mem_usage: # Check if the task still fits the server
 						task.age = task.age + balsim.interval # Updates the age of a task
 					else:
 						task.age = 0 # If the task doesn't fit the server anymore it is necessary to move it
