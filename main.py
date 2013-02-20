@@ -29,7 +29,7 @@ class BalancerSimulator:
 
 		self.tasks_executed.clear()
 		for task in self.tasks_to_run:
-			self.tasks_executed[task.getID()] = (task.machine_ID, task.age)
+			self.tasks_executed[task.getID()] = (task.machine_ID, task.age, task.CPU_usage, task.mem_usage)
 
 		self.tasks_to_run.clear()
 				
@@ -41,9 +41,9 @@ class BalancerSimulator:
 	def add_task_usage(balsim, task):
 		if task.CPU_usage > 0. and task.CPU_usage <= 1. and task.mem_usage <= 1.:
 			if task.getID() in balsim.tasks_executed:
-				(task.machine_ID, task.age) = balsim.tasks_executed[task.getID()]
+				(task.machine_ID, task.age, old_cpu, old_mem) = balsim.tasks_executed[task.getID()]
 				if task.machine_ID in balsim.machines_state: # Check if the machine is still running
-					if balsim.machines_state[task.machine_ID].capacity_CPU >= task.CPU_usage and balsim.machines_state[task.machine_ID].capacity_memory >= task.mem_usage: # Check if the task still fits the server
+					if old_cpu == task.CPU_usage and old_mem == task.mem_usage: # Check if CPU or mem. consupmtion didn't raise
 						task.age = task.age + balsim.interval # Updates the age of a task
 					else:
 						task.age = 0 # If the task doesn't fit the server anymore it is necessary to move it
