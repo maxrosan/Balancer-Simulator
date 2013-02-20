@@ -267,7 +267,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					mac_used[task.machine_ID] = (0, 0)
 				mac_used[task.machine_ID] = (mac_used[task.machine_ID][0] + task.CPU_usage, mac_used[task.machine_ID][1] + task.mem_usage)
 				map_task_mac_final[task.getID()] = task.machine_ID
-				tasks_list.remove(task.getID())
+				tasks_list.remove(task)
 
 		for mac in mac_list:
 			if mac.machine_ID in mac_used:
