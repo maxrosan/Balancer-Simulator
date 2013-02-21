@@ -17,7 +17,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		Tu = []
 		Td = range(0, n)
-		Pu = numpy.zeros(2, int)
+		Pu = numpy.zeros(2, float)
 		Z  = 0
 		X  = numpy.zeros(n, int)
 		Tc = []
@@ -47,7 +47,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			Tc = []
 			
 			for i in Td:
-				if P[i][0] <= (1 - Pu[0]) and P[i][1] <= (1 - Pu[1]):
+				if P[i][0] <= (1. - Pu[0]) and P[i][1] <= (1. - Pu[1]):
 					Tc.append(i)
 
 			#print "2"
@@ -102,8 +102,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		
 		mac_list = sorted(machines, key=lambda mac:m_mac_state[mac].free_CPU(), reverse=True)
 		mac_list = [mac for mac in mac_list if m_mac_state[mac].free_CPU() > 1e-10 and m_mac_state[mac].free_mem() > 1e-10]
-
-		tasks_list = list(tasks)
 
 		macs = {}
 
@@ -296,5 +294,3 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.SLA_breaks               = self.__count_SLAs()
 		(self.task_mapped_successfully, self.task_failed_to_map) = self.__count_mapped()
 		(self.machines_used, self.machines_not_used)             = self.__count_macs()
-
-		time.sleep(1)
