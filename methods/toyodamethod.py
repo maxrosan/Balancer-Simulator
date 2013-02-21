@@ -237,7 +237,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 					print "Created %d" % (i)
 				else:
-					macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list[mac_div*i:n_macs], tasks_list[task_div*i:n_tasks])
+					macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list[mac_div*i:n_macs], task_list[task_div*i:n_tasks])
 
 					for mac_ID in macs:
 						for task in macs[mac_ID]:
