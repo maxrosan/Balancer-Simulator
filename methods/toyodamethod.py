@@ -198,6 +198,16 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				res = res + 1
 		return res
 
+	def __count_mapped(self):
+		res_y = 0
+		res_n = 0
+		for task_ID in self.tasks_state:
+			if self.tasks_state[task_ID].machine_ID == -1:
+				res_n = res_n + 1
+			else:
+				res_y = res_y + 1
+		return (res_y, res_n)
+
 	def balance(self): 
 		
 		def work(conn, mmacs, mtasks, macs, tasks):
@@ -228,14 +238,12 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 			for i in range(0, self.n_jobs):
 				t = None
-				if i < (self.n_threads - 1):
+				if i < (self.n_jobs - 1):
 					conns[i], child_conn = multiprocessing.Pipe()
 					p = multiprocessing.Process(target = work, 
 					  args = (child_conn, self.machines_state, self.tasks_state, mac_list[mac_div*i:mac_div*(i+1)], task_list[tasks_div*i:tasks_div*(i + 1)]))
 					p.start()
 					procs.append(p)
-
-					print "Created %d" % (i)
 				else:
 					macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list[mac_div*i:n_macs], task_list[tasks_div*i:n_tasks])
 
@@ -243,8 +251,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 						for task in macs[mac_ID]:
 							self.machines_state[mac_ID].add_task(self.tasks_state, task)
 				
-			for i in range(0, self.n_jobs):
-				print "Waiting..."
+			for i in range(0, self.n_jobs-1):
 				macs = conns[i].recv()
 				procs[i].join()	
 
@@ -252,14 +259,12 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					for task in macs[mac_ID]:
 						self.machines_state[mac_ID].add_task(self.tasks_state, task)
 
-			exit()
-
 		else:
 			macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list, task_list)
 			
 		##
 
-		self.SLA_breaks         = self.__count_SLAs()
-		self.task_failed_to_map = len(self.tasks_state)
+		self.SLA_breaks = self.__count_SLAs()
+		(self.task_mapped_successfully, self.task_failed_to_map) = self.__count_mapped()
 
 		time.sleep(1)
