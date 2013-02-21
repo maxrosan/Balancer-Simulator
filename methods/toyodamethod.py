@@ -227,6 +227,12 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		
 		def work(conn, mmacs, mtasks, macs, tasks):
 			ToyodaMethod.balance_partial(conn, mmacs, mtasks, macs, tasks)
+
+		def update_map(macs):
+			for mac_ID in macs:
+				for task in macs[mac_ID]:
+					self.machines_state[mac_ID].add_task(self.tasks_state, task)
+					self.tasks_state[task].machine_ID = mac_ID
 	
 		self.n_threads  = self.n_jobs
 	
@@ -262,27 +268,16 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					procs.append(p)
 				else:
 					macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list[mac_div*i:n_macs], task_list[tasks_div*i:n_tasks])
-
-					for mac_ID in macs:
-						for task in macs[mac_ID]:
-							self.machines_state[mac_ID].add_task(self.tasks_state, task)
-							self.tasks_state[task].machine_ID = mac_ID
+					update_map(macs)
 				
 			for i in range(0, self.n_jobs-1):
 				macs = conns[i].recv()
 				procs[i].join()	
-
-				for mac_ID in macs:
-					for task in macs[mac_ID]:
-						self.machines_state[mac_ID].add_task(self.tasks_state, task)
-						self.tasks_state[task].machine_ID = mac_ID
+				update_map(macs)
 
 		else:
 			macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list, task_list)
-			for mac_ID in macs:
-				for task in macs[mac_ID]:
-					self.machines_state[mac_ID].add_task(self.tasks_state, task)
-					self.tasks_state[task].machine_ID = mac_ID
+			update_map(macs)
 			
 		##
 
