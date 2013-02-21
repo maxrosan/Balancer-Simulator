@@ -17,7 +17,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		Tu = []
 		Td = range(0, n)
-		Pu = numpy.zeros(2, int)
+		Pu = numpy.zeros(2, float)
 		Z  = 0
 		X  = numpy.zeros(n, int)
 		Tc = []
@@ -47,7 +47,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			Tc = []
 			
 			for i in Td:
-				if P[i][0] <= (1 - Pu[0]) and P[i][1] <= (1 - Pu[1]):
+				if P[i][0] <= (1. - Pu[0]) and P[i][1] <= (1. - Pu[1]):
 					Tc.append(i)
 
 			#print "2"
