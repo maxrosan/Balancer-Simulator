@@ -234,13 +234,15 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					  args = (child_conn, self.machines_state, self.tasks_state, mac_list[mac_div*i:mac_div*(i+1)], task_list[tasks_div*i:tasks_div*(i + 1)]))
 					p.start()
 					procs.append(p)
+
+					print "Created %d", i
 				else:
 					macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list[mac_div*i:n_macs], task_list[task_div*i:n_tasks])
 
 					for mac_ID in macs:
 						for task in macs[mac_ID]:
 							self.machines_state[mac_ID].add_task(self.tasks_state, task)
-
+				
 				for i in range(0, self.n_threads):
 					print "Waiting..."
 					macs = conns[i].recv()
