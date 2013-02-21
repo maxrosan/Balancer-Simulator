@@ -139,7 +139,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		if mac.event_type == mac.ADD_EVENT:
 			self.machines_state[mac.machine_ID] = mac
 		elif mac.event_type == mac.UPDATE_EVENT:
-			self.machines_state[mac.machine_ID] = mac
+			self.machines_state[mac.machine_ID].capacity_CPU    = mac.capacity_CPU
+			self.machines_state[mac.machine_ID].capacity_memory = mac.capacity_memory
 		else:
 			del self.machines_state[mac.machine_ID]
 
