@@ -242,14 +242,16 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			ToyodaMethod.balance_partial(conn, mmacs, mtasks, macs, tasks)
 
 		def update_map(macs):
+			migs = 0
 			for mac_ID in macs:
 				for task in macs[mac_ID]:
 					self.machines_state[mac_ID].add_task(self.tasks_state, task)
 					if self.tasks_state[task].move:
 						if self.tasks_state[task].mig_origin != mac_ID:
-							migrations = migrations + 1
+							migs = migs + 1
 						self.tasks_state[task].move = False
 					self.tasks_state[task].machine_ID = mac_ID
+			return migs
 	
 		self.n_threads  = self.n_jobs
 	
@@ -287,18 +289,18 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					procs.append(p)
 				else:
 					macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list[mac_div*i:n_macs], task_list[tasks_div*i:n_tasks])
-					update_map(macs)
+					migrations = migrations + update_map(macs)
 				
 			for i in range(0, self.n_jobs-1):
 				macs = conns[i].recv()
 				procs[i].join()	
-				update_map(macs)
+				migrations = migrations + update_map(macs)
 
 		else:
 			print "UP"
 
 			macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list, task_list)
-			update_map(macs)
+			migrations = migrations + update_map(macs)
 			
 		##
 
@@ -321,5 +323,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 
 		self.SLA_breaks               = self.__count_SLAs()
+		self.n_migrations             = self.n_migrations
 		(self.task_mapped_successfully, self.task_failed_to_map) = self.__count_mapped()
 		(self.machines_used, self.machines_not_used)             = self.__count_macs()
