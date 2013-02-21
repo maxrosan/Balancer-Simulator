@@ -323,6 +323,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 
 		self.SLA_breaks               = self.__count_SLAs()
-		self.n_migrations             = self.n_migrations
+		self.n_migrations             = migrations
 		(self.task_mapped_successfully, self.task_failed_to_map) = self.__count_mapped()
 		(self.machines_used, self.machines_not_used)             = self.__count_macs()
