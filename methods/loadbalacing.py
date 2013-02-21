@@ -19,6 +19,7 @@ class LoadBalacing:
 		self.machines_not_used        = 0
 		self.n_migrations             = 0
 		self.total_time               = 0.
+		self.SLA_breaks               = 0
 
 		self._start_time              = 0.
 
@@ -35,11 +36,11 @@ class LoadBalacing:
 		self.balancing_fobj = open(filename_balancing, "w+")
 		self.mapping_fobj   = open(filename_mapping, "w+")
 
-	def add_mac_usage(self, mac, task):
-		if not (mac.machine_ID in self.mac_usage):
-			self.mac_usage[mac.machine_ID] = (mac, [])
-		self.mac_usage[mac.machine_ID][1].append(task)
-		
+	def add_machine_event(self, machine):
+		pass		
+
+	def add_task_usage(self, task):
+		pass
 
 	def print_balacing_results_verbose(self):
 		print "--------- Round %d ------------------------" % self.n_round
@@ -50,6 +51,7 @@ class LoadBalacing:
 		print "Migrations: ", self.n_migrations
 		print "New tasks: ", self.task_new
 		print "Time for balancing: ", self.total_time
+		print "SLA: ", self.SLA_breaks
 		print "-------------------------------------------"
 
 	def print_log_file(self):

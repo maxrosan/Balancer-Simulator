@@ -12,7 +12,9 @@ class TaskUsageRegister:
 		self.machine_ID = 0
 		self.CPU_usage  = 0.0
 		self.mem_usage  = 0.0
-		self.age        = 0
+		self.age_round  = 0
+		self.last_round = 0
+		self.altererd   = False
 
 	def getID(self):
 		return ((self.job_ID << 64) + self.task_ID) # python trata isso 
@@ -28,6 +30,9 @@ class TaskUsageRegister:
 
 	def print_info(self):
 		print "%d %d [%d/%d] %.5f %.5f" % (self.start_time, self.end_time, self.job_ID, self.task_ID, self.CPU_usage, self.mem_usage)
+
+	def inc_age(self):
+		self.age_round = self.age_round + 1
 
 class TaskUsage:
 
@@ -101,14 +106,17 @@ class TaskUsage:
 					keep_going = False
 			else:
 				task = TaskUsageRegister()
-				task.start_time = float(self.line[0])/1000000.
-				task.end_time   = float(self.line[1])/1000000.
-				task.job_ID     = int(self.line[2])
-				task.task_ID    = int(self.line[3])
-				task.machine_ID = -1 # int(self.line[4])
-				task.CPU_usage  = float(self.line[5])
-				task.mem_usage  = float(self.line[6])
-				task.age        = 0
+				task.start_time  = float(self.line[0])/1000000.
+				task.end_time    = float(self.line[1])/1000000.
+				task.job_ID      = int(self.line[2])
+				task.task_ID     = int(self.line[3])
+				task.machine_ID  = -1 # int(self.line[4])
+				task.CPU_usage   = float(self.line[5])
+				task.mem_usage   = float(self.line[6])
+				task.age_round   = 0
+				task.last_round  = -1
+				task.first_round = 0
+				task.altered     = False
 
 				if task.start_time <= instant:
 					callback(arg, task)

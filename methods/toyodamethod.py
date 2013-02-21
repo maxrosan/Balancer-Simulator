@@ -1,6 +1,6 @@
 
 
-import loadbalacing, random, usageclass
+import loadbalacing
 import numpy
 import math
 
@@ -11,7 +11,7 @@ import threading, multiprocessing, time, sys
 class ToyodaMethod(loadbalacing.LoadBalacing):
 
 	@staticmethod
-	def run(tasks, mac):	
+	def run(m_tasks, tasks, mac):	
 
 		n = len(tasks)
 
@@ -29,8 +29,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		U  = numpy.zeros(n, float)
 
 		for x in range(0, n):
-			P[x][0] = tasks[x].CPU_usage / (mac.capacity_CPU - mac.CPU_usage)
-			P[x][1] = tasks[x].mem_usage / (mac.capacity_memory - mac.mem_usage)
+			P[x][0] = m_tasks[tasks[x]].CPU_usage / mac.free_CPU()
+			P[x][1] = m_tasks[tasks[x]].mem_usage / mac.free_mem()
 
 		keep_going = True
 
@@ -63,7 +63,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				if (numpy.dot(Pu, Pu) == 0.):
 					for i in Tc:
 						d    = sum(P[i])
-						G[i] = ((tasks[i].CPU_usage * w_cpu + tasks[i].mem_usage * w_mem) * cnt)/d
+						G[i] = ((m_tasks[tasks[i]].CPU_usage * w_cpu + m_tasks[tasks[i]].mem_usage * w_mem) * cnt)/d
 				# (b)
 				else:
 					mod_Pu = math.sqrt(numpy.dot(Pu, Pu))
@@ -71,7 +71,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				
 					for i in Tc:
 						d    = numpy.dot(P[i], E)
-						G[i] = (tasks[i].CPU_usage * w_cpu + tasks[i].mem_usage * w_mem) / d
+						G[i] = (m_tasks[tasks[i]].CPU_usage * w_cpu + m_tasks[tasks[i]].mem_usage * w_mem) / d
 
 				#print "4"
 
@@ -89,276 +89,175 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				Tu.append(i_max)
 				Td.remove(i_max)
 				Pu = Pu + P[i_max]
-				Z  = Z + tasks[i_max].CPU_usage
+				Z  = Z + m_tasks[tasks[i_max]].CPU_usage
 
 
 		#print "(%f, %f)" % (mac.capacity_CPU, mac.capacity_memory)
 		#print Pu
 
 		return Tu
-		
+
 	@staticmethod
-	def balance_partial(method, conn, idwork, machs, tasks):
+	def balance_partial(conn, m_mac_state, m_tasks_state, machines, tasks):
 		
-		mac_not_used_list = []
-		machines          = []
+		mac_list = sorted(machines, key=lambda mac:m_mac_state[mac].free_CPU(), reverse=True)
+		mac_list = [mac for mac in mac_list if m_mac_state[mac].free_CPU() > 1e-10 and m_mac_state[mac].free_mem() > 1e-10]
 
-		for mac in machs:
-			if (mac.capacity_CPU - mac.CPU_usage) < 1e-10 or (mac.capacity_memory - mac.mem_usage) < 1e-10:
-				mac_not_used_list.append(mac)
-			else:
-				machines.append(mac)
-
-		## sorting the machine in non-incresing order using the CPU capacity value
-		mac_list   = sorted(list(machines), key=lambda mac: (mac.capacity_CPU - mac.CPU_usage), reverse=True)
 		tasks_list = list(tasks)
 
-		i = 0
-		n_macs = len(machines)
-
-		migrations = 0
-		new_tasks  = 0
-
-		task_machine_map = {}
-
-		mac_used_list     = []
+		macs = {}
 
 		for mac in mac_list:
-			n_tasks = len(tasks_list)
-			if n_tasks == 0:
-				mac_not_used_list = mac_not_used_list + mac_list[i:]
+			tasks_to_sched = ToyodaMethod.run(m_tasks_state, tasks_list, m_mac_state[mac])
+
+			if len(tasks_to_sched) == 0:
 				break
 
-			#print "\r work %d processing machine %d of %d with %d tasks" % (idwork, i, n_macs, n_tasks),
-			#sys.stdout.flush()
-			
-			i = i + 1
+			macs[mac] = []
+			for t in tasks_to_sched:
+				macs[mac].append(tasks_list[t])
 
-			tasks = ToyodaMethod.run(tasks_list, mac)
-
-			tasks_to_remove = []
-
-			cpu_usage = 0
-			mem_usage = 0
-			for t in tasks:
-
-				task = tasks_list[t]
-
-				if task.machine_ID == -1:
-					new_tasks = new_tasks + 1
-				elif task.machine_ID != mac.machine_ID:
-					migrations = migrations + 1
-				
-				task_machine_map[task.getID()] = mac.machine_ID
-
-				cpu_usage       = cpu_usage + task.CPU_usage
-				mem_usage       = mem_usage + task.mem_usage
-
-				tasks_to_remove.append(task)
-
-			mac.CPU_usage = cpu_usage
-			mac.mem_usage = mem_usage
-
-			if len(tasks) > 0:
-				mac_used_list.append(mac)
-			else:
-				mac_not_used_list.append(mac)
-				
-			for t in tasks_to_remove:
-				tasks_list.remove(t)
-
-		return_value = (tasks_list, migrations, new_tasks, task_machine_map, mac_used_list, mac_not_used_list)
+			tasks_list_copy = list(tasks_list)
+			for t in tasks_to_sched:
+				tasks_list.remove(tasks_list_copy[t])
 
 
 		if conn != None:
-			conn.send(return_value)
+			conn.send(macs)
 			return None
 
-		return return_value
+		return (macs)
 
 	def __init__(self):
 		loadbalacing.LoadBalacing.__init__(self)
 
-		self.threshold_migration = 600
+		self.threshold_migration = 2
+		self.machines_state      = {}
+		self.tasks_state         = {}
 
-	def __first_fit(self, macs, tasks):
-		macs       = sorted(list(macs), key=lambda mac: (mac.capacity_CPU - mac.CPU_usage), reverse=True)
-		tasks      = sorted(list(tasks), key=lambda task: task.CPU_usage, reverse=False)
-		migrations = 0
-		map_tasks  = {}
+	def add_machine_event(self, mac):
+		if mac.event_type == mac.ADD_EVENT:
+			self.machines_state[mac.machine_ID] = mac
+		elif mac.event_type == mac.UPDATE_EVENT:
+			self.machines_state[mac.machine_ID] = mac
+		else:
+			del self.machines_state[mac.machine_ID]
 
-		macs_used   = []
+	def add_task_usage(self, task):
+		if task.getID() in self.tasks_state and self.tasks_state[task.getID()].first_round == (self.n_round + 1):
+			if task.CPU_usage >= self.tasks_state[task.getID()].CPU_usage:
+				self.tasks_state[task.getID()] = task
+		elif not (task.getID() in self.tasks_state):
+			task.last_round = self.n_round + 1
+			self.tasks_state[task.getID()] = task
+			self.tasks_state[task.getID()].first_round = self.n_round + 1
+		else:
+			self.tasks_state[task.getID()].inc_age()
+			self.tasks_state[task.getID()].last_round = self.n_round + 1
 
-		for mac in macs:
-			at_least_one_task_scheduled = False
-			tasks_not_scheduled = []
-			for task in tasks:
-				if (mac.capacity_CPU - mac.CPU_usage) >= task.CPU_usage and (mac.capacity_memory - mac.mem_usage) >= task.mem_usage:
-					at_least_one_task_scheduled = True
+			old_task = self.tasks_state[task.getID()]
 
-					mac.CPU_usage = mac.CPU_usage + task.CPU_usage
-					mac.mem_usage = mac.mem_usage + task.mem_usage
+			if task.CPU_usage > old_task.CPU_usage or task.mem_usage > old_task.mem_usage:
 
-					if task.machine_ID != -1 and mac.machine_ID != task.machine_ID:
-						migrations = migrations + 1
+				if old_task.machine_ID != -1:
+					self.machines_state[old_task.machine_ID].remove_task(self.tasks_state, old_task.getID())
 
-					map_tasks[task.machine_ID] = mac.machine_ID
+				old_task.CPU_usage = task.CPU_usage
+				old_task.mem_usage = task.mem_usage
+				old_task.altered = True
 
-				else:
-					tasks_not_scheduled.append(task)
-			
-			del tasks
-			tasks = list(tasks_not_scheduled)
+				self.tasks_state[task.getID()] = old_task
 
-			if at_least_one_task_scheduled:
-				macs_used.append(mac)
+				if old_task.machine_ID != -1:
+					self.machines_state[old_task.machine_ID].add_task(self.tasks_state, old_task.getID())
 
-			if len(tasks) == 0:
-				break
+			else:
+				old_task.altered = False
+				self.tasks_state[task.getID()] = old_task
 
-		return (macs_used, tasks, migrations, map_tasks)
+	def __clear_old_tasks(self):
+		tasks = list(self.tasks_state)
+		for task_ID in tasks:
+			tak = self.tasks_state[task_ID]
+			if tak.last_round < self.n_round:
+				if tak.machine_ID != -1:
+					self.machines_state[tak.machine_ID].add_task(self.tasks_state, task_ID)
+				del self.tasks_state[task_ID]
 
-	def balance(self, machines_ready, tasks_to_run, state): 
+	def __count_new_tasks(self):
+		new_tasks = 0
+		for task_ID in self.tasks_state:
+			if self.tasks_state[task_ID].age_round == 0:
+				new_tasks = new_tasks + 1
+		return new_tasks
+
+	def __count_SLAs(self):
+		res = 0
+		for mac_ID in self.machines_state:
+			if self.machines_state[mac_ID].SLA_break():
+				res = res + 1
+		return res
+
+	def balance(self): 
 		
-		def work(method, conn, workn, macs, tasks):
-			ToyodaMethod.balance_partial(method, conn, workn, macs, tasks)
+		def work(conn, mmacs, mtasks, macs, tasks):
+			ToyodaMethod.balance_partial(conn, mmacs, mtasks, macs, tasks)
 	
 		self.n_threads  = self.n_jobs
 	
 		self.n_round = self.n_round + 1
 		self.reset_stats()
+		self.task_new = self.__count_new_tasks()
+		self.__clear_old_tasks()
 
-		mac_list   = list(machines_ready)
-		tasks_list = list(tasks_to_run)
+		mac_list  = list(self.machines_state)
+		task_list = [task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1]
 
-		n_tasks   = len(tasks_to_run)
+		procs     = []
+		conns     = [None] * self.n_threads
+
+		n_tasks   = len(task_list)
 		n_macs    = len(mac_list)
 		tasks_div = n_tasks / self.n_threads
 		mac_div   = n_macs / self.n_threads
 
-		if n_tasks == 0:
-			return
 
-		macs_id = {}
+		print "Go!"
+		##
+		if len(task_list) > 10000:
 
-		for mac in machines_ready:
-			mac.CPU_usage = 0
-			mac.mem_usage = 0
+			for i in range(0, self.n_threads):
+				t = None
+				if i < (self.n_threads - 1):
+					conns[i], child_conn = multiprocessing.Pipe()
+					p = multiprocessing.Process(target = work, 
+					  args = (child_conn, self.machines_state, self.tasks_state, mac_list[mac_div*i:mac_div*(i+1)], task_list[tasks_div*i:tasks_div*(i + 1)]))
+					p.start()
+					procs.append(p)
+				else:
+					macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list[mac_div*i:n_macs], task_list[task_div*i:n_tasks])
 
-		procs = []
-		conns = [None] * self.n_threads
+					for mac_ID in macs:
+						for task in macs[mac_ID]:
+							self.machines_state[mac_ID].add_task(self.tasks_state, task)
 
-		tasks_remaining          = []
-		migrations_total         = 0
-		new_tasks_total          = 0
-		map_task_mac_final       = {}
-		mac_used_list_final      = []
-		mac_not_used_list_final  = []
+				for i in range(0, self.n_threads):
+					print "Waiting..."
+					macs = conns[i].recv()
+					procs[i].join()	
 
-		# Check what tasks can't be moved
+					for mac_ID in macs:
+						for task in macs[mac_ID]:
+							self.machines_state[mac_ID].add_task(self.tasks_state, task)
 
-		self.start_timing()
+					exit()
 
-		mac_used = {}
+		else:
+			macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list, task_list)
+			
+		##
 
-		for task in tasks_to_run:
-			if task.age > self.threshold_migration: # If the task is old, then it isn't supposed to migrate anymore
-				if not (task.machine_ID in mac_used):
-					mac_used[task.machine_ID] = (0, 0)
-				mac_used[task.machine_ID] = (mac_used[task.machine_ID][0] + task.CPU_usage, mac_used[task.machine_ID][1] + task.mem_usage)
-				map_task_mac_final[task.getID()] = task.machine_ID
-				tasks_list.remove(task)
+		self.SLA_breaks         = self.__count_SLAs()
+		self.task_failed_to_map = len(self.tasks_state)
 
-		for mac in mac_list:
-			if mac.machine_ID in mac_used:
-				(mac.CPU_usage, mac.mem_usage) = mac_used[mac.machine_ID]
-		# end
-
-		for i in range(0, self.n_threads):
-			t = None
-			if i < (self.n_threads - 1):
-				conns[i], child_conn = multiprocessing.Pipe()
-				p = multiprocessing.Process(target = work, 
-				  args = (self, child_conn, i, mac_list[mac_div*i:mac_div*(i+1)], tasks_list[tasks_div*i:tasks_div*(i + 1)]))
-				p.start()
-				procs.append(p)
-			else:
-				(tasks_remaining, migrations_total, new_tasks_total, map_task_mac_final, mac_used_list_final, mac_not_used_list_final) = ToyodaMethod.balance_partial(self, None, i, mac_list[mac_div*i:n_macs], tasks_list[tasks_div*i:n_tasks])
-
-		for i in range(0, self.n_threads - 1):
-			(tasks, migrations, new_tasks, map_task_mac, mac_used_list, mac_not_used_list) = conns[i].recv()
-			procs[i].join()
-
-			tasks_remaining = tasks_remaining + tasks
-			#new_tasks_total = new_tasks_total + new_tasks
-
-			map_task_mac_final.update(map_task_mac)
-
-			migrations_total        = migrations_total + migrations
-			mac_used_list_final     = mac_used_list_final + mac_used_list
-			mac_not_used_list_final = mac_not_used_list_final + mac_not_used_list
-
-		print "Checking"
-
-		# Checks if the machine with old tasks is counted as not used machine provided that it was not counted as used machine before the balancing
-		mac_not_used_update = []
-		for mac in mac_not_used_list_final:
-			if not (mac.machine_ID in mac_used):
-				mac_not_used_update.append(mac)
-			else:
-				mac_used_list_final.append(mac)
-
-		del mac_not_used_list_final
-		mac_not_used_list_final = mac_not_used_update
-
-		if len(tasks_remaining) > 0:
-			(tasks_remaining, migrations, new_tasks, map_task_mac, mac_used_list, mac_not_used_list) = ToyodaMethod.balance_partial(self, None, 0, mac_used_list_final, tasks_remaining)
-			migrations_total = migrations_total + migrations
-			map_task_mac_final.update(map_task_mac)
-			#new_tasks_total = new_tasks + new_tasks_total
-	
-			if len(tasks_remaining) > 0:
-				(tasks_remaining, migrations, new_tasks, map_task_mac, mac_used_list, mac_not_used_list) = ToyodaMethod.balance_partial(self, None, 0, mac_not_used_list_final, tasks_remaining)
-				migrations_total = migrations_total + migrations
-				map_task_mac_final.update(map_task_mac)
-				mac_used_list_final = mac_used_list_final + mac_used_list
-				mac_not_used_list_final = list(mac_not_used_list)
-				#new_tasks_total = new_tasks + new_tasks_total
-
-
-		self.stop_timing()
-
-		for mac in mac_used_list_final:
-			macs_id[mac.machine_ID] = mac
-
-
-		new_tasks_total = 0
-		for task in tasks_to_run:
-
-			if task.machine_ID == -1:
-				new_tasks_total = new_tasks_total + 1
-
-			if task.getID() in map_task_mac_final:
-				task.machine_ID = map_task_mac_final[task.getID()]
-				self.add_mac_usage(macs_id[task.machine_ID], task)
-
-		self.task_mapped_successfully = n_tasks - len(tasks_remaining)
-		self.task_failed_to_map       = len(tasks_remaining)
-		self.machines_used            = len(mac_used_list_final)
-		self.machines_not_used        = len(mac_not_used_list_final)
-
-		self.task_new                 = new_tasks_total
-		self.n_migrations             = migrations_total
-
-#		print "tasks remaining: ", 
-#		for task in tasks_remaining:
-#			print " (%.5f %.5f)" % (task.CPU_usage, task.mem_usage)
-#		print "#"
-
-#		print "machines remaining: ", 
-#		for mac in  sorted(mac_not_used_list_final, key=lambda mac: mac.capacity_memory, reverse=True)[:10]:
-#			print " (%.5f %.5f)" % (mac.capacity_CPU, mac.capacity_memory)
-#		print "#"
-
-		#print "#### %d %d %d" % (self.task_failed_to_map, self.machines_used, self.machines_not_used)
-		#exit()
+		time.sleep(1)

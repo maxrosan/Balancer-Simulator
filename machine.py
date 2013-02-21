@@ -18,6 +18,8 @@ class MachineEventRegister:
 		self.mem_usage = 0
 		self.used = 0
 
+		self.tasks = []
+
 	def __hash__(self):
 		return self.machine_ID
 
@@ -36,13 +38,39 @@ class MachineEventRegister:
 		print "(machine event) %d %d [%s] %s %.5f %.5f" % (self.time, self.machine_ID, e, 
 			self.platform_ID, self.capacity_CPU, self.capacity_memory)
 
-	def task_fits(self, task):
-		return ((self.capacity_CPU - self.CPU_usage) >= task.CPU_usage and (self.capacity_memory - self.mem_usage) >= task.mem_usage)
+	def add_task(self, m_tasks, task_ID):
+		self.tasks.append(task_ID)
+		self.CPU_usage = m_tasks[task_ID].CPU_usage + self.CPU_usage
+		self.mem_usage = m_tasks[task_ID].mem_usage + self.mem_usage
 
-	def add_task(self, task):
-		self.CPU_usage = self.CPU_usage + task.CPU_usage
-		self.mem_usage = self.mem_usage + task.mem_usage
+	def reset_stats(self):
+		self.CPU_usage = 0
+		self.mem_usage = 0
 
+	def calculate_consumption(self, map_tasks):
+		self.CPU_usage = 0
+		self.mem_usage = 0
+
+		for task_ID in self.tasks:
+			self.CPU_usage = self.CPU_usage + map_tasks[task_ID].CPU_usage
+			self.mem_usage = self.mem_usage + map_tasks[task_ID].mem_usage
+
+	def remove_task(self, m_tasks, task_ID):
+		self.tasks.remove(task_ID)
+		self.CPU_usage = self.CPU_usage - m_tasks[task_ID].CPU_usage
+		self.mem_usage = self.mem_usage - m_tasks[task_ID].mem_usage
+
+
+	def SLA_break(self):
+		return (self.CPU_usage > self.capacity_memory or self.mem_usage > self.capacity_memory)	
+
+	def free_CPU(self):
+		return (self.capacity_CPU - self.CPU_usage)
+
+	def free_mem(self):
+		return (self.capacity_memory - self.mem_usage)
+
+			
 class MachineEvent:
 
 	def __init__(self, folder, part):
