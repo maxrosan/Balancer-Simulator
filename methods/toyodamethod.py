@@ -169,7 +169,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 			if task.CPU_usage > old_task.CPU_usage or task.mem_usage > old_task.mem_usage:
 
-				if old_task.machine_ID != -1 or !old_task.move:
+				if old_task.machine_ID != -1 or not old_task.move:
 					self.machines_state[old_task.machine_ID].remove_task(self.tasks_state, old_task.getID())
 
 				old_task.CPU_usage = task.CPU_usage
@@ -178,7 +178,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 				self.tasks_state[task.getID()] = old_task
 
-				if old_task.machine_ID != -1 or !old_task.move:
+				if old_task.machine_ID != -1 or not old_task.move:
 					self.machines_state[old_task.machine_ID].add_task(self.tasks_state, old_task.getID())
 
 			else:
