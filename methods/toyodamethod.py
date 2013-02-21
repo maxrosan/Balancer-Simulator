@@ -261,10 +261,13 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		else:
 			macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list, task_list)
+			for mac_ID in macs:
+				for task in macs[mac_ID]:
+					self.machines_state[mac_ID].add_task(self.tasks_state, task)
 			
 		##
 
-		self.SLA_breaks = self.__count_SLAs()
+		self.SLA_breaks               = self.__count_SLAs()
 		(self.task_mapped_successfully, self.task_failed_to_map) = self.__count_mapped()
 
 		time.sleep(1)
