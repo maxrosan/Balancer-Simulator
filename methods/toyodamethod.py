@@ -144,6 +144,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				for task in self.machines_state[mac.machine_ID].tasks:
 					self.tasks_state[task].move       = True
 					self.tasks_state[task].machine_ID = -1
+					self.tasks_state[task].mig_origin = mac.machine_ID
 					self.machines_state[mac.machine_ID].remove_task(self.tasks_state, task)
 
 			self.machines_state[mac.machine_ID].capacity_CPU    = mac.capacity_CPU
@@ -245,7 +246,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				for task in macs[mac_ID]:
 					self.machines_state[mac_ID].add_task(self.tasks_state, task)
 					if self.tasks_state[task].move:
-						migrations                  = migrations + 1
+						if self.tasks_state[task].mig_origin != mac_ID:
+							migrations = migrations + 1
 						self.tasks_state[task].move = False
 					self.tasks_state[task].machine_ID = mac_ID
 	
@@ -311,7 +313,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					self.machines_state[mac_ID].add_task(self.tasks_state, task)
 					if self.tasks_state[task].move:
 						self.tasks_state[task].move = False
-						migrations = migrations + 1
+						if self.tasks_state[task].mig_origin != mac_ID:
+							migrations = migrations + 1
 					self.tasks_state[task].machine_ID = mac_ID
 					tasks_without_mac.remove(task)
 		
