@@ -337,9 +337,10 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		if self.SLA_breaks > 0:
 			for mac_ID in self.machines_state:
 				mac = self.machines_state[mac_ID]
-				print "%d (%f, %f, %f, %f) :" % (mac.machine_ID, mac.capacity_CPU, mac.capacity_memory, mac.CPU_usage, mac.mem_usage),
-				for task_ID in mac.tasks:
-					task = self.tasks_state[task_ID]
-					print "%d (%f, %f), " % (task_ID, task.CPU_usage, task.mem_usage)
-				print "----"
+				if mac.SLA_break():
+					print "%d (%f, %f, %f, %f) :" % (mac.machine_ID, mac.capacity_CPU, mac.capacity_memory, mac.CPU_usage, mac.mem_usage),
+					for task_ID in mac.tasks:
+						task = self.tasks_state[task_ID]
+						print "%d (%f, %f), " % (task_ID, task.CPU_usage, task.mem_usage),
+					print "----"
 			exit()
