@@ -140,8 +140,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			self.machines_state[mac.machine_ID] = mac
 		elif mac.event_type == mac.UPDATE_EVENT:
 
-			if self.machines_state[mac.machine_ID].capacity_CPU < mac.capacity_CPU or 
-			 self.machines_state[mac.machine_ID].capacity_memory < mac.capacity_memory:
+			if self.machines_state[mac.machine_ID].capacity_CPU < mac.capacity_CPU or self.machines_state[mac.machine_ID].capacity_memory < mac.capacity_memory:
 				for task in self.machines_state[mac.machine_ID].tasks:
 					self.tasks_state[task].move = True
 
