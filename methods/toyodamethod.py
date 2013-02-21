@@ -208,6 +208,18 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				res_y = res_y + 1
 		return (res_y, res_n)
 
+	def __count_macs(self):
+		res_y = 0
+		res_n = 0
+		
+		for mac_ID in self.machines_state:
+			if self.machines_state[mac_ID].count_tasks() > 0:
+				res_y = res_y + 1
+			else:
+				res_n = res_n + 1
+
+		return (res_y, res_n)
+
 	def balance(self): 
 		
 		def work(conn, mmacs, mtasks, macs, tasks):
@@ -285,5 +297,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		self.SLA_breaks               = self.__count_SLAs()
 		(self.task_mapped_successfully, self.task_failed_to_map) = self.__count_mapped()
+		(self.machines_used, self.machines_not_used)             = self.__count_macs()
 
 		time.sleep(1)
