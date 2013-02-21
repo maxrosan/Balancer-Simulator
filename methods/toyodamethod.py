@@ -220,8 +220,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.task_new = self.__count_new_tasks()
 		self.__clear_old_tasks()
 
-		mac_list  = list(self.machines_state)
-		task_list = [task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1]
+		mac_list  = sorted(list(self.machines_state), key=lambda mac:self.machines_state[mac].free_CPU(), reserved=True)
+		task_list = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1],
+		             key=lambda task:self.tasks_state[task].CPU_usage, reserved=True)
 
 		procs     = []
 		conns     = [None] * self.n_threads
