@@ -226,7 +226,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		##
 		if len(task_list) > 10000:
 
-			for i in range(0, self.n_threads):
+			for i in range(0, self.n_jobs):
 				t = None
 				if i < (self.n_threads - 1):
 					conns[i], child_conn = multiprocessing.Pipe()
