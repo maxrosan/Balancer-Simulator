@@ -270,6 +270,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		##
 		if len(task_list) > 10000:
 
+			print "MP"
+
 			for i in range(0, self.n_jobs):
 				t = None
 				if i < (self.n_jobs - 1):
@@ -288,6 +290,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				update_map(macs)
 
 		else:
+			print "UP"
+
 			macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list, task_list)
 			update_map(macs)
 			
