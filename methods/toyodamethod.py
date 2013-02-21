@@ -271,6 +271,18 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			
 		##
 
+		tasks_without_mac = [task for task in self.tasks_state if self.tasks_state[task].machine_ID == -1]
+		if len(tasks_without_mac) > 0:
+			macs_not_used = [mac for mac in mac self.machines_state if self.machines_state[mac].count_tasks() == 0]
+			macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_used, tasks_without_mac)
+			for mac_ID in macs:
+				for task in macs[mac_ID]:
+					self.machines_state[mac_ID].add_task(self.tasks_state, task)
+					self.tasks_state[task].machine_ID = mac_ID
+					tasks_without_mac.remove(mac_ID)
+		
+
+
 		self.SLA_breaks               = self.__count_SLAs()
 		(self.task_mapped_successfully, self.task_failed_to_map) = self.__count_mapped()
 

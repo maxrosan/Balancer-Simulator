@@ -70,6 +70,9 @@ class MachineEventRegister:
 	def free_mem(self):
 		return (self.capacity_memory - self.mem_usage)
 
+	def count_tasks(self):
+		return len(self.tasks)
+
 			
 class MachineEvent:
 
