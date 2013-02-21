@@ -15,6 +15,7 @@ class TaskUsageRegister:
 		self.age_round  = 0
 		self.last_round = 0
 		self.altererd   = False
+		self.move       = False
 
 	def getID(self):
 		return ((self.job_ID << 64) + self.task_ID) # python trata isso 
@@ -117,6 +118,7 @@ class TaskUsage:
 				task.last_round  = -1
 				task.first_round = 0
 				task.altered     = False
+				task.move        = False
 
 				if task.start_time <= instant:
 					callback(arg, task)
