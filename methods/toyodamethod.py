@@ -142,6 +142,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			self.machines_state[mac.machine_ID].capacity_CPU    = mac.capacity_CPU
 			self.machines_state[mac.machine_ID].capacity_memory = mac.capacity_memory
 		else:
+			for task in self.machines_state[mac.machine_ID].tasks:
+				self.tasks_state[task].machine_ID = -1
 			del self.machines_state[mac.machine_ID]
 
 	def add_task_usage(self, task):
