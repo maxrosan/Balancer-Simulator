@@ -251,6 +251,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					for mac_ID in macs:
 						for task in macs[mac_ID]:
 							self.machines_state[mac_ID].add_task(self.tasks_state, task)
+							self.tasks_state[task].machine_ID = mac_ID
 				
 			for i in range(0, self.n_jobs-1):
 				macs = conns[i].recv()
@@ -259,12 +260,14 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				for mac_ID in macs:
 					for task in macs[mac_ID]:
 						self.machines_state[mac_ID].add_task(self.tasks_state, task)
+						self.tasks_state[task].machine_ID = mac_ID
 
 		else:
 			macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list, task_list)
 			for mac_ID in macs:
 				for task in macs[mac_ID]:
 					self.machines_state[mac_ID].add_task(self.tasks_state, task)
+					self.tasks_state[task].machine_ID = mac_ID
 			
 		##
 
