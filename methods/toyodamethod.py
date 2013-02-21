@@ -222,7 +222,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		mac_div   = n_macs / self.n_threads
 
 
-		print "Go! %d" % self.n_jobs
+		print "Go! %d" % (self.n_jobs)
 		##
 		if len(task_list) > 10000:
 
@@ -235,7 +235,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					p.start()
 					procs.append(p)
 
-					print "Created %d" % i
+					print "Created %d" % (i)
 				else:
 					macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list[mac_div*i:n_macs], task_list[task_div*i:n_tasks])
 
