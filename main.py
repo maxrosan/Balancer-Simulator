@@ -24,7 +24,7 @@ class BalancerSimulator:
 				
 	@staticmethod
 	def add_task_usage(balsim, task):
-		if task.CPU_usage > 0. and task.CPU_usage <= 1. and task.mem_usage <= 1.:
+		if task.CPU_usage > 0. and task.mem_usage > 0 and task.CPU_usage <= 1. and task.mem_usage <= 1.:
 			balsim.balacing_method.add_task_usage(task)
 
 	@staticmethod
