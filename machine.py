@@ -76,6 +76,9 @@ class MachineEventRegister:
 	def count_tasks(self):
 		return self.n_tasks
 
+	def can_run(self, task):
+		return ((self.capacity_CPU - self.CPU_usage) > task.CPU_usage and (self.capacity_memory - self.mem_usage) > task.mem_usage)
+
 			
 class MachineEvent:
 

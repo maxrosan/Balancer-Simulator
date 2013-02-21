@@ -244,8 +244,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		def update_map(macs):
 			for mac_ID in macs:
 				for task in macs[mac_ID]:
-					self.machines_state[mac_ID].add_task(self.tasks_state, task)
-					self.tasks_state[task].machine_ID = mac_ID
+					if self.machines_state[mac_ID].can_run(task):
+						self.machines_state[mac_ID].add_task(self.tasks_state, task)
+						self.tasks_state[task].machine_ID = mac_ID
 	
 		self.n_threads  = self.n_jobs
 	
@@ -306,23 +307,24 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, macs_not_used, tasks_without_mac)
 			for mac_ID in macs:
 				for task in macs[mac_ID]:
-					self.machines_state[mac_ID].add_task(self.tasks_state, task)
-					self.tasks_state[task].machine_ID = mac_ID
-					tasks_without_mac.remove(task)
+					if self.machines_state[mac_ID].can_run(task):
+						self.machines_state[mac_ID].add_task(self.tasks_state, task)
+						self.tasks_state[task].machine_ID = mac_ID
+						tasks_without_mac.remove(task)
 
 
-		SLAs_list = []
-		tasks_remove = []
-		for mac_ID in self.machines_state:
-			if self.machines_state[mac_ID].SLA_break():
-				mac = self.machines_state[mac_ID]
-				tasks = sorted(mac.tasks, key=lambda task: self.tasks_state[task].CPU_usage)
-				i = 0
-				while mac.SLA_break():
-					tasks_remove.append(tasks[i])
-					mac.remove_task(tasks[i])
-					self.tasks_state[task[i]].machine_ID = -1
-					i = i + 1
+#		SLAs_list = []
+#		tasks_remove = []
+#		for mac_ID in self.machines_state:
+#			if self.machines_state[mac_ID].SLA_break():
+#				mac = self.machines_state[mac_ID]
+#				tasks = sorted(mac.tasks, key=lambda task: self.tasks_state[task].CPU_usage)
+#				i = 0
+#				while mac.SLA_break():
+#					tasks_remove.append(tasks[i])
+#					mac.remove_task(tasks[i])
+#					self.tasks_state[task[i]].machine_ID = -1
+#					i = i + 1
 		
 
 
