@@ -65,7 +65,7 @@ class MachineEventRegister:
 
 
 	def SLA_break(self):
-		return (self.CPU_usage > self.capacity_memory or self.mem_usage > self.capacity_memory)	
+		return ((self.CPU_usage - self.capacity_memory) > 1e-10 or (self.mem_usage - self.capacity_memory) > 1e-10)
 
 	def free_CPU(self):
 		return (self.capacity_CPU - self.CPU_usage)
