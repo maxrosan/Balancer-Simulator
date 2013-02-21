@@ -17,6 +17,7 @@ class MachineEventRegister:
 		self.CPU_usage = 0
 		self.mem_usage = 0
 		self.used = 0
+		self.n_tasks = 0
 
 		self.tasks = []
 
@@ -42,6 +43,7 @@ class MachineEventRegister:
 		self.tasks.append(task_ID)
 		self.CPU_usage = m_tasks[task_ID].CPU_usage + self.CPU_usage
 		self.mem_usage = m_tasks[task_ID].mem_usage + self.mem_usage
+		self.n_tasks = self.n_tasks + 1
 
 	def reset_stats(self):
 		self.CPU_usage = 0
@@ -59,6 +61,7 @@ class MachineEventRegister:
 		self.tasks.remove(task_ID)
 		self.CPU_usage = self.CPU_usage - m_tasks[task_ID].CPU_usage
 		self.mem_usage = self.mem_usage - m_tasks[task_ID].mem_usage
+		self.n_tasks = self.n_tasks - 1
 
 
 	def SLA_break(self):
@@ -71,7 +74,7 @@ class MachineEventRegister:
 		return (self.capacity_memory - self.mem_usage)
 
 	def count_tasks(self):
-		return len(self.tasks)
+		return self.n_tasks
 
 			
 class MachineEvent:

@@ -291,7 +291,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				for task in macs[mac_ID]:
 					self.machines_state[mac_ID].add_task(self.tasks_state, task)
 					self.tasks_state[task].machine_ID = mac_ID
-					tasks_without_mac.remove(mac_ID)
+					tasks_without_mac.remove(task)
 		
 
 
