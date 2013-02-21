@@ -36,6 +36,13 @@ class MachineEventRegister:
 		print "(machine event) %d %d [%s] %s %.5f %.5f" % (self.time, self.machine_ID, e, 
 			self.platform_ID, self.capacity_CPU, self.capacity_memory)
 
+	def task_fits(self, task):
+		return ((self.capacity_CPU - self.CPU_usage) >= task.CPU_usage and (self.capacity_memory - self.mem_usage) >= task.mem_usage)
+
+	def add_task(self, task):
+		self.CPU_usage = self.CPU_usage + task.CPU_usage
+		self.mem_usage = self.mem_usage + task.mem_usage
+
 class MachineEvent:
 
 	def __init__(self, folder, part):

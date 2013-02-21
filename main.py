@@ -32,6 +32,10 @@ class BalancerSimulator:
 			self.tasks_executed[task.getID()] = (task.machine_ID, task.age, task.CPU_usage, task.mem_usage)
 
 		self.tasks_to_run.clear()
+
+		for mac_ID in self.machines_state:
+			self.machines_state[mac_ID].CPU_usage = 0
+			self.machines_state[mac_ID].mem_usage = 0
 				
 
 	# If the task that requested to run have the same ID as a task executed in last round, it is considered that two tasks are the same.
@@ -43,10 +47,17 @@ class BalancerSimulator:
 			if task.getID() in balsim.tasks_executed:
 				(task.machine_ID, task.age, old_cpu, old_mem) = balsim.tasks_executed[task.getID()]
 				if task.machine_ID in balsim.machines_state: # Check if the machine is still running
-					if old_cpu == task.CPU_usage and old_mem == task.mem_usage: # Check if CPU or mem. consupmtion didn't raise
-						task.age = task.age + balsim.interval # Updates the age of a task
+					#if old_cpu == task.CPU_usage and old_mem == task.mem_usage: # Check if CPU or mem. consupmtion didn't raise
+					#	task.age = task.age + balsim.interval # Updates the age of a task
+					#else:
+					#	task.age = 0 # If the task doesn't fit the server anymore it is necessary to move it
+					
+					if balsim.machines_state[task.machine_ID].task_fits(task):
+						task.age = task.age + balsim.interval
+						balsim.machines_state[task.machine_ID].add_task(task)
 					else:
-						task.age = 0 # If the task doesn't fit the server anymore it is necessary to move it
+						task.age = 0
+
 				else:
 					# If the machine is not running it is necessary to move the task
 					task.age = 0 # It makes the task able to move
