@@ -183,7 +183,14 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				self.tasks_state[task.getID()] = old_task
 
 				if old_task.machine_ID != -1:
-					self.machines_state[old_task.machine_ID].add_task(self.tasks_state, old_task.getID())
+					if self.machines_state[old_task.machine_ID].can_run(old_task):	
+						self.machines_state[old_task.machine_ID].add_task(self.tasks_state, old_task.getID())
+						old_task.move = False
+					else:
+						old_task.machine_ID = -1
+						old_task.move       = True
+				#if old_task.machine_ID != -1:
+				#	self.machines_state[old_task.machine_ID].add_task(self.tasks_state, old_task.getID())
 
 			else:
 				old_task.altered = False
