@@ -2,7 +2,7 @@
 
 import loadbalacing
 import numpy
-import math
+import math, random
 
 import threading, multiprocessing, time, sys
 
@@ -272,8 +272,10 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.__clear_old_tasks()
 
 		mac_list  = sorted(list(self.machines_state), key=lambda mac:self.machines_state[mac].capacity_CPU, reverse=True)
-		task_list = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1],
-		             key=lambda task:self.tasks_state[task].CPU_usage, reverse=True)
+		#task_list = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1],
+		#             key=lambda task:self.tasks_state[task].CPU_usage, reverse=True)
+		task_list = list(self.tasks_state)
+		random.shuffle(task_list)
 
 		procs     = []
 		conns     = [None] * self.n_threads
