@@ -146,7 +146,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					self.tasks_state[task].move       = True
 					self.tasks_state[task].machine_ID = -1
 					self.tasks_state[task].mig_origin = mac.machine_ID
-					self.machines_state[mac.machine_ID].remove_task(self.tasks_state, task)
+					self.machines_state[mac.machine_ID].remove_task(self.tasks_state[task])
 
 			self.machines_state[mac.machine_ID].capacity_CPU    = mac.capacity_CPU
 			self.machines_state[mac.machine_ID].capacity_memory = mac.capacity_memory
@@ -175,7 +175,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			task = self.tasks_state[task_ID]
 			if not (task_ID in self.tasks_input):
 				if task.machine_ID != -1:
-					self.machines_state[task.machine_ID].remove_task(self.tasks_state, task_ID)
+					self.machines_state[task.machine_ID].remove_task(self.tasks_state[task_ID])
 				del self.tasks_state[task_ID]
 
 		print "Old done!"
