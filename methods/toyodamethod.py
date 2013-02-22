@@ -298,7 +298,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		def update_map(macs):
 			for mac_ID in macs:
 				for task in macs[mac_ID]:
-					self.machines_state[mac_ID].add_task(self.tasks_state, task)
+					self.machines_state[mac_ID].add_task(self.tasks_state[task])
 					self.tasks_state[task].machine_ID = mac_ID
 
 		self.__update_tasks()
@@ -361,7 +361,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, macs_not_used, tasks_without_mac)
 			for mac_ID in macs:
 				for task in macs[mac_ID]:
-					self.machines_state[mac_ID].add_task(self.tasks_state, task)
+					self.machines_state[mac_ID].add_task(self.tasks_state[task])
 					self.tasks_state[task].machine_ID = mac_ID
 					tasks_without_mac.remove(task)
 
@@ -370,7 +370,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			i = 0
 			for task in tasks_without_mac:
 				if i < n_macs:
-					self.machines_state[macs_not_used[i]].add_task(self.tasks_state, task)
+					self.machines_state[macs_not_used[i]].add_task(self.tasks_state[task])
 					self.tasks_state[task].machine_ID = macs_not_used[i]
 					i = i + 1
 				else:
