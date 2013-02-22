@@ -327,7 +327,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					self.tasks_state[task].machine_ID = mac_ID
 					tasks_without_mac.remove(task)
 
-			macs_not_used = sorted([mac for mac in macs_not_used if not (mac in macs)], key=lambda mac:self.machines_state[mac].free_CPU(), reversed)
+			macs_not_used = sorted([mac for mac in macs_not_used if not (mac in macs)], key=lambda mac:self.machines_state[mac].free_CPU(), reverse=True)
 			n_macs = len(macs_not_used)
 			i = 0
 			for task in tasks_without_mac:
