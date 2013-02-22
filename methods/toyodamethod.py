@@ -183,7 +183,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				self.tasks_state[task.getID()] = old_task
 
 				if old_task.machine_ID != -1:
-					if self.machines_state[old_task.machine_ID].can_run(old_task) or old_task.age_round > 2:	
+					if self.machines_state[old_task.machine_ID].can_run(old_task) or old_task.age_round > 5:	
 						self.machines_state[old_task.machine_ID].add_task(self.tasks_state, old_task.getID())
 						old_task.move = False
 					else:
