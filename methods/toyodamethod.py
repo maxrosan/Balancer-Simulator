@@ -198,8 +198,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		for task_ID in tasks:
 			tak = self.tasks_state[task_ID]
 			if tak.last_round < self.n_round:
-				if tak.machine_ID != -1:
-					self.machines_state[tak.machine_ID].remove_task(self.tasks_state, task_ID)
+				#if tak.machine_ID != -1:
+				#	self.machines_state[tak.machine_ID].remove_task(self.tasks_state, task_ID)
 				del self.tasks_state[task_ID]
 
 	def __count_new_tasks(self):
