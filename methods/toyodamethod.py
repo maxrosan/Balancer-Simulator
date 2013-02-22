@@ -215,7 +215,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		res = 0
 		for mac_ID in self.machines_state:
 			if self.machines_state[mac_ID].SLA_break():
-				res = res + 1
+				res = res + self.machines_state[mac_ID].n_tasks
 		return res
 
 	def __count_mapped(self):
