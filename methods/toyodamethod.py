@@ -186,8 +186,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 						old_task.machine_ID = -1
 						old_task.move       = True
 
-
-			self.machines_state[old_task.machine_ID].add_task(self.tasks_state, old_task.getID())
+					self.machines_state[old_task.machine_ID].add_task(self.tasks_state, old_task.getID())
 
 	def __clear_old_tasks(self):
 		tasks = list(self.tasks_state)
