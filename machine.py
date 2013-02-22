@@ -39,10 +39,10 @@ class MachineEventRegister:
 		print "(machine event) %d %d [%s] %s %.5f %.5f" % (self.time, self.machine_ID, e, 
 			self.platform_ID, self.capacity_CPU, self.capacity_memory)
 
-	def add_task(self, m_tasks, task_ID):
-		self.tasks.append(task_ID)
-		self.CPU_usage = m_tasks[task_ID].CPU_usage + self.CPU_usage
-		self.mem_usage = m_tasks[task_ID].mem_usage + self.mem_usage
+	def add_task(self, task):
+		self.tasks.append(task.getID())
+		self.CPU_usage = task.CPU_usage + self.CPU_usage
+		self.mem_usage = task.mem_usage + self.mem_usage
 		self.n_tasks = self.n_tasks + 1
 
 	def reset_stats(self):
@@ -57,10 +57,10 @@ class MachineEventRegister:
 			self.CPU_usage = self.CPU_usage + map_tasks[task_ID].CPU_usage
 			self.mem_usage = self.mem_usage + map_tasks[task_ID].mem_usage
 
-	def remove_task(self, m_tasks, task_ID):
-		self.tasks.remove(task_ID)
-		self.CPU_usage = self.CPU_usage - m_tasks[task_ID].CPU_usage
-		self.mem_usage = self.mem_usage - m_tasks[task_ID].mem_usage
+	def remove_task(self, task):
+		self.tasks.remove(task.getID())
+		self.CPU_usage = self.CPU_usage - task.CPU_usage
+		self.mem_usage = self.mem_usage - task.mem_usage
 		self.n_tasks = self.n_tasks - 1
 
 

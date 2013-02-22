@@ -134,6 +134,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.threshold_migration = 2
 		self.machines_state      = {}
 		self.tasks_state         = {}
+		self.tasks_input         = {}
 
 	def add_machine_event(self, mac):
 		if mac.event_type == mac.ADD_EVENT:
@@ -158,44 +159,86 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			del self.machines_state[mac.machine_ID]
 
 	def add_task_usage(self, task):
-		if task.getID() in self.tasks_state and self.tasks_state[task.getID()].first_round == (self.n_round + 1):
-			if task.CPU_usage >= self.tasks_state[task.getID()].CPU_usage:
-				self.tasks_state[task.getID()] = task
-		elif not (task.getID() in self.tasks_state):
-			task.last_round = self.n_round + 1
-			self.tasks_state[task.getID()] = task
-			self.tasks_state[task.getID()].first_round = self.n_round + 1
+		if task.getID() in self.tasks_input:
+			ti = self.tasks_input[task.getID()]
+			if ti.CPU_usage < task.CPU_usage or ti.mem_usage < task.mem_usage:
+				self.tasks_input[task.getID()] = ti
 		else:
-			old_task = self.tasks_state[task.getID()]
+			self.tasks_input[task.getID()] = task
 
-			old_task.inc_age()
-			old_task.last_round = self.n_round + 1
+	def __update_tasks(self):
 
-			old_mem            = old_task.mem_usage
-			old_CPU            = old_task.CPU_usage
-			old_task.CPU_usage = task.CPU_usage
-			old_task.mem_usage = task.mem_usage
+		print "Updating"
 
-			if task.CPU_usage > old_CPU or task.mem_usage > old_mem:
-				
-				if old_task.machine_ID != -1:
-					if self.machines_state[old_task.machine_ID].can_run(old_task) or old_task.age_round > 2:	
-						old_task.move = False
-					else:
-						old_task.mig_origin = old_task.machine_ID
-						old_task.machine_ID = -1
-						old_task.move       = True
-
-					self.machines_state[old_task.machine_ID].add_task(self.tasks_state, old_task.getID())
-
-	def __clear_old_tasks(self):
-		tasks = list(self.tasks_state)
-		for task_ID in tasks:
-			tak = self.tasks_state[task_ID]
-			if tak.last_round < self.n_round:
-				#if tak.machine_ID != -1:
-				#	self.machines_state[tak.machine_ID].remove_task(self.tasks_state, task_ID)
+		# Remove old tasks
+		for task_ID in list(self.tasks_state):
+			task = self.tasks_state[task_ID]
+			if not (task_ID in self.tasks_input):
+				if task.machine_ID != -1:
+					self.machines_state[task.machine_ID].remove_task(self.tasks_state, task_ID)
 				del self.tasks_state[task_ID]
+
+		print "Old done!"
+
+		for task_ID in self.tasks_input:
+			if not (task_ID in self.tasks_state):
+				task = self.tasks_state[task_ID] = self.tasks_input[task_ID]
+				task.first_round = (self.n_round + 1)
+				task.last_round  = (self.n_round + 1)
+			else:
+				new_task = self.tasks_input[task_ID]
+				old_task = self.tasks_state[task_ID]
+			
+				old_task.inc_age()
+				old_task.last_round = self.n_round + 1
+
+				if old_task.machine_ID != -1:
+					if (old_task.CPU_usage != new_task.CPU_usage or old_task.mem_usage != new_task.mem_usage):
+						self.machines_state[old_task.machine_ID].remove_task(old_task)
+						if not self.machines_state[old_task.machine_ID].can_run(new_task):
+							old_task.machine_ID = -1
+							old_task.move = True
+						else:
+							self.machines_state[old_task.machine_ID].add_task(new_task)
+							old_task.move = False
+
+				old_task.CPU_usage = new_task.CPU_usage
+				old_task.mem_usage = new_task.mem_usage
+
+
+		print "New tasks ready!"
+
+		self.tasks_input.clear()
+
+	#def add_task_usage(self, task):
+	#	if task.getID() in self.tasks_state and self.tasks_state[task.getID()].first_round == (self.n_round + 1):
+	#		if task.CPU_usage >= self.tasks_state[task.getID()].CPU_usage:
+	#			self.tasks_state[task.getID()] = task
+	#	elif not (task.getID() in self.tasks_state):
+	#		task.last_round = self.n_round + 1
+	#		self.tasks_state[task.getID()] = task
+	#		self.tasks_state[task.getID()].first_round = self.n_round + 1
+	#	else:
+	#		old_task = self.tasks_state[task.getID()]
+	#
+	#		old_task.inc_age()
+	#		old_task.last_round = self.n_round + 1
+
+			#old_mem            = old_task.mem_usage
+	#		#old_CPU            = old_task.CPU_usage
+	#		old_task.CPU_usage = task.CPU_usage
+	#		old_task.mem_usage = task.mem_usage
+
+				
+	#		if old_task.machine_ID != -1:
+	#			if self.machines_state[old_task.machine_ID].can_run(old_task) or old_task.age_round > 2:	
+	#				old_task.move = False
+	#				self.machines_state[old_task.machine_ID].add_task(self.tasks_state, old_task.getID())
+	#			else:
+	#				old_task.mig_origin = old_task.machine_ID
+	#				old_task.machine_ID = -1
+	#				old_task.move       = True
+			
 
 	def __count_new_tasks(self):
 		new_tasks = 0
@@ -244,11 +287,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		return res
 
-	def __remove_all_tasks(self):
-		for task_ID in self.tasks_state:
-			task = self.tasks_state[task_ID]
-			if task.machine_ID != -1:
-				self.machines_state[task.machine_ID].remove_task(self.tasks_state, task_ID)
 
 	def balance(self): 
 		
@@ -262,13 +300,14 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				for task in macs[mac_ID]:
 					self.machines_state[mac_ID].add_task(self.tasks_state, task)
 					self.tasks_state[task].machine_ID = mac_ID
+
+		self.__update_tasks()
 	
 		self.n_threads  = self.n_jobs
 	
 		self.n_round = self.n_round + 1
 		self.reset_stats()
 		self.task_new = self.__count_new_tasks()
-		self.__clear_old_tasks()
 
 		mac_list  = sorted(list(self.machines_state), key=lambda mac:self.machines_state[mac].capacity_CPU, reverse=True)
 		task_list = [task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1]
@@ -359,8 +398,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		(self.task_mapped_successfully, self.task_failed_to_map) = self.__count_mapped()
 		(self.machines_used, self.machines_not_used)             = self.__count_macs()
 
-
-		self.__remove_all_tasks()
 
 		#if self.SLA_breaks > 0:
 		#	for mac_ID in self.machines_state:
