@@ -166,10 +166,10 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			self.tasks_state[task.getID()] = task
 			self.tasks_state[task.getID()].first_round = self.n_round + 1
 		else:
-			self.tasks_state[task.getID()].inc_age()
-			self.tasks_state[task.getID()].last_round = self.n_round + 1
-
 			old_task = self.tasks_state[task.getID()]
+
+			old_task.inc_age()
+			old_task.last_round = self.n_round + 1
 
 			old_mem            = old_task.mem_usage
 			old_CPU            = old_task.CPU_usage
@@ -178,20 +178,16 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 			if task.CPU_usage > old_CPU or task.mem_usage > old_mem:
 				
-				old_task.altered = True
-				self.tasks_state[task.getID()] = old_task
-
 				if old_task.machine_ID != -1:
 					if self.machines_state[old_task.machine_ID].can_run(old_task) or old_task.age_round > 2:	
-						self.machines_state[old_task.machine_ID].add_task(self.tasks_state, old_task.getID())
 						old_task.move = False
 					else:
 						old_task.mig_origin = old_task.machine_ID
 						old_task.machine_ID = -1
 						old_task.move       = True
 
-			else:
-				old_task.altered = False
+
+			self.machines_state[old_task.machine_ID].add_task(self.tasks_state, old_task.getID())
 
 	def __clear_old_tasks(self):
 		tasks = list(self.tasks_state)
