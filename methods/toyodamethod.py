@@ -171,19 +171,18 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 			old_task = self.tasks_state[task.getID()]
 
-			if task.CPU_usage > old_task.CPU_usage or task.mem_usage > old_task.mem_usage:
+			old_mem            = old_task.mem_usage
+			old_CPU            = old_task.CPU_usage
+			old_task.CPU_usage = task.CPU_usage
+			old_task.mem_usage = task.mem_usage
 
-				if old_task.machine_ID != -1:
-					self.machines_state[old_task.machine_ID].remove_task(self.tasks_state, old_task.getID())
-
-				old_task.CPU_usage = task.CPU_usage
-				old_task.mem_usage = task.mem_usage
+			if task.CPU_usage > old_CPU or task.mem_usage > old_mem:
+				
 				old_task.altered = True
-
 				self.tasks_state[task.getID()] = old_task
 
 				if old_task.machine_ID != -1:
-					if self.machines_state[old_task.machine_ID].can_run(old_task) or old_task.age_round > 5:	
+					if self.machines_state[old_task.machine_ID].can_run(old_task) or old_task.age_round > 2:	
 						self.machines_state[old_task.machine_ID].add_task(self.tasks_state, old_task.getID())
 						old_task.move = False
 					else:
@@ -193,7 +192,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 			else:
 				old_task.altered = False
-				self.tasks_state[task.getID()] = old_task
 
 	def __clear_old_tasks(self):
 		tasks = list(self.tasks_state)
@@ -250,6 +248,12 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				res = res + 1
 
 		return res
+
+	def __remove_all_tasks(self):
+		for task_ID in self.tasks_state:
+			task = self.tasks_state[task_ID]
+			if task.machine_ID != -1:
+				self.machines_state[task.machine_ID].remove_task(self.tasks_state, task_ID)
 
 	def balance(self): 
 		
@@ -362,6 +366,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		(self.task_mapped_successfully, self.task_failed_to_map) = self.__count_mapped()
 		(self.machines_used, self.machines_not_used)             = self.__count_macs()
 
+
+		self.__remove_all_tasks()
 
 		#if self.SLA_breaks > 0:
 		#	for mac_ID in self.machines_state:
