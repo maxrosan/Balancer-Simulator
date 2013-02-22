@@ -187,10 +187,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 						self.machines_state[old_task.machine_ID].add_task(self.tasks_state, old_task.getID())
 						old_task.move = False
 					else:
+						old_task.mig_origin = old_task.machine_ID
 						old_task.machine_ID = -1
 						old_task.move       = True
-				#if old_task.machine_ID != -1:
-				#	self.machines_state[old_task.machine_ID].add_task(self.tasks_state, old_task.getID())
 
 			else:
 				old_task.altered = False
@@ -240,6 +239,17 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				res_n = res_n + 1
 
 		return (res_y, res_n)
+
+	def __count_migrations(self):
+		res = 0
+
+		for task_ID in self.tasks_state:
+			task = self.tasks_state[task_ID]
+			if task.machine_ID != -1 and task.move:
+				task.move = False
+				res = res + 1
+
+		return res
 
 	def balance(self): 
 		
@@ -334,7 +344,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 
 		self.SLA_breaks               = self.__count_SLAs()
-		self.n_migrations             = migrations
+		self.n_migrations             = self.__count_migrations()
 		(self.task_mapped_successfully, self.task_failed_to_map) = self.__count_mapped()
 		(self.machines_used, self.machines_not_used)             = self.__count_macs()
 
