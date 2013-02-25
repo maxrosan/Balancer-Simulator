@@ -314,6 +314,47 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		def score_task(task):
 			return task.CPU_usage
 
+		def bal(mac_list, task_list):
+			procs     = []
+			conns     = [None] * self.n_threads
+
+			n_tasks   = len(task_list)
+			n_macs    = len(mac_list)
+			tasks_div = n_tasks / self.n_threads
+			mac_div   = n_macs / self.n_threads
+
+
+			print "Go! %d" % (self.n_jobs)
+			##
+			if len(task_list) > 10000:
+
+				print "MP"
+
+				for i in range(0, self.n_jobs):
+					t = None
+					if i < (self.n_jobs - 1):
+						conns[i], child_conn = multiprocessing.Pipe()
+						p = multiprocessing.Process(target = work, 
+						  args = (child_conn, self.machines_state, self.tasks_state, mac_list[mac_div*i:mac_div*(i+1)], task_list[tasks_div*i:tasks_div*(i + 1)]))
+						p.start()
+						procs.append(p)
+					else:
+						macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list[mac_div*i:n_macs], task_list[tasks_div*i:n_tasks])
+						update_map(macs)
+				
+					for i in range(0, self.n_jobs-1):
+						macs = conns[i].recv()
+						procs[i].join()	
+						update_map(macs)
+
+			else:
+				print "UP"
+
+				macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list, task_list)
+				update_map(macs)
+
+		###
+
 		self.__update_tasks()
 	
 		self.n_threads  = self.n_jobs
@@ -322,89 +363,48 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.reset_stats()
 		self.task_new = self.__count_new_tasks()
 
-		mac_list  = sorted(list(self.machines_state), key=lambda mac:score_mac(self.machines_state[mac]), reverse=True)
-		task_list = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1], key=lambda task:score_task(self.tasks_state[task]), reverse=True)
-		#random.shuffle(task_list)
+		mac_used    = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks > 0], key=lambda mac:score_mac(self.machines_state[mac]), reverse=True)
+		task_wo_mac = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1], key=lambda task:score_task(self.tasks_state[task]), reverse=True)
 
-		procs     = []
-		conns     = [None] * self.n_threads
-
-		n_tasks   = len(task_list)
-		n_macs    = len(mac_list)
-		tasks_div = n_tasks / self.n_threads
-		mac_div   = n_macs / self.n_threads
+		print "Macs used"
+		bal(mac_used, task_wo_mac)
 
 
-		print "Go! %d" % (self.n_jobs)
-		##
-		if len(task_list) > 10000:
+		mac_n_used    = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks == 0], key=lambda mac:score_mac(self.machines_state[mac]), reverse=True)
+		task_wo_mac = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1], key=lambda task:score_task(self.tasks_state[task]), reverse=True)
 
-			print "MP"
-
-			for i in range(0, self.n_jobs):
-				t = None
-				if i < (self.n_jobs - 1):
-					conns[i], child_conn = multiprocessing.Pipe()
-					p = multiprocessing.Process(target = work, 
-					  args = (child_conn, self.machines_state, self.tasks_state, mac_list[mac_div*i:mac_div*(i+1)], task_list[tasks_div*i:tasks_div*(i + 1)]))
-					p.start()
-					procs.append(p)
-				else:
-					macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list[mac_div*i:n_macs], task_list[tasks_div*i:n_tasks])
-					update_map(macs)
+		print "Macs not used"
+		bal(mac_n_used, task_wo_mac)
 				
-			for i in range(0, self.n_jobs-1):
-				macs = conns[i].recv()
-				procs[i].join()	
-				update_map(macs)
-
-		else:
-			print "UP"
-
-			macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list, task_list)
-			update_map(macs)
-			
-		##
-
-		print "POS"
-
 		# Gather the task weren't mapped earlier
-		tasks_without_mac = sorted([task for task in self.tasks_state if self.tasks_state[task].machine_ID == -1],
-			key=lambda task:self.tasks_state[task].CPU_usage)
+		tasks_without_mac = [task for task in self.tasks_state if self.tasks_state[task].machine_ID == -1]
 
 		if len(tasks_without_mac) > 0:
 
 			print "POS 1"
+			mac_used              = sorted([mac for mac in self.machines_state], key=lambda mac:self.machines_state[mac].n_tasks)
+			tasks_without_mac_yet = []
 
-			# Sort the machines by CPU remaining
-			macs_not_used = sorted(list(self.machines_state), key=lambda mac:self.machines_state[mac].free_CPU(), reverse=True)
-			print "balancing ", len(tasks_without_mac)
-			macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, macs_not_used, tasks_without_mac)
-			print "processing"
-			for mac_ID in macs:
-				for task in macs[mac_ID]:
-					self.machines_state[mac_ID].add_task(self.tasks_state[task])
-					self.tasks_state[task].machine_ID = mac_ID
-					tasks_without_mac.remove(task)
+			for task in tasks_without_mac:
+				for mac in macs_used:
+					if self.machines_state[mac].can_run(self.tasks_state[task]):
+						self.tasks_state[task].machine_ID = mac
+						self.machines_state[mac].add_task(self.tasks_state[task])
+						break
+
+				if self.tasks_state[task].machine_ID == -1:
+					tasks_without_mac_yet.append(task)
 
 			print "POS 2"
-
-			# Gather the machines not used in the last balancing call and sort them by CPU remaining
-			# Force the unmapped tasks to be put to run in best machine as possible
-			macs_used = sorted(self.machines_state, key=lambda mac:self.machines_state[mac].free_CPU(), reverse=True)
-			tasks_without_mac = sorted(tasks_without_mac, key=lambda task:self.tasks_state[task].CPU_usage, reverse=True)
-			i = 0
-			n_macs  = len(macs_used)
-			n_tasks = len(tasks_without_mac)
-
-			while  i < n_tasks:
-				mac = macs_used[i % n_macs]
-				task = tasks_without_mac[i]
-				self.machines_state[mac].add_task(self.tasks_state[task])
-				self.tasks_state[task].machine_ID = mac
-
-				i = i + 1
-
+			mac_not_used = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks == 0], key=lambda mac:self.capacity_CPU, reverse=True)
+			task_i       = 0
+			n_tasks      = len(tasks_without_mac_yet)
+			
+			for mac in mac_not_used:
+				if task_i < n_tasks:
+					self.machines_state[mac].add_task(self.tasks_state[tasks_without_mac_yet[task_i]])
+				else:
+					break
 
 #		SLAs_list = []
 #		tasks_remove = []
