@@ -2,7 +2,7 @@
 
 import loadbalacing
 import numpy
-import math, random
+import math, random, Queue
 
 import threading, multiprocessing, time, sys
 
@@ -137,6 +137,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.tasks_state         = {}
 		self.tasks_input         = {}
 
+		self.pq                  = Queue.PriorityQueue(0)
+
 		self.threshold_migration = int(argv[0])
 
 	def add_machine_event(self, mac):
@@ -190,6 +192,13 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				task = self.tasks_state[task_ID] = self.tasks_input[task_ID]
 				task.first_round = (self.n_round + 1)
 				task.last_round  = (self.n_round + 1)
+			
+				if not self.pq.empty():
+					mac = self.pq.get()
+					if mac.free_CPU() > task.CPU_usage:
+						mac.add_task(task)
+						task.machine_ID = mac.machine_ID
+					self.pq.put((mac.free_CPU(), mac))
 			else:
 				new_task = self.tasks_input[task_ID]
 				old_task = self.tasks_state[task_ID]
@@ -218,36 +227,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		print "New tasks ready!"
 
 		self.tasks_input.clear()
-
-	#def add_task_usage(self, task):
-	#	if task.getID() in self.tasks_state and self.tasks_state[task.getID()].first_round == (self.n_round + 1):
-	#		if task.CPU_usage >= self.tasks_state[task.getID()].CPU_usage:
-	#			self.tasks_state[task.getID()] = task
-	#	elif not (task.getID() in self.tasks_state):
-	#		task.last_round = self.n_round + 1
-	#		self.tasks_state[task.getID()] = task
-	#		self.tasks_state[task.getID()].first_round = self.n_round + 1
-	#	else:
-	#		old_task = self.tasks_state[task.getID()]
-	#
-	#		old_task.inc_age()
-	#		old_task.last_round = self.n_round + 1
-
-			#old_mem            = old_task.mem_usage
-	#		#old_CPU            = old_task.CPU_usage
-	#		old_task.CPU_usage = task.CPU_usage
-	#		old_task.mem_usage = task.mem_usage
-
-				
-	#		if old_task.machine_ID != -1:
-	#			if self.machines_state[old_task.machine_ID].can_run(old_task) or old_task.age_round > 2:	
-	#				old_task.move = False
-	#				self.machines_state[old_task.machine_ID].add_task(self.tasks_state, old_task.getID())
-	#			else:
-	#				old_task.mig_origin = old_task.machine_ID
-	#				old_task.machine_ID = -1
-	#				old_task.move       = True
-			
 
 	def __count_new_tasks(self):
 		new_tasks = 0
@@ -295,6 +274,15 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				res = res + 1
 
 		return res
+
+	def __calc_heap(self):
+		print "Calculating PQ"
+		while not self.pq.empty():
+			self.pq.get()
+		for mac in self.machines_state:
+			if self.machines_state[mac].n_tasks == 0:
+				self.pq.put((-self.machines_state[mac].free_CPU(), self.machines_state[mac])) 
+		print "done"
 
 
 	def balance(self): 
@@ -383,13 +371,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.reset_stats()
 		self.task_new = self.__count_new_tasks()
 
-		mac_used    = sorted([mac for mac in self.machines_state], key=lambda mac:score_mac(self.machines_state[mac]), reverse=True)
-		task_wo_mac = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1], key=lambda task:score_task(self.tasks_state[task]), reverse=True)
-
-		print "Macs used"
-		bal(mac_used, task_wo_mac)
-
-
 		mac_n_used  = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks == 0], key=lambda mac:score_mac(self.machines_state[mac]), reverse=True)
 		task_wo_mac = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1], key=lambda task:score_task(self.tasks_state[task]), reverse=True)
 
@@ -397,65 +378,14 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		bal(mac_n_used, task_wo_mac)
 				
 		# Gather the task weren't mapped earlier
-		tasks_without_mac = [task for task in self.tasks_state if self.tasks_state[task].machine_ID == -1]
+		#tasks_without_mac = [task for task in self.tasks_state if self.tasks_state[task].machine_ID == -1]
+		#if len(tasks_without_mac) > 0:
 
-		if len(tasks_without_mac) > 0:
-
-			print "POS 1"
-			macs_used             = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks > 0], key=lambda mac:self.machines_state[mac].n_tasks)
-			tasks_without_mac_yet = []
-
-			for task in tasks_without_mac:
-				for mac in macs_used:
-					if self.machines_state[mac].can_run(self.tasks_state[task]):
-						self.tasks_state[task].machine_ID = mac
-						self.machines_state[mac].add_task(self.tasks_state[task])
-						break
-
-				if self.tasks_state[task].machine_ID == -1:
-					tasks_without_mac_yet.append(task)
-
-			print "POS 2"
-			mac_not_used = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks == 0], key=lambda mac:self.machines_state[mac].capacity_CPU, reverse=True)
-			task_i       = 0
-			n_tasks      = len(tasks_without_mac_yet)
-			
-			for mac in mac_not_used:
-				if task_i < n_tasks:
-					self.machines_state[mac].add_task(self.tasks_state[tasks_without_mac_yet[task_i]])
-					self.tasks_state[tasks_without_mac_yet[task_i]].machine_ID = mac
-					task_i = task_i + 1
-				else:
-					break
-
-#		SLAs_list = []
-#		tasks_remove = []
-#		for mac_ID in self.machines_state:
-#			if self.machines_state[mac_ID].SLA_break():
-#				mac = self.machines_state[mac_ID]
-#				tasks = sorted(mac.tasks, key=lambda task: self.tasks_state[task].CPU_usage)
-#				i = 0
-#				while mac.SLA_break():
-#					tasks_remove.append(tasks[i])
-#					mac.remove_task(tasks[i])
-#					self.tasks_state[task[i]].machine_ID = -1
-#					i = i + 1
 		
+		self.__calc_heap()
 
 
 		self.SLA_breaks               = self.__count_SLAs()
 		self.n_migrations             = self.__count_migrations()
 		(self.task_mapped_successfully, self.task_failed_to_map) = self.__count_mapped()
 		(self.machines_used, self.machines_not_used)             = self.__count_macs()
-
-
-		#if self.SLA_breaks > 0:
-		#	for mac_ID in self.machines_state:
-		#		mac = self.machines_state[mac_ID]
-		#		if mac.SLA_break():
-		#			print "%d (%f, %f, %f, %f) :" % (mac.machine_ID, mac.capacity_CPU, mac.capacity_memory, mac.CPU_usage, mac.mem_usage),
-		#			for task_ID in mac.tasks:
-		#				task = self.tasks_state[task_ID]
-		#				print "%d (%f, %f), " % (task_ID, task.CPU_usage, task.mem_usage),
-		#			print "----"
-			#exit()
