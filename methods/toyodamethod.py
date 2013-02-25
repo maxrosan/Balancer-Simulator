@@ -100,6 +100,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 	@staticmethod
 	def balance_partial(conn, m_mac_state, m_tasks_state, machines, tasks):
 		
+		print "processing %d %d" % (len(machines), len(tasks))
+
 		mac_list = sorted(machines, key=lambda mac:m_mac_state[mac].free_CPU(), reverse=True)
 		mac_list = [mac for mac in mac_list if m_mac_state[mac].free_CPU() > 1e-10 and m_mac_state[mac].free_mem() > 1e-10]
 
