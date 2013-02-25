@@ -371,8 +371,10 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			print "POS 1"
 
 			# Sort the machines by CPU remaining
-			macs_not_used = sorted(list(self.machines_state), key=lambda mac:self.machines_state[mac].count_tasks == 0, reverse=True)
+			macs_not_used = sorted(list(self.machines_state), key=lambda mac:self.machines_state[mac].free_CPU, reverse=True)
+			print "balancing ", len(tasks_without_mac)
 			macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, macs_not_used, tasks_without_mac)
+			print "processing"
 			for mac_ID in macs:
 				for task in macs[mac_ID]:
 					self.machines_state[mac_ID].add_task(self.tasks_state[task])
