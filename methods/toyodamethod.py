@@ -144,9 +144,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 			if self.machines_state[mac.machine_ID].capacity_CPU > mac.capacity_CPU or self.machines_state[mac.machine_ID].capacity_memory > mac.capacity_memory:
 				for task in self.machines_state[mac.machine_ID].tasks:
-					self.tasks_state[task].move       = True
-					self.tasks_state[task].machine_ID = -1
-					self.tasks_state[task].mig_origin = mac.machine_ID
+					self.__migrate(self.tasks_state[task])
 					self.machines_state[mac.machine_ID].remove_task(self.tasks_state[task])
 
 			self.machines_state[mac.machine_ID].capacity_CPU    = mac.capacity_CPU
@@ -154,8 +152,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		else:
 			for task in self.machines_state[mac.machine_ID].tasks:
-				self.tasks_state[task].move = True
-				self.tasks_state[task].machine_ID = -1
+				self.__migrate(self.tasks_state[task])
 
 			del self.machines_state[mac.machine_ID]
 
@@ -166,6 +163,11 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				self.tasks_input[task.getID()] = ti
 		else:
 			self.tasks_input[task.getID()] = task
+
+	def __migrate(task):
+		task.move = True
+		task.mig_origin = task.machine_ID
+		task.machine_ID = -1
 
 	def __update_tasks(self):
 
@@ -194,18 +196,18 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				old_task.last_round = self.n_round + 1
 
 				if old_task.machine_ID != -1:
-					if (old_task.CPU_usage != new_task.CPU_usage or old_task.mem_usage != new_task.mem_usage):
-						self.machines_state[old_task.machine_ID].remove_task(old_task)
-						if not self.machines_state[old_task.machine_ID].can_run(new_task):
-							old_task.machine_ID = -1
-							old_task.move       = True
-						else:
-							if old_task.age_round > self.threshold_migration:
-								self.machines_state[old_task.machine_ID].add_task(new_task)
-								old_task.move = False
+
+
+					if old_task.age_round > self.threshold_migration:
+						if (old_task.CPU_usage != new_task.CPU_usage or old_task.mem_usage != new_task.mem_usage):
+							self.machines_state[old_task.machine_ID].remove_task(old_task)
+							if not self.machines_state[old_task.machine_ID].can_run(new_task):
+								self.__migrate(old_task)
 							else:
-								old_task.machine_ID = -1
-								old_task.move       = True
+								old_task.move = False
+								self.machines_state[old_task.machine_ID].add_task(new_task)
+					else:
+						self.__migrate(old_task)
 
 				old_task.CPU_usage = new_task.CPU_usage
 				old_task.mem_usage = new_task.mem_usage
