@@ -386,7 +386,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		if len(tasks_without_mac) > 0:
 
 			print "POS 1"
-			macs_used             = sorted([mac for mac in self.machines_state], key=lambda mac:self.machines_state[mac].n_tasks)
+			macs_used             = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks > 0], key=lambda mac:self.machines_state[mac].n_tasks)
 			tasks_without_mac_yet = []
 
 			for task in tasks_without_mac:
