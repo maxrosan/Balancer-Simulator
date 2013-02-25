@@ -309,10 +309,10 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					self.tasks_state[task].machine_ID = mac_ID
 
 		def score_mac(mac):
-			return (0.5 * mac.capacity_CPU + 0.5 * mac.capacity_memory)
+			return mac.free_CPU()
 
 		def score_task(task):
-			return (task.CPU_usage * 0.5 + task.mem_usage * 0.5)
+			return task.CPU_usage
 
 		self.__update_tasks()
 	
