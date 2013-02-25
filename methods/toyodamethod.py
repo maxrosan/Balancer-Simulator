@@ -164,7 +164,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		else:
 			self.tasks_input[task.getID()] = task
 
-	def __migrate(task):
+	def __migrate(self, task):
 		task.move = True
 		task.mig_origin = task.machine_ID
 		task.machine_ID = -1
