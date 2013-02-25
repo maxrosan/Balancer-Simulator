@@ -195,6 +195,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			
 				if not self.pq.empty():
 					mac = self.pq.get()[1]
+					while not (mac.machine_ID in self.machines_state):
+						mac = self.pq.get()[1]
 					if mac.free_CPU() > task.CPU_usage:
 						mac.add_task(task)
 						task.machine_ID = mac.machine_ID
@@ -207,7 +209,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				old_task.last_round = self.n_round + 1
 
 				if old_task.machine_ID != -1:
-
 
 					if old_task.age_round > self.threshold_migration:
 						if (old_task.CPU_usage != new_task.CPU_usage or old_task.mem_usage != new_task.mem_usage):
