@@ -346,10 +346,10 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 						macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list[mac_div*i:n_macs], task_list[tasks_div*i:n_tasks])
 						update_map(macs)
 				
-					for i in range(0, self.n_jobs-1):
-						macs = conns[i].recv()
-						procs[i].join()	
-						update_map(macs)
+				for i in range(0, self.n_jobs-1):
+					macs = conns[i].recv()
+					procs[i].join()	
+					update_map(macs)
 
 			else:
 				print "UP"
