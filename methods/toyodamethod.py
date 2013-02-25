@@ -324,7 +324,11 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			mac_div   = n_macs / self.n_threads
 
 
-			print "Go! %d" % (self.n_jobs)
+			if n_tasks == 0 or n_macs == 0:
+				print "No %d %d" % (n_macs, n_tasks)
+				return
+
+			print "Go! %d %d %d" % (self.n_jobs, n_macs, n_tasks)
 			##
 			if len(task_list) > 10000:
 
