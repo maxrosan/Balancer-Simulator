@@ -311,10 +311,13 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					self.tasks_state[task].machine_ID = mac_ID
 
 		def div_list(lst):
-			res = [[]] * self.n_jobs
+			res = [None] * self.n_jobs
 
 			for i in range(0, len(lst)):
-				res[i % self.n_jobs].append(lst[i])
+				ind = i % self.n_jobs
+				if res[ind] == None:
+					res[ind] = []
+				res[ind].append(lst[i])
 
 			return res
 
