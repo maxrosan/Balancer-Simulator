@@ -308,6 +308,12 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					self.machines_state[mac_ID].add_task(self.tasks_state[task])
 					self.tasks_state[task].machine_ID = mac_ID
 
+		def score_mac(mac):
+			return (0.5 * mac.capacity_CPU + 0.5 * mac.capacity_memory)
+
+		def score_task(task):
+			return (task.CPU_usage * 0.5 + task.mem_usage * 0.5)
+
 		self.__update_tasks()
 	
 		self.n_threads  = self.n_jobs
@@ -316,9 +322,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.reset_stats()
 		self.task_new = self.__count_new_tasks()
 
-		mac_list  = sorted(list(self.machines_state), key=lambda mac:self.machines_state[mac].capacity_CPU, reverse=True)
-		task_list = [task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1]
-		random.shuffle(task_list)
+		mac_list  = sorted(list(self.machines_state), key=lambda mac:score_mac(self.machines_state[mac]), reverse=True)
+		task_list = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1], key=lambda task:score_task(self.tasks_state[task]), reverse=True)
+		#random.shuffle(task_list)
 
 		procs     = []
 		conns     = [None] * self.n_threads
