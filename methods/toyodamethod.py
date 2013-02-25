@@ -197,7 +197,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					mac = self.pq.get()[1]
 					while not (mac.machine_ID in self.machines_state):
 						mac = self.pq.get()[1]
-					if mac.free_CPU() > task.CPU_usage:
+					if mac.free_CPU() > task.CPU_usage and mac.can_run(task):
 						mac.add_task(task)
 						task.machine_ID = mac.machine_ID
 					self.pq.put((mac.free_CPU(), mac))
