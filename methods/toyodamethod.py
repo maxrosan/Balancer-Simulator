@@ -110,9 +110,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		for mac in mac_list:
 			tasks_to_sched = ToyodaMethod.run(m_tasks_state, tasks_list, m_mac_state[mac])
 
-			if len(tasks_to_sched) == 0:
-				break
-
 			macs[mac] = []
 			for t in tasks_to_sched:
 				macs[mac].append(tasks_list[t])
@@ -120,6 +117,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			tasks_list_copy = list(tasks_list)
 			for t in tasks_to_sched:
 				tasks_list.remove(tasks_list_copy[t])
+
+			if len(tasks_list) == 0:
+				break
 
 
 		if conn != None:
@@ -309,10 +309,10 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					self.tasks_state[task].machine_ID = mac_ID
 
 		def score_mac(mac):
-			return mac.capacity_CPU * mac.capacity_CPU + mac.capacity_memory * mac.capacity_memory
+			return mac.capacity_CPU
 
 		def score_task(task):
-			return task.CPU_usage * task.CPU_usage + task.mem_usage * task.mem_usage
+			return task.CPU_usage
 
 		self.__update_tasks()
 	
