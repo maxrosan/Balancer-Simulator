@@ -379,9 +379,18 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		bal(mac_n_used, task_wo_mac)
 				
 		# Gather the task weren't mapped earlier
-		#tasks_without_mac = [task for task in self.tasks_state if self.tasks_state[task].machine_ID == -1]
-		#if len(tasks_without_mac) > 0:
+		tasks_without_mac = [task for task in self.tasks_state if self.tasks_state[task].machine_ID == -1]
+		if len(tasks_without_mac) > 0:
+			mac_n_used  = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks == 0], key=lambda mac:self.machines_state[mac].free_CPU(), reverse=True)
+			task_wo_mac = sorted([task for task in self.tasks_state if self.tasks_state[task].machine_ID == -1], key=lambda task:score_task(self.tasks_state[task]), reverse=True)
 
+			i = 0
+			n_macs = len(mac_n_used)
+			n_tasks = len(task_wo_mac)
+			while i < n_macs and i < n_tasks:
+				self.machines_state[mac_n_used[i]].add_task(self.tasks_state[task_wo_mac[i]])
+				self.tasks_state[task_wo_mac[i]].machine_ID = mac_n_used[i]
+				i = i + 1
 		
 		self.__calc_heap()
 
