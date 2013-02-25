@@ -128,13 +128,14 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		return (macs)
 
-	def __init__(self):
+	def __init__(self, argv):
 		loadbalacing.LoadBalacing.__init__(self)
 
-		self.threshold_migration = 2
 		self.machines_state      = {}
 		self.tasks_state         = {}
 		self.tasks_input         = {}
+
+		self.threshold_migration = int(argv[0])
 
 	def add_machine_event(self, mac):
 		if mac.event_type == mac.ADD_EVENT:
@@ -197,10 +198,14 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 						self.machines_state[old_task.machine_ID].remove_task(old_task)
 						if not self.machines_state[old_task.machine_ID].can_run(new_task):
 							old_task.machine_ID = -1
-							old_task.move = True
+							old_task.move       = True
 						else:
-							self.machines_state[old_task.machine_ID].add_task(new_task)
-							old_task.move = False
+							if old_task.age_round > self.threshold_migration:
+								self.machines_state[old_task.machine_ID].add_task(new_task)
+								old_task.move = False
+							else:
+								old_task.machine_ID = -1
+								old_task.move       = True
 
 				old_task.CPU_usage = new_task.CPU_usage
 				old_task.mem_usage = new_task.mem_usage
@@ -355,9 +360,15 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		print "POS"
 
-		tasks_without_mac = [task for task in self.tasks_state if self.tasks_state[task].machine_ID == -1]
+		# Gather the task weren't mapped earlier
+		tasks_without_mac = sorted([task for task in self.tasks_state if self.tasks_state[task].machine_ID == -1],
+			key=lambda task:self.tasks_state[task].CPU_usage)
+
 		if len(tasks_without_mac) > 0:
-			macs_not_used = [mac for mac in self.machines_state if self.machines_state[mac].count_tasks() == 0]
+
+			# Sort the machines by CPU remaining
+			macs_not_used = sorted(list(self.machines_state), key=lambda mac:self.machines_state[mac].free_CPU(), reverse=True)
+
 			macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, macs_not_used, tasks_without_mac)
 			for mac_ID in macs:
 				for task in macs[mac_ID]:
@@ -365,17 +376,21 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					self.tasks_state[task].machine_ID = mac_ID
 					tasks_without_mac.remove(task)
 
-			macs_not_used = sorted([mac for mac in macs_not_used if not (mac in macs)], key=lambda mac:self.machines_state[mac].free_CPU(), reverse=True)
-			n_macs = len(macs_not_used)
+			# Gather the machines not used in the last balancing call and sort them by CPU remaining
+			# Force the unmapped tasks to be put to run in best machine as possible
+			macs_used = sorted(self.machines_state, key=lambda mac:self.machines_state[mac].free_CPU(), reverse=True)
+			tasks_without_mac = sorted(tasks_without_mac, key=lambda task:self.tasks_state[task].CPU_usage, reverse=True)
 			i = 0
-			for task in tasks_without_mac:
-				if i < n_macs:
-					self.machines_state[macs_not_used[i]].add_task(self.tasks_state[task])
-					self.tasks_state[task].machine_ID = macs_not_used[i]
-					i = i + 1
-				else:
-					break
-			
+			n_macs  = len(macs_used)
+			n_tasks = len(tasks_without_mac)
+
+			while  i < n_tasks:
+				mac = macs_used[i % n_macs]
+				task = tasks_without_mac[i]
+				self.machines_state[mac].add_task(self.tasks_state[task])
+				self.tasks_state[task].machine_ID = mac
+
+				i = i + 1
 
 
 #		SLAs_list = []

@@ -52,7 +52,7 @@ if sys.argv[1] == "help":
 #elif sys.argv[1] == "knapsack":
 #	method = methods.multiknapsackmethod.MultiKnapsackMethod()
 elif sys.argv[1] == "toyoda":
-	method = methods.toyodamethod.ToyodaMethod()
+	method = methods.toyodamethod.ToyodaMethod(sys.argv[4:])
 else:
 	method = None
 
