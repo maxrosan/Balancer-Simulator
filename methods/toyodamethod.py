@@ -407,6 +407,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			for mac in mac_not_used:
 				if task_i < n_tasks:
 					self.machines_state[mac].add_task(self.tasks_state[tasks_without_mac_yet[task_i]])
+					task_i = task_i + 1
 				else:
 					break
 
