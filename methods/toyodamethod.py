@@ -1,7 +1,7 @@
 
 
 import loadbalacing
-import numpy
+import numpypy as numpy
 import math, random, Queue
 
 import threading, multiprocessing, time, sys
