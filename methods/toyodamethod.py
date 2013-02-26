@@ -370,6 +370,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			return task.CPU_usage
 
 		self.__update_tasks()
+
+		self.start_timing()
 	
 		self.n_threads  = self.n_jobs
 	
@@ -406,6 +408,16 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		
 		self.__calc_heap()
 
+		self.stop_timing()
+
+		print "Printing tasks......",
+		self.mac_usage.clear()
+		for mac in self.machines_state:
+			lst_tasks = []
+			self.mac_usage[mac.machine_ID] = (mac, lst_tasks)
+			for task in self.machines_state[mac.machine_ID].tasks:
+				lst_tasks.append(self.tasks_state[task])
+		print "OK"
 
 		self.SLA_breaks               = self.__count_SLAs()
 		self.n_migrations             = self.__count_migrations()
