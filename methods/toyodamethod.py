@@ -373,7 +373,14 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.reset_stats()
 		self.task_new = self.__count_new_tasks()
 
-		mac_n_used  = sorted([mac for mac in self.machines_state if self.machines_state[mac].free_CPU()], key=lambda mac:score_mac(self.machines_state[mac]), reverse=True)
+		mac_used   = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks > 0], key=lambda mac:score_mac(self.machines_state[mac]), reverse=True)
+		task_w_mac = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1], key=lambda task:score_task(self.tasks_state[task]), reverse=True)
+
+		if len(mac_used) > 0 and len(task_w_mac) > 0:
+			print "Macs used"
+			bal(mac_used, task_wo_mac)
+
+		mac_n_used  = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks == 0], key=lambda mac:score_mac(self.machines_state[mac]), reverse=True)
 		task_wo_mac = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1], key=lambda task:score_task(self.tasks_state[task]), reverse=True)
 
 		print "Macs not used"
