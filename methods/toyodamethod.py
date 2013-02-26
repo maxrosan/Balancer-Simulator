@@ -211,7 +211,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 				if old_task.machine_ID != -1:
 
-					self.machines_state[old_task.machine_ID].remove_task(old_task)
+					self.machines_state[from_mach].remove_task(old_task)
 					old_task.machine_ID = -1
 
 					if old_task.age_round <= self.threshold_migration:
