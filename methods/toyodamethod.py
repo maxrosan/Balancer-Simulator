@@ -210,7 +210,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 				if old_task.machine_ID != -1:
 
-					if old_task.age_round > self.threshold_migration:
+					if old_task.age_round <= self.threshold_migration:
 						if (old_task.CPU_usage != new_task.CPU_usage or old_task.mem_usage != new_task.mem_usage):
 							self.machines_state[old_task.machine_ID].remove_task(old_task)
 							if not self.machines_state[old_task.machine_ID].can_run(new_task):
@@ -372,7 +372,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.reset_stats()
 		self.task_new = self.__count_new_tasks()
 
-		mac_n_used  = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks == 0], key=lambda mac:score_mac(self.machines_state[mac]), reverse=True)
+		mac_n_used  = sorted([mac for mac in self.machines_state if self.machines_state[mac].free_CPU()], key=lambda mac:score_mac(self.machines_state[mac]), reverse=True)
 		task_wo_mac = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1], key=lambda task:score_task(self.tasks_state[task]), reverse=True)
 
 		print "Macs not used"
