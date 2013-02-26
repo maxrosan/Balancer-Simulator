@@ -299,7 +299,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		for mac in self.machines_state:
 			lst_tasks = []
-			if self.mac_usage[mac].n_tasks > 0:
+			if self.machines_state[mac].n_tasks > 0:
 				self.mac_usage[mac] = (self.machines_state[mac], lst_tasks)
 				for task in self.machines_state[mac].tasks:
 					lst_tasks.append(self.tasks_state[task])
