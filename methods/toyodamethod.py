@@ -290,6 +290,28 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				self.pq.put((-self.machines_state[mac].free_CPU(), self.machines_state[mac])) 
 		print "done"
 
+	def __calc_usage(self):
+		print "Printing tasks......",
+
+		self.mac_usage.clear()
+
+		usage_vec = []
+
+		for mac in self.machines_state:
+			lst_tasks = []
+			if self.mac_usage[mac].n_tasks > 0:
+				self.mac_usage[mac] = (self.machines_state[mac], lst_tasks)
+				for task in self.machines_state[mac].tasks:
+					lst_tasks.append(self.tasks_state[task])
+
+				mac_obj = self.mac_usage[mac]
+				usage_vec.append((mac_obj.CPU_usage * mac_obj.mem_usage) / (mac_obj.capacity_CPU * mac_obj.capacity_memory))
+
+		self.usage_mean_per = numpy.mean(usage_vec)
+		self.usage_stan_per = numpy.std(usage_vec)
+
+		print "OK"
+
 
 	def balance(self): 
 		
@@ -410,14 +432,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		self.stop_timing()
 
-		print "Printing tasks......",
-		self.mac_usage.clear()
-		for mac in self.machines_state:
-			lst_tasks = []
-			self.mac_usage[mac] = (self.machines_state[mac], lst_tasks)
-			for task in self.machines_state[mac].tasks:
-				lst_tasks.append(self.tasks_state[task])
-		print "OK"
+		self.__calc_usage()
 
 		self.SLA_breaks               = self.__count_SLAs()
 		self.n_migrations             = self.__count_migrations()
