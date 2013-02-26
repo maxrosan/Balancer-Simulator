@@ -216,12 +216,12 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 					if old_task.age_round <= self.threshold_migration:
 						if (old_task.CPU_usage < new_task.CPU_usage or old_task.mem_usage < new_task.mem_usage):
-							if not self.machines_state[old_task.machine_ID].can_run(new_task):
+							if not self.machines_state[from_mach].can_run(new_task):
 								self.__migrate(old_task)
 							else:
 								old_task.move       = False
 								old_task.machine_ID = from_mach
-								self.machines_state[old_task.machine_ID].add_task(new_task)
+								self.machines_state[from_mach].add_task(new_task)
 					else:
 						old_task.age_round = 1
 						self.__migrate(old_task)
