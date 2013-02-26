@@ -219,6 +219,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 								old_task.move = False
 								self.machines_state[old_task.machine_ID].add_task(new_task)
 					else:
+						old_task.age_round = 0
 						self.__migrate(old_task)
 
 				old_task.CPU_usage = new_task.CPU_usage
