@@ -61,6 +61,7 @@ class LoadBalacing:
 		print "Usage mean: ", self.usage_mean_per
 		print "Usage CPU mean: ", self.usage_CPU_mean
 		print "Usage mem mean: ", self.usage_mem_mean
+		print "Total: ", self.total_tasks
 		print "-------------------------------------------"
 
 	def print_log_file(self):
