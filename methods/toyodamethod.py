@@ -296,6 +296,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.mac_usage.clear()
 
 		usage_vec = []
+		usage_cpu = []
+		usage_mem = []
 
 		for mac in self.machines_state:
 			lst_tasks = []
@@ -306,10 +308,14 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 				mac_obj = self.mac_usage[mac][0]
 				usage_vec.append((mac_obj.CPU_usage * mac_obj.mem_usage) / (mac_obj.capacity_CPU * mac_obj.capacity_memory))
+				usage_cpu.append(mac_obj.CPU_usage)
+				usage_mem.append(mac_obj.mem_usage)
 
 		if len(usage_vec) > 0:
 			self.usage_mean_per = numpy.mean(usage_vec)
 			self.usage_stan_per = numpy.std(usage_vec)
+			self.usage_CPU_mean = numpy.mean(usage_cpu)
+			self.usage_mem_mean = numpy.mean(usage_mem)
 
 		print "OK"
 

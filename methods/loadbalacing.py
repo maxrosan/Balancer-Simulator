@@ -22,6 +22,8 @@ class LoadBalacing:
 		self.SLA_breaks               = 0
 		self.usage_mean_per           = 0.
 		self.usage_stan_per           = 0.
+		self.usage_CPU_mean           = 0.
+		self.usage_mem_mean           = 0.
 
 		self._start_time              = 0.
 
