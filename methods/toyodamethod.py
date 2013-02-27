@@ -441,6 +441,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		self.__calc_usage()
 
+		self.total_tasks              = len(self.tasks_state)
 		self.SLA_breaks               = self.__count_SLAs()
 		self.n_migrations             = self.__count_migrations()
 		(self.task_mapped_successfully, self.task_failed_to_map) = self.__count_mapped()
