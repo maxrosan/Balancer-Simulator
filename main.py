@@ -46,23 +46,24 @@ class BalancerSimulator:
 ### ./main.py <balancing load method> <Google workload path> <number of threads>
 
 method = None
+var_globals = {}
+var_locals  = {}
 
 if sys.argv[1] == "help":
-	print "./main.py <balancing load method> <Google workload path> <number of threads>"
+	print "./main.py <config_file>"
 	exit()
-#elif sys.argv[1] == "knapsack":
-#	method = methods.multiknapsackmethod.MultiKnapsackMethod()
-elif sys.argv[1] == "toyoda":
-	method = methods.toyodamethod.ToyodaMethod(sys.argv[4:])
+else
+	execfile(sys.argv[1], var_globals, var_locals)
+
+if var_locals["method"] == "toyoda":
+	method = methods.toyodamethod.ToyodaMethod(var_locals["interval_toyoda"])
 else:
 	method = None
 
-#main_path            = "/home/max/Src/gsutil/"
-
-method.n_jobs = int(sys.argv[3])
+method.n_jobs = var_locals["num_of_jobs"]
 
 sim = simulator.Simulator()
-balsim = BalancerSimulator(sys.argv[2], method)
+balsim = BalancerSimulator(var_locals["dataset_path"], method)
 
 sim.add_event(simulator.Event(0., BalancerSimulator.add_event, (sim, balsim)))
 
