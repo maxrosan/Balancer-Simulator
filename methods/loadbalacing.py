@@ -58,12 +58,14 @@ class LoadBalacing:
 		print "SLA: ", self.SLA_breaks
 		print "Usage standard deviation: ", self.usage_stan_per
 		print "Usage mean: ", self.usage_mean_per
+		print "Usage CPU mean: ", self.usage_CPU_mean
+		print "Usage mem mean: ", self.usage_mem_mean
 		print "-------------------------------------------"
 
 	def print_log_file(self):
 		if self.balancing_fobj != None:
-			self.balancing_fobj.write("%d %d %d %d %d %d %d %f %f %f\n" % (self.n_round, self.task_mapped_successfully, self.task_failed_to_map,
-			 self.machines_used, self.machines_not_used, self.n_migrations, self.task_new, self.total_time, self.usage_mean_per, self.usage_stan_per))
+			self.balancing_fobj.write("%d %d %d %d %d %d %d %f %f %f %f %f\n" % (self.n_round, self.task_mapped_successfully, self.task_failed_to_map,
+			 self.machines_used, self.machines_not_used, self.n_migrations, self.task_new, self.total_time, self.usage_mean_per, self.usage_stan_per, self.usage_CPU_mean, self.usage_mem_mean))
 			self.balancing_fobj.flush()
 
 			self.mapping_fobj.write("Round %d--------------\n" % self.n_round)
