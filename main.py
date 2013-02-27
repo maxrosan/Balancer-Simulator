@@ -52,7 +52,7 @@ var_locals  = {}
 if sys.argv[1] == "help":
 	print "./main.py <config_file>"
 	exit()
-else
+else:
 	execfile(sys.argv[1], var_globals, var_locals)
 
 if var_locals["method"] == "toyoda":
