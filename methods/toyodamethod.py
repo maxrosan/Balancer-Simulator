@@ -378,7 +378,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 						p.start()
 						procs.append(p)
 					else:
-						macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_lsts[i], task_lsts[i])
+						macs = ToyodaMethod.balance_partial(self.w_cpu, self.w_mem, None, self.machines_state, self.tasks_state, mac_lsts[i], task_lsts[i])
 						update_map(macs)
 				
 				for i in range(0, self.n_jobs-1):
@@ -389,7 +389,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			else:
 				print "UP"
 
-				macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list, task_list)
+				macs = ToyodaMethod.balance_partial(self.w_cpu, self.w_mem, None, self.machines_state, self.tasks_state, mac_list, task_list)
 				update_map(macs)
 
 		###
