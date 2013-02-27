@@ -130,7 +130,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		return (macs)
 
-	def __init__(self, argv):
+	def __init__(self, threshold):
 		loadbalacing.LoadBalacing.__init__(self)
 
 		self.machines_state      = {}
@@ -139,7 +139,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		self.pq                  = Queue.PriorityQueue(0)
 
-		self.threshold_migration = int(argv[0])
+		self.threshold_migration = int(threshold)
 
 	def add_machine_event(self, mac):
 		if mac.event_type == mac.ADD_EVENT:
