@@ -56,7 +56,7 @@ else:
 	execfile(sys.argv[1], var_globals, var_locals)
 
 if var_locals["method"] == "toyoda":
-	method = methods.toyodamethod.ToyodaMethod(var_locals["interval_toyoda"])
+	method = methods.toyodamethod.ToyodaMethod(var_locals["interval_toyoda"], var_locals["w_cpu"], var_locals["w_mem"])
 else:
 	method = None
 
