@@ -8,4 +8,4 @@ mapping_log         = "mapping_toyoda_08.log"
 balancing_log       = "balancing_toyoda_08.log"
 w_cpu               = 0.8
 w_mem               = 1 - w_cpu
-total_time          = 30000
+total_time          = 10000
