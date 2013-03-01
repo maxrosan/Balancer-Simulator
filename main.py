@@ -2,7 +2,7 @@
 #
 
 import simulator, usage, machine, sets
-import methods.toyodamethod, methods.taskstats
+import methods.toyodamethod, methods.tasksstats
 import sys
 
 class BalancerSimulator:
