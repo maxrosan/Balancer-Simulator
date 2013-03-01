@@ -7,13 +7,13 @@ import sys
 
 class BalancerSimulator:
 
-	def __init__(self, main_path, balacing_method, balancing_log, mapping_log):
+	def __init__(self, main_path, balacing_method, balancing_log, mapping_log, total_time):
 		self.taskusage       = usage.TaskUsage(main_path + "task_usage", 0)
 		self.macevents       = machine.MachineEvent(main_path + "machine_events", 0)
 		self.time            = 0
 		self.interval        = 300
 		self.start_time      = 0
-		self.max_time        = 84600
+		self.max_time        = total_time
 		self.balacing_method = balacing_method
 		
 		self.balacing_method.open_log_file(balancing_log, mapping_log)
@@ -63,7 +63,7 @@ else:
 method.n_jobs = var_locals["num_of_jobs"]
 
 sim = simulator.Simulator()
-balsim = BalancerSimulator(var_locals["dataset_path"], method, var_locals["balancing_log"], var_locals["mapping_log"])
+balsim = BalancerSimulator(var_locals["dataset_path"], method, var_locals["balancing_log"], var_locals["mapping_log"], var_locals["total_time"])
 
 sim.add_event(simulator.Event(0., BalancerSimulator.add_event, (sim, balsim)))
 
