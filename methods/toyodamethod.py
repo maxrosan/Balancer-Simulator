@@ -278,8 +278,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		for task_ID in self.tasks_state:
 			task = self.tasks_state[task_ID]
 			if task.machine_ID != -1 and task.move and task.mig_origin != task.machine_ID:
-				task.move = False
-				res = res + 1
+				task.move       = False
+				res             = res + 1
+				task.mig_origin = -1
 
 		return res
 
