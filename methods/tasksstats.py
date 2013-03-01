@@ -51,8 +51,4 @@ class TasksStats(loadbalacing.LoadBalacing):
 			del self.machines[mac.machine_ID]
 
 	def add_task_usage(self, task):
-		if task.getID() in self.tasks_input:
-			if task.CPU_usage >= self.tasks[task.getID()].CPU_usage or task.mem_usage >= self.tasks[task.getID()].mem_usage:
-				self.tasks[task.getID()] = task
-		else:
-			self.tasks[task.getID()] = task
+		self.tasks[task.getID()] = task
