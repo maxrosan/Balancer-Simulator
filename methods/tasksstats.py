@@ -7,6 +7,9 @@ import math, random, Queue, io
 class TasksStats(loadbalacing.LoadBalacing):
 
 	def __init__(self, fileoutput):
+
+		loadbalacing.LoadBalacing.__init__(self)
+
 		self.tasks         = {}
 		self.machines      = {}
 		self.logf          = open(fileoutput, 'w+')
