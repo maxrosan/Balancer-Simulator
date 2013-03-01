@@ -34,7 +34,7 @@ class LoadBalacing:
 	def stop_timing(self):
 		self.total_time  = time.time() - self._start_time
 
-	def balance(self, machines_ready, tasks_to_run, state):
+	def balance(self):
 		pass
 
 	def open_log_file(self, filename_balancing, filename_mapping):

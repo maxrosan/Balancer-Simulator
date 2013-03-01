@@ -2,7 +2,7 @@
 #
 
 import simulator, usage, machine, sets
-import methods.toyodamethod
+import methods.toyodamethod, methods.taskstats
 import sys
 
 class BalancerSimulator:
@@ -55,8 +55,10 @@ if sys.argv[1] == "help":
 else:
 	execfile(sys.argv[1], var_globals, var_locals)
 
-if var_locals["method"] == "toyoda":
+if   var_locals["method"] == "toyoda":
 	method = methods.toyodamethod.ToyodaMethod(var_locals["interval_toyoda"], var_locals["w_cpu"], var_locals["w_mem"])
+elif var_locals["method"] == "stats":
+	method = methods.tasksstats.TasksStats(var_locals["logfile"])
 else:
 	method = None
 
