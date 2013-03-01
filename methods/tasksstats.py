@@ -16,6 +16,8 @@ class TasksStats(loadbalacing.LoadBalacing):
 		cpu = 0.
 		mem = 0.
 
+		self.reset_stats()
+
 		for mac in self.machines:
 
 			obj = self.machines[mac]
