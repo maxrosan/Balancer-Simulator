@@ -19,6 +19,8 @@ class TasksStats(loadbalacing.LoadBalacing):
 		cpu = 0.
 		mem = 0.
 
+		self.n_round = self.n_round + 1
+
 		self.reset_stats()
 
 		for mac in self.machines:
@@ -45,6 +47,8 @@ class TasksStats(loadbalacing.LoadBalacing):
 		print strng 
 
 		self.tasks.clear()
+
+		self.total_tasks  = len(self.tasks)
 
 	def add_machine_event(self, mac):
 		if mac.event_type == mac.ADD_EVENT:
