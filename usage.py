@@ -19,7 +19,7 @@ class TaskUsageRegister:
 		self.mig_origin = -1
 
 	def getID(self):
-		return (str(self.job_ID) + '.' + str(self.task_ID)) # python trata isso 
+		return ((self.job_ID << 64) + self.task_ID) # python trata isso 
 
 	def __hash__(self):
 		return self.getID()
@@ -108,8 +108,8 @@ class TaskUsage:
 					keep_going = False
 			else:
 				task = TaskUsageRegister()
-				task.start_time  = float(self.line[0])/1000000.
-				task.end_time    = float(self.line[1])/1000000.
+				task.start_time  = float(int(float(self.line[0])/1000000.))
+				task.end_time    = float(int(float(self.line[1])/1000000.))
 				task.job_ID      = int(self.line[2])
 				task.task_ID     = int(self.line[3])
 				task.machine_ID  = -1 # int(self.line[4])
