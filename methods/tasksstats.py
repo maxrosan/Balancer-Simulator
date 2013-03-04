@@ -46,9 +46,9 @@ class TasksStats(loadbalacing.LoadBalacing):
 		self.logf.write(strng)
 		print strng 
 
-		self.tasks.clear()
-
 		self.total_tasks  = len(self.tasks)
+
+		self.tasks.clear()
 
 	def add_machine_event(self, mac):
 		if mac.event_type == mac.ADD_EVENT:
