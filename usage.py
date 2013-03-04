@@ -19,7 +19,7 @@ class TaskUsageRegister:
 		self.mig_origin = -1
 
 	def getID(self):
-		return ((self.job_ID << 64) + self.task_ID) # python trata isso 
+		return (str(self.job_ID) + '.' + str(self.task_ID)) # python trata isso 
 
 	def __hash__(self):
 		return self.getID()
