@@ -122,12 +122,10 @@ class TaskUsage:
 				task.move        = False
 				task.mig_origin  = -1
 
-				if start <= task.start_time and task.end_time < end:
+				if start <= task.start_time and task.end_time <= end:
 					callback(arg, task)
 					self.line = None				
 				else:
-					print "%f %f %f %f" % (start, end, task.start_time, task.end_time)
-
 					keep_going = False
 		
 		return True

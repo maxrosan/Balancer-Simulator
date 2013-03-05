@@ -144,7 +144,7 @@ class MachineEvent:
 
 				#machine.print_info()
 
-				if start <= machine.time and machine.time < end:
+				if start <= machine.time and machine.time <= end:
 					callback(arg, machine)
 					self.line = None				
 				else:
