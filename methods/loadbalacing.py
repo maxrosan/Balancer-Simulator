@@ -68,8 +68,8 @@ class LoadBalacing:
 
 	def print_log_file(self):
 		if self.balancing_fobj != None:
-			self.balancing_fobj.write("%d %d %d %d %d %d %d %f %f %f %f %f %d\n" % (self.n_round, self.task_mapped_successfully, self.task_failed_to_map,
-			 self.machines_used, self.machines_not_used, self.n_migrations, self.task_new, self.total_time, self.usage_mean_per, self.usage_stan_per, self.usage_CPU_mean, self.usage_mem_mean, self.total_tasks))
+			self.balancing_fobj.write("%d %d %d %d %d %d %d %f %f %f %f %f %d %d\n" % (self.n_round, self.task_mapped_successfully, self.task_failed_to_map,
+			 self.machines_used, self.machines_not_used, self.n_migrations, self.task_new, self.total_time, self.usage_mean_per, self.usage_stan_per, self.usage_CPU_mean, self.usage_mem_mean, self.total_tasks, self.SLA_breaks))
 			self.balancing_fobj.flush()
 
 			self.mapping_fobj.write("Round %d--------------\n" % self.n_round)
