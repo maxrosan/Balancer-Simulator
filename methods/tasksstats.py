@@ -28,7 +28,7 @@ class TasksStats(loadbalacing.LoadBalacing):
 			key = "%d-%d-%d-%d" % (int(self.bal_sim.time - self.bal_sim.interval), int(self.bal_sim.time), self.tasks[task_ID].job_ID, self.tasks[task_ID].task_ID)
 			map_t[key] = (self.tasks[task_ID].CPU_usage, self.tasks[task_ID].mem_usage)
 
-		keys = sorted(self.tasks.keys())
+		keys = sorted(map_t.keys())
 
 		for key in keys:
 			op.write(("\t".join(key.split("-"))) + ("%f\t%f\n" % map_t[key]))
