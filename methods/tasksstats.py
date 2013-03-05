@@ -17,7 +17,7 @@ class TasksStats(loadbalacing.LoadBalacing):
 	def __generate_output(self):
 
 		if len(self.tasks) == 0:
-			break
+			return
 
 		map_t = {}
 		
