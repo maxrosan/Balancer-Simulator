@@ -122,6 +122,9 @@ class TaskUsage:
 				task.move        = False
 				task.mig_origin  = -1
 
+				if task.job_ID == 6142670613 and task.task_ID == 0:
+					print "LEU %f %f" % (task.CPU_usage, task.mem_usage)
+
 				if start <= task.start_time and task.end_time <= end:
 					callback(arg, task)
 					self.line = None				
