@@ -201,7 +201,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					if mac.free_CPU() > task.CPU_usage and mac.can_run(task):
 						mac.add_task(task)
 						task.machine_ID = mac.machine_ID
-					self.pq.put((mac.free_CPU(), mac))
+					self.pq.put((-mac.free_CPU(), mac))
 			else:
 				new_task = self.tasks_input[task_ID]
 				old_task = self.tasks_state[task_ID]
