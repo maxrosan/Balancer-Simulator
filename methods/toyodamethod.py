@@ -164,9 +164,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 	def add_task_usage(self, task):
 		if task.getID() in self.tasks_input:
-			ti = self.tasks_input[task.getID()]
-			if ti.CPU_usage < task.CPU_usage or ti.mem_usage < task.mem_usage:
-				self.tasks_input[task.getID()] = ti
+			self.tasks_input[task.getID()].CPU_usage = max(self.tasks_input[task.getID()].CPU_usage, task.CPU_usage)
+			self.tasks_input[task.getID()].mem_usage = max(self.tasks_input[task.getID()].mem_usage, task.mem_usage)
 		else:
 			self.tasks_input[task.getID()] = task
 

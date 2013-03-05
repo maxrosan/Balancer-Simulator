@@ -68,7 +68,7 @@ class TasksStats(loadbalacing.LoadBalacing):
 		self.logf.write(strng)
 		print strng 
 
-		self.__generate_output()
+		#self.__generate_output()
 
 		self.total_tasks       = len(self.tasks)
 		self.machines_not_used = len(self.machines)
