@@ -92,7 +92,7 @@ class TaskUsage:
 		return -1
 		
 		
-	def read_until(self, instant, callback, arg): # callback(arg, TaskUsageRegister)
+	def read_until(self, start, end, callback, arg): # callback(arg, TaskUsageRegister)
 
 		keep_going = True
 
@@ -108,8 +108,8 @@ class TaskUsage:
 					keep_going = False
 			else:
 				task = TaskUsageRegister()
-				task.start_time  = float(int(float(self.line[0])/1000000.))
-				task.end_time    = float(int(float(self.line[1])/1000000.))
+				task.start_time  = float(self.line[0])/1000000.
+				task.end_time    = float(self.line[1])/1000000.
 				task.job_ID      = int(self.line[2])
 				task.task_ID     = int(self.line[3])
 				task.machine_ID  = -1 # int(self.line[4])
@@ -122,7 +122,7 @@ class TaskUsage:
 				task.move        = False
 				task.mig_origin  = -1
 
-				if task.start_time <= instant:
+				if start <= task.start_time and task.end_time < end:
 					callback(arg, task)
 					self.line = None				
 				else:

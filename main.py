@@ -35,8 +35,8 @@ class BalancerSimulator:
 	@staticmethod
 	def add_event((sim, balsim)):
 
-		balsim.macevents.read_until(balsim.time, BalancerSimulator.add_machine_event, balsim)
-		balsim.taskusage.read_until(balsim.time, BalancerSimulator.add_task_usage, balsim)
+		balsim.macevents.read_until(balsim.time - balsim.interval, balsim.time, BalancerSimulator.add_machine_event, balsim)
+		balsim.taskusage.read_until(balsim.time - balsim.interval, balsim.time, BalancerSimulator.add_task_usage, balsim)
 		balsim.balance()
 
 		balsim.time = balsim.time + balsim.interval

@@ -119,7 +119,7 @@ class MachineEvent:
 		else:
 			self.line = ln.split(',',6)
 		
-	def read_until(self, instant, callback, arg): # callback(arg, MachineEventRegister)
+	def read_until(self, start, end, callback, arg): # callback(arg, MachineEventRegister)
 
 		keep_going = True
 
@@ -144,7 +144,7 @@ class MachineEvent:
 
 				#machine.print_info()
 
-				if (machine.time <= instant):
+				if start <= machine.time and machine.time < end:
 					callback(arg, machine)
 					self.line = None				
 				else:
