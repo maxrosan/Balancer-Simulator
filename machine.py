@@ -123,6 +123,8 @@ class MachineEvent:
 
 		keep_going = True
 
+		chk_index = [0, 1, 2, 3, 4, 5]
+
 		while keep_going:
 
 			if self.line == None:
@@ -134,21 +136,30 @@ class MachineEvent:
 				else:
 					keep_going = False
 			else:
-				machine = MachineEventRegister()
-				machine.time = float(self.line[0])/1000000.
-				machine.machine_ID = int(self.line[1])
-				machine.event_type = int(self.line[2])
-				machine.platform_ID = self.line[3]
-				machine.capacity_CPU = float(self.line[4])
-				machine.capacity_memory = float(self.line[5])
+				read_ok = True
 
-				#machine.print_info()
+				for i in chk_index: # Some entries have no value for CPU and memory
+					if len(self.line[i]) == 0:
+						read_ok = False
 
-				if start <= machine.time and machine.time <= end:
-					callback(arg, machine)
-					self.line = None				
+				if read_ok:	
+					machine = MachineEventRegister()
+					machine.time = float(self.line[0])/1000000.
+					machine.machine_ID = int(self.line[1])
+					machine.event_type = int(self.line[2])
+					machine.platform_ID = self.line[3]
+					machine.capacity_CPU = float(self.line[4])
+					machine.capacity_memory = float(self.line[5])
+
+					#machine.print_info()
+
+					if start <= machine.time and machine.time <= end:
+						callback(arg, machine)
+						self.line = None				
+					else:
+						keep_going = False
 				else:
-					keep_going = False
+					self.line = None
 		
 		return True
 
