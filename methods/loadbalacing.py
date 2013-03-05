@@ -8,6 +8,8 @@ class LoadBalacing:
 		self.n_round                  = 0
 		self.fobj                     = None
 		self.n_jobs                   = 2
+		self.bal_sim                  = None
+
 		self.reset_stats()	
 
 	def reset_stats(self):

@@ -14,6 +14,28 @@ class TasksStats(loadbalacing.LoadBalacing):
 		self.machines      = {}
 		self.logf          = open(fileoutput, 'w+')
 
+	def __generate_output(self):
+
+		if len(self.tasks) == 0:
+			break
+
+		map_t = {}
+		
+		name = "%d-%d.csv" % (int(self.bal_sim.time - self.bal_sim.interval), int(self.bal_sim.time))
+		op = open(name, "w+")
+
+		for task_ID in self.tasks:
+			key = "%d-%d-%d-%d" % (int(self.bal_sim.time - self.bal_sim.interval), int(self.bal_sim.time), self.tasks[task_ID].job_ID, task_ID)
+			map_t[key] = (self.tasks[task_ID].CPU_usage, self.tasks[task_ID].mem_usage)
+
+		keys = sorted(self.tasks.keys())
+
+		for key in keys:
+			op.write(("\t".join(key.split("-"))) + ("%f\t%f\n" % map_t[key]))
+
+		op.close()
+			
+
 	def balance(self):
 		
 		cpu = 0.
@@ -45,6 +67,8 @@ class TasksStats(loadbalacing.LoadBalacing):
 		
 		self.logf.write(strng)
 		print strng 
+
+		self.__generate_output()
 
 		self.total_tasks       = len(self.tasks)
 		self.machines_not_used = len(self.machines)

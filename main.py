@@ -8,13 +8,15 @@ import sys
 class BalancerSimulator:
 
 	def __init__(self, main_path, balacing_method, balancing_log, mapping_log, total_time):
-		self.taskusage       = usage.TaskUsage(main_path + "task_usage", 0)
-		self.macevents       = machine.MachineEvent(main_path + "machine_events", 0)
-		self.time            = 300
-		self.interval        = 300
-		self.start_time      = 0
-		self.max_time        = total_time
-		self.balacing_method = balacing_method
+		self.taskusage          = usage.TaskUsage(main_path + "task_usage", 0)
+		self.macevents          = machine.MachineEvent(main_path + "machine_events", 0)
+		self.time               = 300
+		self.interval           = 300
+		self.start_time         = 0
+		self.max_time           = total_time
+		self.balacing_method    = balacing_method
+
+		balacing_method.bal_sim = self
 		
 		self.balacing_method.open_log_file(balancing_log, mapping_log)
 
