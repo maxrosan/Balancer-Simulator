@@ -126,6 +126,8 @@ class TaskUsage:
 					callback(arg, task)
 					self.line = None				
 				else:
+					print "%f %f %f %f" % (start, end, task.start_time, task.end_time)
+
 					keep_going = False
 		
 		return True
