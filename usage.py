@@ -112,7 +112,7 @@ class TaskUsage:
 
 				read_ok = True
 				for i in chk_index:  # Checking if all values are valid
-					if len(self.lines[i]) == 0:
+					if len(self.line[i]) == 0:
 						read_ok = False
 
 				if read_ok:			
