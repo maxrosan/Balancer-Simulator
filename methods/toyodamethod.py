@@ -402,7 +402,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		self.__update_tasks()
 
-		self.start_timing()
+		s_time = time.time()
 	
 		self.n_threads  = self.n_jobs
 	
@@ -439,7 +439,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		
 		self.__calc_heap()
 
-		self.stop_timing()
+		self.total_time = time.time() - s_time
 
 		self.__calc_usage()
 
