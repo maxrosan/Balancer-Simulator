@@ -2,7 +2,7 @@
 
 method              = 'toyoda'
 num_of_jobs         = 8
-interval_toyoda     = 5
+interval_toyoda     = 10
 dataset_path        = "/home/maxrosan/src/gs_cluster/"
 mapping_log         = "log/mapping_toyoda_06.log"
 balancing_log       = "log/balancing_toyoda_06.log"
