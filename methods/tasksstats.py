@@ -85,4 +85,9 @@ class TasksStats(loadbalacing.LoadBalacing):
 			del self.machines[mac.machine_ID]
 
 	def add_task_usage(self, task):
-		self.tasks[task.getID()] = task
+		if task.getID() in self.tasks:
+			self.tasks[task.getID()].CPU_usage = max(self.tasks[task.getID()].CPU_usage, task.CPU_usage)
+			self.tasks[task.getID()].mem_usage = max(self.tasks[task.getID()].mem_usage, task.mem_usage)
+		else:
+			self.tasks[task.getID()] = task
+

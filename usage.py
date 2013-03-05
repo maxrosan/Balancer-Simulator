@@ -114,16 +114,13 @@ class TaskUsage:
 				task.task_ID     = int(self.line[3])
 				task.machine_ID  = -1 # int(self.line[4])
 				task.CPU_usage   = float(self.line[5])
-				task.mem_usage   = float(self.line[6])
+				task.mem_usage   = float(self.line[10])
 				task.age_round   = 0
 				task.last_round  = -1
 				task.first_round = 0
 				task.altered     = False
 				task.move        = False
 				task.mig_origin  = -1
-
-				if task.job_ID == 6142670613 and task.task_ID == 0:
-					print ("LEU %f %f " % (task.CPU_usage, task.mem_usage)) + str(self.line)
 
 				if start <= task.start_time and task.end_time <= end:
 					callback(arg, task)
