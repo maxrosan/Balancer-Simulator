@@ -31,7 +31,7 @@ class TasksStats(loadbalacing.LoadBalacing):
 		keys = sorted(map_t.keys())
 
 		for key in keys:
-			op.write(("\t".join(key.split("-"))) + ("%f\t%f\n" % map_t[key]))
+			op.write(("\t".join(key.split("-"))) + ("\t%f\t%f\n" % map_t[key]))
 
 		op.close()
 			
