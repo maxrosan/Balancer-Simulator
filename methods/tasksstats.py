@@ -79,8 +79,9 @@ class TasksStats(loadbalacing.LoadBalacing):
 		if mac.event_type == mac.ADD_EVENT:
 			self.machines[mac.machine_ID] = mac
 		elif mac.event_type == mac.UPDATE_EVENT:
-			self.machines[mac.machine_ID].capacity_CPU    = mac.capacity_CPU
-			self.machines[mac.machine_ID].capacity_memory = mac.capacity_memory
+			if mac.machine_ID in self.machines:
+				self.machines[mac.machine_ID].capacity_CPU    = mac.capacity_CPU
+				self.machines[mac.machine_ID].capacity_memory = mac.capacity_memory
 		else:
 			del self.machines[mac.machine_ID]
 
