@@ -64,11 +64,16 @@ class TasksStats(loadbalacing.LoadBalacing):
 		#cpu_task = 0.
 		#mem_task = 0.
 
+		n_hists = 0
+
 		for task in self.tasks:
 
 			obj = self.tasks[task]
 	
 			if len(self.hist[task]) >= 50:
+
+				n_hists = n_hists + 1
+
 				f = open("log/tasks/task." + task + ".log", "a+")
 
 				for tup in self.hist[task]:
@@ -77,6 +82,8 @@ class TasksStats(loadbalacing.LoadBalacing):
 				f.close()
 
 			self.hist[task] = []
+
+		print "n_hists = %d" % (n_hists)
 				
 
 		#	cpu_task = cpu_task + obj.CPU_usage
