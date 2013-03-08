@@ -15,6 +15,8 @@ class TasksStats(loadbalacing.LoadBalacing):
 		self.logf          = open(fileoutput, 'w+')
 		self.hist          = {}
 
+		self.n_writes      = 0
+
 	def __generate_output(self):
 
 		if len(self.tasks) == 0:
@@ -69,7 +71,6 @@ class TasksStats(loadbalacing.LoadBalacing):
 
 		n_hists = 0
 		max_hist = 0
-		n_writes = 0
 
 		for task in self.tasks:
 
@@ -81,13 +82,22 @@ class TasksStats(loadbalacing.LoadBalacing):
 
 				n_hists = n_hists + 1
 	
-				if n_writes <= 100:
-					n_writes = n_writes + 1
+				if self.n_writes <= 100:
+					self.n_writes = self.n_writes + 1
 
 					f = open("log/tasks/task." + task + ".log", "a+")
 	
+					pred_5_cpu = 0.
+					pred_5_mem = 0.
+					i = 0
 					for tup in self.hist[task]:
-						f.write("%f %f\n" % tup)
+
+						if i >= 5:
+							pred_5_cpu = (sum([t[0] for t in cpuself.hist[task][:-6]]) - tup[0])/5.
+							pred_5_mem = (sum([t[1] for t in cpuself.hist[task][:-6]]) - tup[1])/5.
+
+						i = i + 1
+						f.write("%f %f %f %f\n" % (tup[0], tup[1], pred_5_cpu, pred_5_mem))
 
 					f.close()
 
