@@ -121,7 +121,7 @@ class TasksStats(loadbalacing.LoadBalacing):
 				
 			self.tasks[task.getID()].CPU_usage = cpu
 			self.tasks[task.getID()].mem_usage = mem
-			if task_obj.last_round < self.n_round + 1:
+			if self.tasks[task.getID()].last_round < self.n_round + 1:
 				self.hist[task.getID()].append((cpu, mem))
 		else:
 			self.tasks[task.getID()] = task
