@@ -65,12 +65,15 @@ class TasksStats(loadbalacing.LoadBalacing):
 		#mem_task = 0.
 
 		n_hists = 0
+		max_hist = 0
 
 		for task in self.tasks:
 
 			obj = self.tasks[task]
-	
-			if len(self.hist[task]) >= 50:
+			len_hist = len(self.hist[task])
+			max_hist = max(len_hist, max_hist)	
+
+			if len_hist >= 50:
 
 				n_hists = n_hists + 1
 
@@ -83,7 +86,7 @@ class TasksStats(loadbalacing.LoadBalacing):
 
 			self.hist[task] = []
 
-		print "n_hists = %d" % (n_hists)
+		print "n_hists = %d; max = %d" % (n_hists, max_hist)
 				
 
 		#	cpu_task = cpu_task + obj.CPU_usage
