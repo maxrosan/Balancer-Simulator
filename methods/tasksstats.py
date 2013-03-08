@@ -72,6 +72,8 @@ class TasksStats(loadbalacing.LoadBalacing):
 		n_hists = 0
 		max_hist = 0
 
+		alpha = 2./(5. + 1.)
+
 		for task in self.tasks:
 
 			obj = self.tasks[task]
@@ -93,6 +95,9 @@ class TasksStats(loadbalacing.LoadBalacing):
 					pred_5_cpu_mov = 0.
 					pred_5_mem_mov = 0.
 
+					pred_5_cpu_mov_exp = 0.
+					pred_5_mem_mov_exp = 0.
+
 					i = 0
 					for tup in self.hist[task]:
 
@@ -105,8 +110,15 @@ class TasksStats(loadbalacing.LoadBalacing):
 							pred_5_cpu_mov = sum([(6 - j) * lst[i - j][0] for j in range(1,6)])/15.
 							pred_5_mem_mov = sum([(6 - j) * lst[i - j][1] for j in range(1,6)])/15.
 
+							pred_5_cpu_mov_exp = lst[i - 1][0]
+							pred_5_mem_mov_exp = lst[i - 1][1]
+							for k in range(2,6):
+								pred_5_cpu_mov_exp = pred_5_cpu_mov_exp * (1. - alpha) + alpha * lst[i - k][0]
+								pred_5_mem_mov_exp = pred_5_mem_mov_exp * (1. - alpha) + alpha * lst[i - k][1]
+
 						i = i + 1
-						f.write("%f %f %f %f %f %f\n" % (tup[0], tup[1], pred_5_cpu, pred_5_mem, pred_5_cpu_mov, pred_5_mem_mov))
+						f.write("%f %f %f %f %f %f %f %f\n" % (tup[0], tup[1], pred_5_cpu, pred_5_mem, pred_5_cpu_mov, pred_5_mem_mov,
+						 pred_5_cpu_mov_exp, pred_5_mem_mov_exp))
 
 					f.close()
 
