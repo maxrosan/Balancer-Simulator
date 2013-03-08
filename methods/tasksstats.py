@@ -99,6 +99,9 @@ class TasksStats(loadbalacing.LoadBalacing):
 					pred_5_cpu_mov_exp = 0.
 					pred_5_mem_mov_exp = 0.
 
+					pred_5_cpu_lagrange = 0.
+					pred_5_mem_lagrange = 0.
+
 					i = 0
 					for tup in self.hist[task]:
 
