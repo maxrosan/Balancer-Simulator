@@ -44,10 +44,12 @@ class TasksStats(loadbalacing.LoadBalacing):
 
 		self.n_round = self.n_round + 1
 
+		n_rem = 0
 		for task_ID in list(self.tasks):
 			if self.tasks[task_ID].last_round < self.n_round:
 				del self.tasks[task_ID]
 				del self.hist[task_ID]
+				n_rem = n_rem + 1
 			else:
 				self.tasks[task_ID].inc_age()
 
@@ -86,7 +88,7 @@ class TasksStats(loadbalacing.LoadBalacing):
 
 			self.hist[task] = []
 
-		print "n_hists = %d; max = %d" % (n_hists, max_hist)
+		print "n_hists = %d; max = %d; n_rem = %d" % (n_hists, max_hist, n_rem)
 				
 
 		#	cpu_task = cpu_task + obj.CPU_usage
