@@ -87,7 +87,7 @@ class TasksStats(loadbalacing.LoadBalacing):
 
 				f.close()
 
-			self.hist[task] = []
+				self.hist[task] = []
 
 		print "n_hists = %d; max = %d; n_rem = %d" % (n_hists, max_hist, n_rem)
 				
