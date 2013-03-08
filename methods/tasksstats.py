@@ -13,6 +13,7 @@ class TasksStats(loadbalacing.LoadBalacing):
 		self.tasks         = {}
 		self.machines      = {}
 		self.logf          = open(fileoutput, 'w+')
+		self.hist          = {}
 
 	def __generate_output(self):
 
@@ -43,37 +44,55 @@ class TasksStats(loadbalacing.LoadBalacing):
 
 		self.n_round = self.n_round + 1
 
+		for task_ID in list(self.tasks):
+			if self.tasks[task_ID].last_round < self.n_round:
+				del self.tasks[task_ID]
+				del self.hist[task_ID]
+			else:
+				self.tasks[task_ID].inc_age()
+
 		self.reset_stats()
 
-		for mac in self.machines:
+#		for mac in self.machines:
+#
+#			obj = self.machines[mac]
 
-			obj = self.machines[mac]
-
-			cpu = cpu + obj.capacity_CPU
-			mem = mem + obj.capacity_memory
+#			cpu = cpu + obj.capacity_CPU
+#			mem = mem + obj.capacity_memory
 
 
-		cpu_task = 0.
-		mem_task = 0.
+		#cpu_task = 0.
+		#mem_task = 0.
 
 		for task in self.tasks:
 
 			obj = self.tasks[task]
+	
+			if len(self.hist[task]) >= 50:
+				f = open("log/tasks/task." + task + ".log", "a+")
 
-			cpu_task = cpu_task + obj.CPU_usage
-			mem_task = mem_task + obj.mem_usage
+				for tup in self.hist[task]:
+					f.write("%f %f\n" % tup)
 
-		strng = '%f %f\n' % (cpu_task / cpu, mem_task / mem)
+				f.close()
+
+			self.hist[task] = []
+				
+
+		#	cpu_task = cpu_task + obj.CPU_usage
+		#	mem_task = mem_task + obj.mem_usage
+
+		#strng = '%f %f\n' % (cpu_task / cpu, mem_task / mem)
 		
-		self.logf.write(strng)
-		print strng 
+		#self.logf.write(strng)
+		#print strng 
 
 		#self.__generate_output()
 
 		self.total_tasks       = len(self.tasks)
 		self.machines_not_used = len(self.machines)
 
-		self.tasks.clear()
+		#self.tasks.clear()
 
 	def add_machine_event(self, mac):
 		if mac.event_type == mac.ADD_EVENT:
@@ -87,8 +106,16 @@ class TasksStats(loadbalacing.LoadBalacing):
 
 	def add_task_usage(self, task):
 		if task.getID() in self.tasks:
-			self.tasks[task.getID()].CPU_usage = max(self.tasks[task.getID()].CPU_usage, task.CPU_usage)
-			self.tasks[task.getID()].mem_usage = max(self.tasks[task.getID()].mem_usage, task.mem_usage)
+			cpu = max(self.tasks[task.getID()].CPU_usage, task.CPU_usage)
+			mem = max(self.tasks[task.getID()].mem_usage, task.mem_usage)
+				
+			self.tasks[task.getID()].CPU_usage = cpu
+			self.tasks[task.getID()].mem_usage = mem
+			
+			self.hist[task.getID()].append((cpu, mem))
 		else:
 			self.tasks[task.getID()] = task
+			self.hist[task.getID()]  = [(task.CPU_usage, task.mem_usage)]
 
+		task_obj            = self.tasks[task.getID()]
+		task_obj.last_round = self.n_round + 1
