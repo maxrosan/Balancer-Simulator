@@ -69,6 +69,7 @@ class TasksStats(loadbalacing.LoadBalacing):
 
 		n_hists = 0
 		max_hist = 0
+		n_writes = 0
 
 		for task in self.tasks:
 
@@ -79,13 +80,16 @@ class TasksStats(loadbalacing.LoadBalacing):
 			if len_hist >= 150:
 
 				n_hists = n_hists + 1
+	
+				if n_writes <= 100:
+					n_writes = n_writes + 1
 
-				f = open("log/tasks/task." + task + ".log", "a+")
+					f = open("log/tasks/task." + task + ".log", "a+")
+	
+					for tup in self.hist[task]:
+						f.write("%f %f\n" % tup)
 
-				for tup in self.hist[task]:
-					f.write("%f %f\n" % tup)
-
-				f.close()
+					f.close()
 
 				self.hist[task] = []
 
