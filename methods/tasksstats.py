@@ -74,7 +74,7 @@ class TasksStats(loadbalacing.LoadBalacing):
 
 			obj = self.tasks[task]
 			len_hist = len(self.hist[task])
-			max_hist = max(len_hist, obj.age_round)	
+			max_hist = max(len_hist, max_hist)	
 
 			if len_hist >= 50:
 
