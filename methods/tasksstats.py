@@ -120,7 +120,7 @@ class TasksStats(loadbalacing.LoadBalacing):
 	def add_task_usage(self, task):
 		if task.getID() in self.tasks:
 
-			if self.tasks[task.getID()].last_round == (n_round + 1):
+			if self.tasks[task.getID()].last_round == (self.n_round + 1):
 				cpu = max(self.tasks[task.getID()].CPU_usage, task.CPU_usage)
 				mem = max(self.tasks[task.getID()].mem_usage, task.mem_usage)
 			else:
