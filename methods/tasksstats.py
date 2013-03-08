@@ -89,21 +89,30 @@ class TasksStats(loadbalacing.LoadBalacing):
 	
 					pred_5_cpu = 0.
 					pred_5_mem = 0.
+
+					pred_5_cpu_mov = 0.
+					pred_5_mem_mov = 0.
+
 					i = 0
 					for tup in self.hist[task]:
 
+						lst = self.hist[task]
+
 						if i >= 5:
-							pred_5_cpu = sum([t[0] for t in self.hist[task][(i - 5):i]])/5.
-							pred_5_mem = sum([t[1] for t in self.hist[task][(i - 5):i]])/5.
+							pred_5_cpu = sum([t[0] for t in lst[(i - 5):i]])/5.
+							pred_5_mem = sum([t[1] for t in lst[task][(i - 5):i]])/5.
+							
+							pred_5_cpu_mov = sum([(6 - j) * lst[i - j][0] for j in range(1,6)])/15.
+							pred_5_mem_mov = sum([(6 - j) * lst[i - j][1] for j in range(1,6)])/15.
 
 						i = i + 1
-						f.write("%f %f %f %f\n" % (tup[0], tup[1], pred_5_cpu, pred_5_mem))
+						f.write("%f %f %f %f %f %f\n" % (tup[0], tup[1], pred_5_cpu, pred_5_mem, pred_5_cpu_mov, pred_5_mem_mov))
 
 					f.close()
 
 				self.hist[task] = []
 
-		print "n_hists = %d; max = %d; n_rem = %d" % (n_hists, max_hist, n_rem)
+		print "# n_hists = %d; max = %d; n_rem = %d" % (n_hists, max_hist, n_rem)
 				
 
 		#	cpu_task = cpu_task + obj.CPU_usage
