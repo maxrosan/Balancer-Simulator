@@ -76,7 +76,7 @@ class TasksStats(loadbalacing.LoadBalacing):
 			len_hist = len(self.hist[task])
 			max_hist = max(len_hist, max_hist)	
 
-			if len_hist >= 50:
+			if len_hist >= 150:
 
 				n_hists = n_hists + 1
 
@@ -119,8 +119,13 @@ class TasksStats(loadbalacing.LoadBalacing):
 
 	def add_task_usage(self, task):
 		if task.getID() in self.tasks:
-			cpu = max(self.tasks[task.getID()].CPU_usage, task.CPU_usage)
-			mem = max(self.tasks[task.getID()].mem_usage, task.mem_usage)
+
+			if self.tasks[task.getID()].last_round == (n_round + 1):
+				cpu = max(self.tasks[task.getID()].CPU_usage, task.CPU_usage)
+				mem = max(self.tasks[task.getID()].mem_usage, task.mem_usage)
+			else:
+				cpu = task.CPU_usage
+				mem = task.mem_usage
 				
 			self.tasks[task.getID()].CPU_usage = cpu
 			self.tasks[task.getID()].mem_usage = mem
