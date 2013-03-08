@@ -85,7 +85,7 @@ class TasksStats(loadbalacing.LoadBalacing):
 				if self.n_writes <= 100:
 					self.n_writes = self.n_writes + 1
 
-					f = open("log/tasks/task." + task + ".log", "a+")
+					f = open("log/tasks/task." + task + ".log", "w+")
 	
 					pred_5_cpu = 0.
 					pred_5_mem = 0.
