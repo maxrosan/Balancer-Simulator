@@ -52,6 +52,7 @@ class TasksStats(loadbalacing.LoadBalacing):
 				n_rem = n_rem + 1
 			else:
 				self.tasks[task_ID].inc_age()
+				self.hist[task_ID].append((self.tasks[task_ID].CPU_usage, self.tasks[task_ID].mem_usage))
 
 		self.reset_stats()
 
@@ -123,8 +124,6 @@ class TasksStats(loadbalacing.LoadBalacing):
 				
 			self.tasks[task.getID()].CPU_usage = cpu
 			self.tasks[task.getID()].mem_usage = mem
-			if self.tasks[task.getID()].last_round < self.n_round + 1:
-				self.hist[task.getID()].append((cpu, mem))
 		else:
 			self.tasks[task.getID()] = task
 			self.hist[task.getID()]  = [(task.CPU_usage, task.mem_usage)]
