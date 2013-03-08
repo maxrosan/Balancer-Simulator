@@ -93,8 +93,8 @@ class TasksStats(loadbalacing.LoadBalacing):
 					for tup in self.hist[task]:
 
 						if i >= 5:
-							pred_5_cpu = (sum([t[0] for t in self.hist[task][-6:]]) - tup[0])/5.
-							pred_5_mem = (sum([t[1] for t in self.hist[task][-6:]]) - tup[1])/5.
+							pred_5_cpu = (sum([t[0] for t in self.hist[task][-6:len_hist]]) - tup[0])/5.
+							pred_5_mem = (sum([t[1] for t in self.hist[task][-6:len_hist]]) - tup[1])/5.
 
 						i = i + 1
 						f.write("%f %f %f %f\n" % (tup[0], tup[1], pred_5_cpu, pred_5_mem))
