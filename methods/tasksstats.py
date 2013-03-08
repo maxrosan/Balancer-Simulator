@@ -100,7 +100,7 @@ class TasksStats(loadbalacing.LoadBalacing):
 
 						if i >= 5:
 							pred_5_cpu = sum([t[0] for t in lst[(i - 5):i]])/5.
-							pred_5_mem = sum([t[1] for t in lst[task][(i - 5):i]])/5.
+							pred_5_mem = sum([t[1] for t in lst[(i - 5):i]])/5.
 							
 							pred_5_cpu_mov = sum([(6 - j) * lst[i - j][0] for j in range(1,6)])/15.
 							pred_5_mem_mov = sum([(6 - j) * lst[i - j][1] for j in range(1,6)])/15.
