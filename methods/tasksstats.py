@@ -124,8 +124,8 @@ class TasksStats(loadbalacing.LoadBalacing):
 							pred_5_mem_lagrange = 0.
 
 							for k in range(1, 6):
-								pred_5_cpu_lagrange = pred_5_cpu_lagrange + l[k - 1]*lst[i - k]
-								pred_5_mem_lagrange = pred_5_mem_lagrange + l[k - 1]*lst[i - k]
+								pred_5_cpu_lagrange = pred_5_cpu_lagrange + l[k - 1]*lst[i - k][0]
+								pred_5_mem_lagrange = pred_5_mem_lagrange + l[k - 1]*lst[i - k][1]
 
 						i = i + 1
 						f.write("%f %f %f %f %f %f %f %f %f %f\n" % (tup[0], tup[1], pred_5_cpu, pred_5_mem, pred_5_cpu_mov, pred_5_mem_mov,
