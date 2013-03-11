@@ -73,14 +73,14 @@ class TasksStats(loadbalacing.LoadBalacing):
 		max_hist = 0
 
 		alpha = 2./(5. + 1.)
-		kl = 5
+		kl = 10
 
 		x_values = range(0,kl)
 		def _basis(j, k):
 			p = [float(x - x_values[m])/float(x_values[j] - x_values[m]) for m in xrange(k) if m != j]
 			return reduce(operator.mul, p)
 
-		l = [_basis(x, kl) for x in range(0, 5)]
+		l = [_basis(x, kl) for x in range(0, kl)]
 
 		for task in self.tasks:
 
