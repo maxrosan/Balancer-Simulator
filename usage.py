@@ -96,8 +96,6 @@ class TaskUsage:
 
 		keep_going = True
 
-		chk_index = [0, 1, 2, 3, 5, 10]
-
 		while keep_going:
 
 			if self.line == None:
@@ -109,11 +107,6 @@ class TaskUsage:
 				else:
 					keep_going = False
 			else:
-
-				read_ok = True
-				for i in chk_index:  # Checking if all values are valid
-					if len(self.line[i]) == 0:
-						read_ok = False
 
 				if read_ok:			
 					task = TaskUsageRegister()
