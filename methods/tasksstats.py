@@ -81,6 +81,7 @@ class TasksStats(loadbalacing.LoadBalacing):
 			return reduce(operator.mul, p)
 
 		l = [_basis(x, kl) for x in range(0, kl)]
+		l = [x/max(l) for x in l]
 
 		for task in self.tasks:
 
