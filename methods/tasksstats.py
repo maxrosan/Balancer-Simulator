@@ -1,6 +1,6 @@
 import loadbalacing
 import numpypy as numpy
-import math, random, Queue, io
+import math, random, Queue, io, operator
 
 # RandomMethod selects a task randomly to run
 #
