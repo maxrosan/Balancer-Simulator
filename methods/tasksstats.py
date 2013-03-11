@@ -73,9 +73,14 @@ class TasksStats(loadbalacing.LoadBalacing):
 		max_hist = 0
 
 		alpha = 2./(5. + 1.)
-		l = [1., -5., 10., -10., 5.]
-		#l = [-1., 10., -45., 120., -210., 252., -210., 120., -45., 10.]
-		kl = len(l)
+		kl = 5
+
+		x_values = range(0,kl)
+		def _basis(j):
+			p = [float(x - x_values[m])/float(x_values[j] - x_values[m]) for m in xrange(k) if m != j]
+			return reduce(operator.mul, p)
+
+		l = [_basis(x) for x in range(0, 5)]
 
 		for task in self.tasks:
 
@@ -124,13 +129,8 @@ class TasksStats(loadbalacing.LoadBalacing):
 
 
 						if i >= kl:
-
-							pred_cpu_lagrange = 0.
-							pred_mem_lagrange = 0.
-
-							for k in range(1, kl + 1):
-								pred_cpu_lagrange = pred_cpu_lagrange + l[kl - k]*lst[i - k][0]
-								pred_mem_lagrange = pred_mem_lagrange + l[kl - k]*lst[i - k][1]
+							pred_cpu_lagrange = sum([l[j]*lst[i - kl + j][0] for j in range(0,kl)])
+							pred_mem_lagrange = sum([l[j]*lst[i - kl + j][1] for j in range(0,kl)])
 
 						i = i + 1
 						f.write("%f %f %f %f %f %f %f %f %f %f\n" % (tup[0], tup[1], pred_5_cpu, pred_5_mem, pred_5_cpu_mov, pred_5_mem_mov,
