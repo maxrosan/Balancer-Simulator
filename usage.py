@@ -108,31 +108,27 @@ class TaskUsage:
 					keep_going = False
 			else:
 
-				if read_ok:			
-					task = TaskUsageRegister()
-					task.start_time  = float(self.line[0])/1000000.
-					task.end_time    = float(self.line[1])/1000000.
-					task.job_ID      = int(self.line[2])
-					task.task_ID     = int(self.line[3])
-					task.machine_ID  = -1 # int(self.line[4])
-					task.CPU_usage   = float(self.line[5])
-					task.mem_usage   = float(self.line[10])
-					task.age_round   = 0
-					task.last_round  = -1
-					task.first_round = 0
-					task.altered     = False
-					task.move        = False
-					task.mig_origin  = -1
+				task = TaskUsageRegister()
+				task.start_time  = float(self.line[0])/1000000.
+				task.end_time    = float(self.line[1])/1000000.
+				task.job_ID      = int(self.line[2])
+				task.task_ID     = int(self.line[3])
+				task.machine_ID  = -1 # int(self.line[4])
+				task.CPU_usage   = float(self.line[5])
+				task.mem_usage   = float(self.line[10])
+				task.age_round   = 0
+				task.last_round  = -1
+				task.first_round = 0
+				task.altered     = False
+				task.move        = False
+				task.mig_origin  = -1
 
-					if start <= task.start_time and task.end_time <= end:
-						callback(arg, task)
-						self.line = None				
-					else:
-						keep_going = False
-
+				if start <= task.start_time and task.end_time <= end:
+					callback(arg, task)
+					self.line = None				
 				else:
-					self.line = None
-		
+					keep_going = False
+	
 		return True
 
 if __name__ == "__main__":
