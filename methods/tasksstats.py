@@ -73,7 +73,9 @@ class TasksStats(loadbalacing.LoadBalacing):
 		max_hist = 0
 
 		alpha = 2./(5. + 1.)
-		l = [1., -5., 10., -10., 5.]
+		#l = [1., -5., 10., -10., 5.]
+		l = [-1., 10., -45., 120., -210., 252., -210., 120., -45., 10.]
+		kl = 10
 
 		for task in self.tasks:
 
@@ -99,8 +101,8 @@ class TasksStats(loadbalacing.LoadBalacing):
 					pred_5_cpu_mov_exp = 0.
 					pred_5_mem_mov_exp = 0.
 
-					pred_5_cpu_lagrange = 0.
-					pred_5_mem_lagrange = 0.
+					pred_cpu_lagrange = 0.
+					pred_mem_lagrange = 0.
 
 					i = 0
 					for tup in self.hist[task]:
@@ -120,16 +122,19 @@ class TasksStats(loadbalacing.LoadBalacing):
 								pred_5_cpu_mov_exp = pred_5_cpu_mov_exp * (1. - alpha) + alpha * lst[i - k][0]
 								pred_5_mem_mov_exp = pred_5_mem_mov_exp * (1. - alpha) + alpha * lst[i - k][1]
 
-							pred_5_cpu_lagrange = 0.
-							pred_5_mem_lagrange = 0.
 
-							for k in range(1, 6):
-								pred_5_cpu_lagrange = pred_5_cpu_lagrange + l[5 - k]*lst[i - k][0]
-								pred_5_mem_lagrange = pred_5_mem_lagrange + l[5 - k]*lst[i - k][1]
+						if i >= kl:
+
+							pred_cpu_lagrange = 0.
+							pred_mem_lagrange = 0.
+
+							for k in range(1, kl + 1):
+								pred_cpu_lagrange = pred_cpu_lagrange + l[kl - k]*lst[i - k][0]
+								pred_mem_lagrange = pred_mem_lagrange + l[kl - k]*lst[i - k][1]
 
 						i = i + 1
 						f.write("%f %f %f %f %f %f %f %f %f %f\n" % (tup[0], tup[1], pred_5_cpu, pred_5_mem, pred_5_cpu_mov, pred_5_mem_mov,
-						 pred_5_cpu_mov_exp, pred_5_mem_mov_exp, pred_5_cpu_lagrange, pred_5_mem_lagrange))
+						 pred_5_cpu_mov_exp, pred_5_mem_mov_exp, pred_cpu_lagrange, pred_mem_lagrange))
 
 					f.close()
 
