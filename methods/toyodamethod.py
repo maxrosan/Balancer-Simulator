@@ -341,6 +341,11 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		print "OK"
 
+	def __update_macs(self):
+
+		for mac_ID in self.machines_state:
+			self.machines_state[mac_ID].calculate_consumption(self.tasks_state)
+
 
 	def balance(self): 
 		
@@ -421,6 +426,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			return task.CPU_usage
 
 		self.__update_tasks()
+		self.__update_macs()
 
 		s_time = time.time()
 	
