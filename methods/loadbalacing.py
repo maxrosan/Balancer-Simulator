@@ -98,6 +98,8 @@ class LoadBalacing:
 				cpu_total_real = 0.
 				mem_total_real = 0.
 
+				SLA_status = ("SLA = %d" % (self.mac_usage[mac_ID][0].count_tasks())) if self.mac_usage[mac_ID][0].SLA_break() else "No SLA" 
+
 				for task in self.mac_usage[mac_ID][1]:
 					self.mapping_fobj.write("(%s, %f, %f, %f, %f) ; " % (
 					 task.getID(), 
@@ -111,7 +113,7 @@ class LoadBalacing:
 					cpu_total_real = cpu_total_real + task.CPU_usage_real
 					mem_total_real = mem_total_real + task.mem_usage_real
 
-				self.mapping_fobj.write(" === (%f, %f, %f, %f)\n\n" % (cpu_total, mem_total, cpu_total_real, mem_total_real))
+				self.mapping_fobj.write(" === (%f, %f, %f, %f)[%s]\n\n" % (cpu_total, mem_total, cpu_total_real, mem_total_real, SLA_status))
 
 			self.mapping_fobj.write("--------------\n")
 			self.mapping_fobj.flush()
