@@ -150,7 +150,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 			if self.machines_state[mac.machine_ID].capacity_CPU > mac.capacity_CPU or self.machines_state[mac.machine_ID].capacity_memory > mac.capacity_memory:
 				for task in self.machines_state[mac.machine_ID].tasks:
-					self.__migrate(self.tasks_state[task])
+					self.migrate(self.tasks_state[task])
 					self.machines_state[mac.machine_ID].remove_task(self.tasks_state[task])
 
 			self.machines_state[mac.machine_ID].capacity_CPU    = mac.capacity_CPU
@@ -158,7 +158,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		else:
 			for task in self.machines_state[mac.machine_ID].tasks:
-				self.__migrate(self.tasks_state[task])
+				self.migrate(self.tasks_state[task])
 
 			del self.machines_state[mac.machine_ID]
 
@@ -169,7 +169,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		else:
 			self.tasks_input[task.getID()] = task
 
-	def __migrate(self, task):
+	def migrate(self, task):
 		task.move = True
 		task.mig_origin = task.machine_ID
 		task.machine_ID = -1
@@ -238,14 +238,14 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					if old_task.age_round <= self.threshold_migration:
 						if (old_task.CPU_usage < new_task.CPU_usage or old_task.mem_usage < new_task.mem_usage):
 							if not self.machines_state[from_mach].can_run(new_task):
-								self.__migrate(old_task)
+								self.migrate(old_task)
 							else:
 								old_task.move       = False
 								old_task.machine_ID = from_mach
 								self.machines_state[from_mach].add_task(new_task)
 					else:
 						old_task.age_round = 1
-						self.__migrate(old_task)
+						self.migrate(old_task)
 
 				old_task.CPU_usage = new_task.CPU_usage
 				old_task.mem_usage = new_task.mem_usage
@@ -349,6 +349,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		for mac_ID in self.machines_state:
 			self.machines_state[mac_ID].calculate_consumption(self.tasks_state)
 
+	def beforeBalancing(self):
+		pass
+
 
 	def balance(self): 
 		
@@ -438,6 +441,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.n_round = self.n_round + 1
 		self.reset_stats()
 		self.task_new = self.__count_new_tasks()
+
+		self.beforeBalancing()
 
 		mac_used   = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks > 0], key=lambda mac:score_mac(self.machines_state[mac]), reverse=True)
 		task_w_mac = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1], key=lambda task:score_task(self.tasks_state[task]), reverse=True)
