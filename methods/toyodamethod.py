@@ -247,6 +247,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				old_task.CPU_usage = new_task.CPU_usage
 				old_task.mem_usage = new_task.mem_usage
 
+				old_task.CPU_usage_real = new_task.CPU_usage_real
+				old_task.mem_usage_real = new_task.mem_usage_real
+
 
 		print "New tasks ready!"
 
