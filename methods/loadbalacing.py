@@ -74,9 +74,18 @@ class LoadBalacing:
 
 			self.mapping_fobj.write("Round %d--------------\n" % self.n_round)
 			for mac_ID in self.mac_usage:
-				self.mapping_fobj.write("## %d (%f, %f, %f, %f) : " % (mac_ID, self.mac_usage[mac_ID][0].capacity_CPU, self.mac_usage[mac_ID][0].capacity_memory, self.mac_usage[mac_ID][0].CPU_usage, self.mac_usage[mac_ID][0].mem_usage))
+				self.mapping_fobj.write("## %d (%f, %f, %f, %f, %f, %f) : " % (
+					mac_ID, 
+					self.mac_usage[mac_ID][0].capacity_CPU, self.mac_usage[mac_ID][0].capacity_memory, 
+					self.mac_usage[mac_ID][0].CPU_usage, self.mac_usage[mac_ID][0].mem_usage,
+					self.mac_usage[mac_ID][0].CPU_usage_real, self.mac_usage[mac_ID][0].mem_usage_real
+					))
 				for task in self.mac_usage[mac_ID][1]:
-					self.mapping_fobj.write("(%s, %f, %f) ; " % (task.getID(), task.CPU_usage, task.mem_usage))
+					self.mapping_fobj.write("(%s, %f, %f) ; " % (
+					 task.getID(), 
+					task.CPU_usage, task.mem_usage,
+					task.CPU_usage_real, task.mem_usage_real
+					))
 				self.mapping_fobj.write("\n")
 
 			self.mapping_fobj.write("--------------\n")
