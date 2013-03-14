@@ -34,8 +34,8 @@ class ToyodaMethodWithMovingAverage(toyodamethod.ToyodaMethod):
 				obj.CPU_usage = sum([tup[0] for tup in self.hist_usage[-len_lst:]])/float(len_lst)
 				obj.mem_usage = sum([tup[1] for tup in self.hist_usage[-len_lst:]])/float(len_lst)
 			else:
-				obj.CPU_usage = obj.CPU_usage_real
-				obj.mem_usage = obj.mem_usage_real
+				obj.CPU_usage = obj.CPU_usage_real * 1.3
+				obj.mem_usage = obj.mem_usage_real * 1.3
 
 			self.hist_usage[task_ID].append((obj.CPU_usage_real, obj.mem_usage_real))
 
