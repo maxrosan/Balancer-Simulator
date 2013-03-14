@@ -22,13 +22,13 @@ class ToyodaMethodWithMovingAverage(toyodamethod.ToyodaMethod):
 
 		for mac_ID in self.machines_state:
 			mac = self.machines_state[mac_ID]
-			if mac.SLA_breaks():
+			if mac.SLA_break():
 				tasks = sorted([self.tasks_state[task_ID] for task_ID in mac.tasks],
 					key=lambda task: task.CPU_usage*task.mem_usage, reverse=True)
 
 				task_i = 0
 				len_tasks = len(tasks)
-				while mac.SLA_breaks() and mac.count_tasks() > 0:
+				while mac.SLA_break() and mac.count_tasks() > 0:
 					mac.remove_task(tasks[task_i])
 					self.migrate(tasks[task_i])
 					task_i = task_i + 1
