@@ -68,8 +68,19 @@ class LoadBalacing:
 
 	def print_log_file(self):
 		if self.balancing_fobj != None:
-			self.balancing_fobj.write("%d %d %d %d %d %d %d %f %f %f %f %f %d %d\n" % (self.n_round, self.task_mapped_successfully, self.task_failed_to_map,
-			 self.machines_used, self.machines_not_used, self.n_migrations, self.task_new, self.total_time, self.usage_mean_per, self.usage_stan_per, self.usage_CPU_mean, self.usage_mem_mean, self.total_tasks, self.SLA_breaks))
+
+			self.balancing_fobj.write("%d %d %d %d %d %d %d %f %f %f %f %f %d %d\n" % (
+				self.n_round,
+				self.task_mapped_successfully, self.task_failed_to_map,
+			 	self.machines_used, self.machines_not_used,
+				self.n_migrations,
+				self.task_new,
+				self.total_time,
+				self.usage_mean_per, self.usage_stan_per,
+				self.usage_CPU_mean, self.usage_mem_mean,
+				self.total_tasks,
+				self.SLA_breaks))
+
 			self.balancing_fobj.flush()
 
 			self.mapping_fobj.write("Round %d--------------\n" % self.n_round)
@@ -81,7 +92,7 @@ class LoadBalacing:
 					self.mac_usage[mac_ID][0].CPU_usage_real, self.mac_usage[mac_ID][0].mem_usage_real
 					))
 				for task in self.mac_usage[mac_ID][1]:
-					self.mapping_fobj.write("(%s, %f, %f) ; " % (
+					self.mapping_fobj.write("(%s, %f, %f, %f, %f) ; " % (
 					 task.getID(), 
 					task.CPU_usage, task.mem_usage,
 					task.CPU_usage_real, task.mem_usage_real
