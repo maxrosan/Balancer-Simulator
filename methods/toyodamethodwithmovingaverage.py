@@ -28,11 +28,11 @@ class ToyodaMethodWithMovingAverage(toyodamethod.ToyodaMethod):
 			obj = self.tasks_input[task_ID]
 			len_lst = len(self.hist_usage[task_ID])
 			if len_lst >= self.n_entries:
-				obj.CPU_usage = sum([tup[0] for tup in self.hist_usage[-self.n_entries:]])/float(self.n_entries)
-				obj.mem_usage = sum([tup[1] for tup in self.hist_usage[-self.n_entries:]])/float(self.n_entries)
+				obj.CPU_usage = sum([tup[0] for tup in self.hist_usage[task_ID][-self.n_entries:]])/float(self.n_entries)
+				obj.mem_usage = sum([tup[1] for tup in self.hist_usage[task_ID][-self.n_entries:]])/float(self.n_entries)
 			elif len_lst > 1:
-				obj.CPU_usage = sum([tup[0] for tup in self.hist_usage])/float(len_lst)
-				obj.mem_usage = sum([tup[1] for tup in self.hist_usage])/float(len_lst)
+				obj.CPU_usage = sum([tup[0] for tup in self.hist_usage[task_ID]])/float(len_lst)
+				obj.mem_usage = sum([tup[1] for tup in self.hist_usage[task_ID]])/float(len_lst)
 			else:
 				obj.CPU_usage = max(obj.CPU_usage_real * 1.2, 1.)
 				obj.mem_usage = max(obj.mem_usage_real * 1.2, 1.)
