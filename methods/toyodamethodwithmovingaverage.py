@@ -34,6 +34,9 @@ class ToyodaMethodWithMovingAverage(toyodamethod.ToyodaMethod):
 					task_i = task_i + 1
 
 		print "OK"
+
+	def afterBalancing(self):
+
 			
 
 	def calculatePrediction(self):
