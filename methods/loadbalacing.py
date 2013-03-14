@@ -111,7 +111,7 @@ class LoadBalacing:
 					cpu_total_real = cpu_total + task.CPU_usage_real
 					mem_total_real = mem_total + task.mem_usage_real
 
-				self.mapping_fobj.write(" === (%f, %f, %f, %f)\n" % (cpu_total, mem_total, cpu_total_real, mem_total_real))
+				self.mapping_fobj.write(" === (%f, %f, %f, %f)\n\n" % (cpu_total, mem_total, cpu_total_real, mem_total_real))
 
 			self.mapping_fobj.write("--------------\n")
 			self.mapping_fobj.flush()
