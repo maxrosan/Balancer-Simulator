@@ -91,13 +91,21 @@ class LoadBalacing:
 					self.mac_usage[mac_ID][0].CPU_usage, self.mac_usage[mac_ID][0].mem_usage,
 					self.mac_usage[mac_ID][0].CPU_usage_real, self.mac_usage[mac_ID][0].mem_usage_real
 					))
+
+				cpu_total = 0.
+				mem_total = 0.
+
 				for task in self.mac_usage[mac_ID][1]:
 					self.mapping_fobj.write("(%s, %f, %f, %f, %f) ; " % (
 					 task.getID(), 
 					task.CPU_usage, task.mem_usage,
 					task.CPU_usage_real, task.mem_usage_real
 					))
-				self.mapping_fobj.write("\n")
+					
+					cpu_total = cpu_total + task.CPU_usage
+					mem_total = mem_total + task.mem_usage
+
+				self.mapping_fobj.write(" === (%f, %f)\n" % (cpu_total, mem_total))
 
 			self.mapping_fobj.write("--------------\n")
 			self.mapping_fobj.flush()

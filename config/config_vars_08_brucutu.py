@@ -8,5 +8,3 @@ w_cpu               = 0.8
 w_mem               = 1 - w_cpu
 total_time          = (60 * 60 * 24) * 1
 
-def example(x):
-	print x

@@ -174,6 +174,18 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		task.mig_origin = task.machine_ID
 		task.machine_ID = -1
 
+	def calculatePrediction(self):
+		## there is no prediction yet
+
+		for task_ID in self.tasks_input:
+			self.tasks_input[task_ID].CPU_usage = self.tasks_input[task_ID].CPU_usage_real 
+			self.tasks_input[task_ID].mem_usage = self.tasks_input[task_ID].mem_usage_real
+
+		##
+
+	def removePrediction(self, task_ID):
+		pass
+
 	def __update_tasks(self):
 
 		print "Updating"
@@ -184,15 +196,15 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			if not (task_ID in self.tasks_input):
 				if task.machine_ID != -1:
 					self.machines_state[task.machine_ID].remove_task(self.tasks_state[task_ID])
+				
+				self.removePrediction(task_ID)
 				del self.tasks_state[task_ID]
 
 		print "Old done!"
 
-		for task_ID in self.tasks_input:
+		self.calculatePrediction()
 
-			## there is no prediction yet
-			self.tasks_input[task_ID].updateWithRealValues()
-			##
+		for task_ID in self.tasks_input:
 
 			if not (task_ID in self.tasks_state):
 				task = self.tasks_state[task_ID] = self.tasks_input[task_ID]
