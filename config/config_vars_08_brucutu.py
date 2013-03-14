@@ -7,3 +7,6 @@ balancing_log       = "/var/tmp/mr/log/balancing_toyoda_08_brucutu.log"
 w_cpu               = 0.8
 w_mem               = 1 - w_cpu
 total_time          = (60 * 60 * 24) * 1
+
+def example(x):
+	print x

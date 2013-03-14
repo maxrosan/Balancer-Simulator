@@ -17,6 +17,12 @@ class TaskUsageRegister:
 		self.altererd   = False
 		self.move       = False
 		self.mig_origin = -1
+		self.CPU_usage_real = 0.
+		self.mem_usage_real = 0.
+
+	def updateWithRealValues(self):
+		self.CPU_usage = self.CPU_usage_real
+		self.mem_usage = self.mem_usage_real
 
 	def getID(self):
 		return (str(self.job_ID) + "." + str(self.task_ID))
@@ -122,6 +128,9 @@ class TaskUsage:
 				task.altered     = False
 				task.move        = False
 				task.mig_origin  = -1
+
+				task.CPU_usage_real = task.CPU_usage
+				task.mem_usage_real = task.mem_usage
 
 				if start <= task.start_time and task.end_time <= end:
 					callback(arg, task)

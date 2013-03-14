@@ -164,8 +164,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 	def add_task_usage(self, task):
 		if task.getID() in self.tasks_input:
-			self.tasks_input[task.getID()].CPU_usage = max(self.tasks_input[task.getID()].CPU_usage, task.CPU_usage)
-			self.tasks_input[task.getID()].mem_usage = max(self.tasks_input[task.getID()].mem_usage, task.mem_usage)
+			self.tasks_input[task.getID()].CPU_usage_real = max(self.tasks_input[task.getID()].CPU_usage_real, task.CPU_usage_real)
+			self.tasks_input[task.getID()].mem_usage_real = max(self.tasks_input[task.getID()].mem_usage_real, task.mem_usage_real)
 		else:
 			self.tasks_input[task.getID()] = task
 
@@ -189,6 +189,11 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		print "Old done!"
 
 		for task_ID in self.tasks_input:
+
+			## there is no prediction yet
+			self.tasks_input[task_ID].updateWithRealValues()
+			##
+
 			if not (task_ID in self.tasks_state):
 				task = self.tasks_state[task_ID] = self.tasks_input[task_ID]
 				task.first_round = (self.n_round + 1)
@@ -198,7 +203,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					mac = self.pq.get()[1]
 					while not (mac.machine_ID in self.machines_state):
 						mac = self.pq.get()[1]
-					if mac.free_CPU() > task.CPU_usage and mac.can_run(task):
+					if mac.can_run(task):
 						mac.add_task(task)
 						task.machine_ID = mac.machine_ID
 					self.pq.put((-mac.free_CPU(), mac))
