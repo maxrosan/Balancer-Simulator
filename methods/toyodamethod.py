@@ -227,13 +227,13 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				old_task.last_round = self.n_round + 1
 				from_mach = old_task.machine_ID
 
-				old_task.CPU_usage_real = new_task.CPU_usage_real
-				old_task.mem_usage_real = new_task.mem_usage_real
-
 				if old_task.machine_ID != -1:
 
 					self.machines_state[from_mach].remove_task(old_task)
 					old_task.machine_ID = -1
+
+					old_task.CPU_usage_real = new_task.CPU_usage_real
+					old_task.mem_usage_real = new_task.mem_usage_real
 
 					if old_task.age_round <= self.threshold_migration:
 						if (old_task.CPU_usage < new_task.CPU_usage or old_task.mem_usage < new_task.mem_usage):
