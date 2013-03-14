@@ -8,5 +8,5 @@ mapping_log         = "/var/tmp/mr/log/mapping_toyoda_04_brucutu.log"
 balancing_log       = "/var/tmp/mr/log/balancing_toyoda_04_brucutu.log"
 w_cpu               = 0.4
 w_mem               = 1 - w_cpu
-total_time          = (60 * 60 * 24) * 1
+total_time          = 1000
 n_entries           = 5
