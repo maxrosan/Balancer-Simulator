@@ -60,7 +60,7 @@ else:
 if   var_locals["method"] == "toyoda":
 	method = methods.toyodamethod.ToyodaMethod(var_locals["interval_toyoda"], var_locals["w_cpu"], var_locals["w_mem"])
 elif var_locals["method"] == "stats":
-	method = methods.tasksstats.TasksStats(var_locals["logfile"])
+	method = methods.tasksstats.TasksStats(var_locals["logfile"], var_locals["task_log"], var_locals["n_writes_limit"], var_locals["len_hist_max"])
 else:
 	method = None
 

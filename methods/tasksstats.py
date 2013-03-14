@@ -6,7 +6,7 @@ import math, random, Queue, io, operator
 #
 class TasksStats(loadbalacing.LoadBalacing):
 
-	def __init__(self, fileoutput):
+	def __init__(self, fileoutput, logoutput, n_writes_limit, len_hist_max):
 
 		loadbalacing.LoadBalacing.__init__(self)
 
@@ -14,6 +14,9 @@ class TasksStats(loadbalacing.LoadBalacing):
 		self.machines      = {}
 		self.logf          = open(fileoutput, 'w+')
 		self.hist          = {}
+		self.logtask       = logoutput
+		self.n_writes_lim  = n_writes_limit
+		self.len_hist_max  = len_hist_max
 
 		self.n_writes      = 0
 
@@ -47,7 +50,7 @@ class TasksStats(loadbalacing.LoadBalacing):
 		self.n_round = self.n_round + 1
 
 		n_rem = 0
-		for task_ID in list(self.tasks):
+		for task_ID in list(self.tasks): # Remove finished tasks
 			if self.tasks[task_ID].last_round < self.n_round:
 				del self.tasks[task_ID]
 				del self.hist[task_ID]
@@ -58,98 +61,44 @@ class TasksStats(loadbalacing.LoadBalacing):
 
 		self.reset_stats()
 
-#		for mac in self.machines:
-#
-#			obj = self.machines[mac]
+		for mac in self.machines: # Calculates how much CPU and mem power is available
 
-#			cpu = cpu + obj.capacity_CPU
-#			mem = mem + obj.capacity_memory
+			obj = self.machines[mac]
+			cpu = cpu + obj.capacity_CPU
+			mem = mem + obj.capacity_memory
 
 
-		#cpu_task = 0.
-		#mem_task = 0.
-
-		n_hists = 0
-		max_hist = 0
-
-		alpha = 2./(5. + 1.)
-		kl = 10
-
-		x_values = range(0,kl)
-		def _basis(j, k):
-			p = [float(x - x_values[m])/float(x_values[j] - x_values[m]) for m in xrange(k) if m != j]
-			return reduce(operator.mul, p)
-
-		l = [_basis(x, kl) for x in range(0, kl)]
-		l = [x/max(l) for x in l]
+		cpu_task = 0.
+		mem_task = 0.
 
 		for task in self.tasks:
 
 			obj = self.tasks[task]
 			len_hist = len(self.hist[task])
-			max_hist = max(len_hist, max_hist)	
 
-			if len_hist >= 150:
+			cpu_task = cpu_task + obj.CPU_usage # Calculates how much CPU and mem power is required by the tasks
+			mem_task = mem_task + obj.mem_usage
 
-				n_hists = n_hists + 1
+			if len_hist == self.len_hist_max: # Print the trace of CPU and mem usage of some tasks
 	
-				if self.n_writes <= 100:
+				if self.n_writes <= self.n_writes_lim:
+
 					self.n_writes = self.n_writes + 1
 
-					f = open("log/tasks/task." + task + ".log", "w+")
+					f = open(self.logtask % task, "w+")
 	
-					pred_5_cpu = 0.
-					pred_5_mem = 0.
-
-					pred_5_cpu_mov = 0.
-					pred_5_mem_mov = 0.
-
-					pred_5_cpu_mov_exp = 0.
-					pred_5_mem_mov_exp = 0.
-
-					pred_cpu_lagrange = 0.
-					pred_mem_lagrange = 0.
-
-					i = 0
 					for tup in self.hist[task]:
-
 						lst = self.hist[task]
-
-						if i >= 5:
-							pred_5_cpu = sum([t[0] for t in lst[(i - 5):i]])/5.
-							pred_5_mem = sum([t[1] for t in lst[(i - 5):i]])/5.
-							
-							pred_5_cpu_mov = sum([(6 - j) * lst[i - j][0] for j in range(1,6)])/15.
-							pred_5_mem_mov = sum([(6 - j) * lst[i - j][1] for j in range(1,6)])/15.
-
-							pred_5_cpu_mov_exp = lst[i - 1][0]
-							pred_5_mem_mov_exp = lst[i - 1][1]
-							for k in range(2,6):
-								pred_5_cpu_mov_exp = pred_5_cpu_mov_exp * (1. - alpha) + alpha * lst[i - k][0]
-								pred_5_mem_mov_exp = pred_5_mem_mov_exp * (1. - alpha) + alpha * lst[i - k][1]
-
-
-						if i >= kl:
-							pred_cpu_lagrange = sum([l[j]*lst[i - kl + j][0] for j in range(0,kl)])
-							pred_mem_lagrange = sum([l[j]*lst[i - kl + j][1] for j in range(0,kl)])
-
-						i = i + 1
-						f.write("%f %f %f %f %f %f %f %f %f %f\n" % (tup[0], tup[1], pred_5_cpu, pred_5_mem, pred_5_cpu_mov, pred_5_mem_mov,
-						 pred_5_cpu_mov_exp, pred_5_mem_mov_exp, pred_cpu_lagrange, pred_mem_lagrange))
+						f.write("%f %f\n" % (tup[0], tup[1]))
 
 					f.close()
 
-				self.hist[task] = []
+				self.hist[task] = []	
 
-		print "# n_hists = %d; max = %d; n_rem = %d" % (n_hists, max_hist, n_rem)
-				
 
-		#	cpu_task = cpu_task + obj.CPU_usage
-		#	mem_task = mem_task + obj.mem_usage
-
-		#strng = '%f %f\n' % (cpu_task / cpu, mem_task / mem)
+		strng = '%f %f\n' % (cpu_task / cpu, mem_task / mem)
 		
-		#self.logf.write(strng)
+		self.logf.write(strng)
 		#print strng 
 
 		#self.__generate_output()
