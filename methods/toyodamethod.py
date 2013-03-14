@@ -227,6 +227,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				old_task.last_round = self.n_round + 1
 				from_mach = old_task.machine_ID
 
+				old_task.CPU_usage_real = new_task.CPU_usage_real
+				old_task.mem_usage_real = new_task.mem_usage_real
+
 				if old_task.machine_ID != -1:
 
 					self.machines_state[from_mach].remove_task(old_task)
@@ -246,9 +249,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 				old_task.CPU_usage = new_task.CPU_usage
 				old_task.mem_usage = new_task.mem_usage
-
-				old_task.CPU_usage_real = new_task.CPU_usage_real
-				old_task.mem_usage_real = new_task.mem_usage_real
 
 
 		print "New tasks ready!"
@@ -426,7 +426,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			return task.CPU_usage
 
 		self.__update_tasks()
-		self.__update_macs()
+		#self.__update_macs()
 
 		s_time = time.time()
 	
