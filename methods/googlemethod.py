@@ -22,7 +22,9 @@ class GoogleMethod(loadbalacing.LoadBalacing):
 
 		n_migrations = 0
 
-		for task_ID in self.tasks_state:
+		self.n_round = self.n_round + 1
+
+		for task_ID in list(self.tasks_state):
 			if not (task_ID in self.tasks_input):
 				task = self.tasks_state[task_ID]
 				self.machines_state[task.machine_ID].remove_task(task)
@@ -35,7 +37,7 @@ class GoogleMethod(loadbalacing.LoadBalacing):
 					self.machines_state[self.tasks_state[task_ID].machine_ID].remove_task(self.tasks_state[task_ID])
 					self.machines_state[self.tasks_input[task_ID].machine_ID].add_task(self.tasks_input[task_ID])
 			else:				
-					self.machines_state[self.tasks_input[task_ID].machine_ID].add_task(self.tasks_input[task_ID])
+				self.machines_state[self.tasks_input[task_ID].machine_ID].add_task(self.tasks_input[task_ID])
 
 			self.tasks_state[task_ID] = self.tasks_input[task_ID]
 
