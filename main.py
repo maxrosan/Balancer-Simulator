@@ -2,7 +2,7 @@
 #
 
 import simulator, usage, machine, sets
-import methods.toyodamethod, methods.tasksstats, methods.toyodamethodwithmovingaverage
+import methods.toyodamethod, methods.tasksstats, methods.toyodamethodwithmovingaverage, methods.googlemethod
 import sys
 
 class BalancerSimulator:
@@ -58,15 +58,32 @@ else:
 	execfile(sys.argv[1], var_globals, var_locals)
 
 if   var_locals["method"] == "toyoda":
-	method = methods.toyodamethod.ToyodaMethod(var_locals["interval_toyoda"], var_locals["w_cpu"], var_locals["w_mem"])
+
+	method = methods.toyodamethod.ToyodaMethod(
+		var_locals["interval_toyoda"],
+		var_locals["w_cpu"],
+		var_locals["w_mem"])
+
 elif var_locals["method"] == "stats":
-	method = methods.tasksstats.TasksStats(var_locals["logfile"], var_locals["task_log"], var_locals["n_writes_limit"], var_locals["len_hist_max"])
+
+	method = methods.tasksstats.TasksStats(
+		var_locals["logfile"],
+		var_locals["task_log"],
+		var_locals["n_writes_limit"],
+		var_locals["len_hist_max"])
+
 elif var_locals["method"] == "toyodaWithMovingAverage":
+
 	method = methods.toyodamethodwithmovingaverage.ToyodaMethodWithMovingAverage(
 		var_locals["interval_toyoda"],
 		var_locals["w_cpu"],
 		var_locals["w_mem"],
 		var_locals["n_entries"])
+
+elif var_locals["method"] == "google":
+
+	method = methods.googlemethod.GoogleMethod()
+
 else:
 	method = None
 

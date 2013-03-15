@@ -19,6 +19,7 @@ class TaskUsageRegister:
 		self.mig_origin = -1
 		self.CPU_usage_real = 0.
 		self.mem_usage_real = 0.
+		self.machine_trace  = -1
 
 	def updateWithRealValues(self):
 		self.CPU_usage = self.CPU_usage_real
@@ -129,6 +130,7 @@ class TaskUsage:
 				task.move        = False
 				task.mig_origin  = -1
 
+				task.machine_trace  = int(self.line[4])
 				task.CPU_usage_real = task.CPU_usage
 				task.mem_usage_real = task.mem_usage
 
