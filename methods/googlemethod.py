@@ -84,7 +84,19 @@ class GoogleMethod(loadbalacing.LoadBalacing):
 		self.n_migrations             = n_migrations
 		self.task_failed_to_map       = len([task_ID for task_ID in self.tasks_state if self.tasks_state[task_ID].machine_ID == -1])
 		self.task_mapped_successfully = self.total_tasks - self.task_failed_to_map
+		(self.machines_used, self.machines_not_used) = self.__count_macs()
+ 
+	def __count_macs(self):
+		res_y = 0
+		res_n = 0
+		
+		for mac_ID in self.machines_state:
+			if self.machines_state[mac_ID].count_tasks() > 0:
+				res_y = res_y + 1
+			else:
+				res_n = res_n + 1
 
+		return (res_y, res_n)
 
 	def add_machine_event(self, mac):
 		if mac.event_type == mac.ADD_EVENT:
