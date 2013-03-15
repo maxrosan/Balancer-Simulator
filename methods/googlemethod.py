@@ -34,8 +34,9 @@ class GoogleMethod(loadbalacing.LoadBalacing):
 		for task_ID in self.tasks_input:
 			if task_ID in self.tasks_state:
 				if self.tasks_state[task_ID].machine_ID != self.tasks_input[task_ID].machine_ID:
-					n_migrations = n_migrations + 1
-					self.machines_state[self.tasks_state[task_ID].machine_ID].remove_task(self.tasks_state[task_ID])
+					if self.tasks_state[task_ID].machine_ID != -1:
+						n_migrations = n_migrations + 1
+						self.machines_state[self.tasks_state[task_ID].machine_ID].remove_task(self.tasks_state[task_ID])
 					self.machines_state[self.tasks_input[task_ID].machine_ID].add_task(self.tasks_input[task_ID])
 			else:				
 				self.machines_state[self.tasks_input[task_ID].machine_ID].add_task(self.tasks_input[task_ID])
@@ -46,11 +47,19 @@ class GoogleMethod(loadbalacing.LoadBalacing):
 		usage_cpu_vec    = []
 		usage_mem_vec    = []
 		
+		self.mac_usage.clear()
+		
 		for mac_ID in self.machines_state:
 			usage     = 0.
 			usage_cpu = 0.
 			usage_mem = 0.
+
+			lst_tasks = []
+			self.mac_usage[mac_ID] = (self.machines_state[mac_ID], lst_tasks)
+
 			for task_ID in self.machines_state[mac_ID].tasks:
+				self.mac_usage[mac_ID][1].append(self.tasks_state[task_ID])
+
 				usage     = usage + self.tasks_state[task_ID].CPU_usage_real * self.tasks_state[task_ID].mem_usage_real
 				usage_cpu = usage_cpu + self.tasks_state[task_ID].CPU_usage_real
 				usage_mem = usage_mem + self.tasks_state[task_ID].mem_usage_real
