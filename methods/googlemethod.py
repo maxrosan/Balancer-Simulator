@@ -52,7 +52,7 @@ class GoogleMethod(loadbalacing.LoadBalacing):
 				usage_cpu = usage_cpu + self.tasks_state[task_ID].CPU_usage_real
 				usage_mem = usage_mem + self.tasks_state[task_ID].mem_usage_real
 
-			usage     = usage / (self.machines_state[mac_ID].capacity_CPU * self.machines_state[mac_ID].capacity_memory
+			usage     = usage / (self.machines_state[mac_ID].capacity_CPU * self.machines_state[mac_ID].capacity_memory)
 			usage_cpu = usage_cpu / self.machines_state[mac_ID].capacity_CPU
 			usage_mem = usage_mem / self.machines_state[mac_ID].capacity_memory
 
