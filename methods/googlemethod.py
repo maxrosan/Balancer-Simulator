@@ -60,7 +60,7 @@ class GoogleMethod(loadbalacing.LoadBalacing):
 			usage_cpu_vec.append(usage_cpu)
 			usage_mem_vec.append(usage_mem)
 
-		tasks_input.clear()
+		self.tasks_input.clear()
 		
 
 		self.usage_mean_per           = numpy.mean(usage_vec)
