@@ -27,7 +27,8 @@ class GoogleMethod(loadbalacing.LoadBalacing):
 		for task_ID in list(self.tasks_state):
 			if not (task_ID in self.tasks_input):
 				task = self.tasks_state[task_ID]
-				self.machines_state[task.machine_ID].remove_task(task)
+				if task.machine_ID != -1:
+					self.machines_state[task.machine_ID].remove_task(task)
 				del self.tasks_state[task_ID]
 
 		for task_ID in self.tasks_input:
