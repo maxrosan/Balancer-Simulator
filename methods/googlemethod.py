@@ -57,6 +57,8 @@ class GoogleMethod(loadbalacing.LoadBalacing):
 			lst_tasks = []
 			self.mac_usage[mac_ID] = (self.machines_state[mac_ID], lst_tasks)
 
+			self.machines_state[mac_ID].calculate_consumption(self.tasks_state)
+
 			for task_ID in self.machines_state[mac_ID].tasks:
 				self.mac_usage[mac_ID][1].append(self.tasks_state[task_ID])
 
