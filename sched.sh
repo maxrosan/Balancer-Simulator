@@ -1,4 +1,5 @@
 #!/bin/bash
+##
 
 #configs=("config_vars_04.py" "config_vars_06.py" "config_vars_08.py" "config_vars_1.py")
 
