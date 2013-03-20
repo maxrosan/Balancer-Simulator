@@ -9,3 +9,4 @@ total_time          = (60 * 60 * 24) * 1
 w_cpu               = 0.4
 w_mem               = 1 - w_cpu
 interval_mig        = 80
+mac_sorted          = True
