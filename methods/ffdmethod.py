@@ -28,7 +28,7 @@ class FFDMethod(binpackingmethod.BinPackingMethod):
 
 		tasks_sorted = sorted(tasks, key=lambda task_ID:score_task(self.tasks_state[task_ID]), reverse=True)
 
-		if mac_sorted:
+		if self.mac_sorted:
 			macs_sorted  = sorted([mac for mac in macs if self.machines_state[mac].count_tasks() > 0], 
 			 key=lambda mac_ID:score_mac(self.machines_state[mac_ID]), reverse=True) + \
 			 sorted([mac for mac in macs if self.machines_state[mac].count_tasks() == 0],
