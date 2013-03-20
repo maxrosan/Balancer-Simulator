@@ -2,7 +2,7 @@
 #
 
 import simulator, usage, machine, sets
-import methods.toyodamethod, methods.tasksstats, methods.toyodamethodwithmovingaverage, methods.googlemethod
+import methods.toyodamethod, methods.tasksstats, methods.toyodamethodwithmovingaverage, methods.googlemethod, methods.ffdmethod
 import sys
 
 class BalancerSimulator:
@@ -83,6 +83,13 @@ elif var_locals["method"] == "toyodaWithMovingAverage":
 elif var_locals["method"] == "google":
 
 	method = methods.googlemethod.GoogleMethod()
+
+elif var_locals["method"] == "ffd":
+
+	method = methods.ffdmethod.FFDMethod(
+		var_locals["interval_mig"],
+		var_locals["w_cpu"],
+		var_locals["w_mem"])
 
 else:
 	method = None
