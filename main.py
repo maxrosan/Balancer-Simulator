@@ -61,8 +61,9 @@ if   var_locals["method"] == "toyoda":
 
 	method = methods.toyodamethod.ToyodaMethod(
 		var_locals["interval_toyoda"],
-		var_locals["w_cpu"],
-		var_locals["w_mem"])
+		var_locals["mac_key_sort"],
+		var_locals["task_key_sort"],
+		var_locals["score_task_knapsack"])
 
 elif var_locals["method"] == "stats":
 
@@ -74,10 +75,11 @@ elif var_locals["method"] == "stats":
 
 elif var_locals["method"] == "toyodaWithMovingAverage":
 
-	method = methods.toyodamethodwithmovingaverage.ToyodaMethodWithMovingAverage(
+	method = methods.toyodamethod.ToyodaMethod(
 		var_locals["interval_toyoda"],
-		var_locals["w_cpu"],
-		var_locals["w_mem"],
+		var_locals["mac_key_sort"],
+		var_locals["task_key_sort"],
+		var_locals["score_task_knapsack"],
 		var_locals["n_entries"])
 
 elif var_locals["method"] == "google":

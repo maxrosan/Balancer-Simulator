@@ -7,8 +7,9 @@ import threading, multiprocessing, time, sys
 
 class ToyodaMethodWithMovingAverage(toyodamethod.ToyodaMethod):
 
-	def __init__(self, threshold, w_cpu, w_mem, n_entries):
-		toyodamethod.ToyodaMethod.__init__(self, threshold, w_cpu, w_mem)
+	def __init__(self, threshold, mac_key_sort, task_key_sort, score_task_knapsack, n_entries):
+
+		toyodamethod.ToyodaMethod.__init__(self, threshold, mac_key_sort, task_key_sort, score_task_knapsack)
 
 		self.hist_usage = {}
 		self.n_entries  = n_entries
