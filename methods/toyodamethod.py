@@ -10,8 +10,9 @@ import threading, multiprocessing, time, sys
 #
 class ToyodaMethod(loadbalacing.LoadBalacing):
 
+
 	@staticmethod
-	def run(m_tasks, tasks, mac):	
+	def run(score_task_knapsack, m_tasks, tasks, mac):	
 
 		n = len(tasks)
 
@@ -63,7 +64,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				if (numpy.dot(Pu, Pu) == 0.):
 					for i in Tc:
 						d    = sum(P[i])
-						G[i] = (ToyodaMethod.score_task_knapsack(m_tasks[tasks[i]]) * cnt)/d
+						G[i] = (score_task_knapsack(m_tasks[tasks[i]]) * cnt)/d
 				# (b)
 				else:
 					mod_Pu = math.sqrt(numpy.dot(Pu, Pu))
@@ -71,7 +72,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				
 					for i in Tc:
 						d    = numpy.dot(P[i], E)
-						G[i] = ToyodaMethod.score_task_knapsack(m_tasks[tasks[i]]) / d
+						G[i] = score_task_knapsack(m_tasks[tasks[i]]) / d
 
 				#print "4"
 
@@ -98,11 +99,11 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		return Tu
 
 	@staticmethod
-	def balance_partial(conn, m_mac_state, m_tasks_state, machines, tasks):
+	def balance_partial(mac_key_sort, score_task_knapsack, conn, m_mac_state, m_tasks_state, machines, tasks):
 		
 		print "processing %d %d" % (len(machines), len(tasks))
 
-		mac_list = sorted(machines, key=lambda mac:ToyodaMethod.mac_key_sort(m_mac_state[mac]), reverse=True)
+		mac_list = sorted(machines, key=lambda mac: mac_key_sort(m_mac_state[mac]), reverse=True)
 		mac_list = [mac for mac in mac_list if m_mac_state[mac].free_CPU() > 1e-10 and m_mac_state[mac].free_mem() > 1e-10]
 
 		tasks_list = list(tasks)
@@ -110,7 +111,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		macs = {}
 
 		for mac in mac_list:
-			tasks_to_sched = ToyodaMethod.run(m_tasks_state, tasks_list, m_mac_state[mac])
+			tasks_to_sched = ToyodaMethod.run(score_task_knapsack, m_tasks_state, tasks_list, m_mac_state[mac])
 
 			macs[mac] = []
 			for t in tasks_to_sched:
@@ -359,7 +360,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		migrations = 0
 
 		def work(conn, mmacs, mtasks, macs, tasks):
-			ToyodaMethod.balance_partial(conn, mmacs, mtasks, macs, tasks)
+			ToyodaMethod.balance_partial(self.mac_key_sort, self.score_task_knapsack, conn, mmacs, mtasks, macs, tasks)
 
 		def update_map(macs):
 			for mac_ID in macs:
@@ -410,7 +411,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 						p.start()
 						procs.append(p)
 					else:
-						macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_lsts[i], task_lsts[i])
+						macs = ToyodaMethod.balance_partial(self.mac_key_sort, self.score_task_knapsack, 
+						        None, self.machines_state, self.tasks_state, mac_lsts[i], task_lsts[i])
+
 						update_map(macs)
 				
 				for i in range(0, self.n_jobs-1):
@@ -421,7 +424,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			else:
 				print "UP"
 
-				macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list, task_list)
+				macs = ToyodaMethod.balance_partial(self.mac_key_sort, self.score_task_knapsack,
+				          None, self.machines_state, self.tasks_state, mac_list, task_list)
+
 				update_map(macs)
 
 		###
