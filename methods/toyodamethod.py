@@ -11,7 +11,7 @@ import threading, multiprocessing, time, sys
 class ToyodaMethod(loadbalacing.LoadBalacing):
 
 	@staticmethod
-	def run(w_cpu, w_mem, m_tasks, tasks, mac):	
+	def run(m_tasks, tasks, mac):	
 
 		n = len(tasks)
 
@@ -98,7 +98,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		return Tu
 
 	@staticmethod
-	def balance_partial(w_cpu, w_mem, conn, m_mac_state, m_tasks_state, machines, tasks):
+	def balance_partial(conn, m_mac_state, m_tasks_state, machines, tasks):
 		
 		print "processing %d %d" % (len(machines), len(tasks))
 
@@ -110,7 +110,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		macs = {}
 
 		for mac in mac_list:
-			tasks_to_sched = ToyodaMethod.run(w_cpu, w_mem, m_tasks_state, tasks_list, m_mac_state[mac])
+			tasks_to_sched = ToyodaMethod.run(m_tasks_state, tasks_list, m_mac_state[mac])
 
 			macs[mac] = []
 			for t in tasks_to_sched:
@@ -136,8 +136,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.machines_state      = {}
 		self.tasks_state         = {}
 		self.tasks_input         = {}
-		self.w_cpu               = w_cpu
-		self.w_mem               = w_mem
 
 		self.pq                  = Queue.PriorityQueue(0)
 
@@ -361,7 +359,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		migrations = 0
 
 		def work(conn, mmacs, mtasks, macs, tasks):
-			ToyodaMethod.balance_partial(self.w_cpu, self.w_mem, conn, mmacs, mtasks, macs, tasks)
+			ToyodaMethod.balance_partial(conn, mmacs, mtasks, macs, tasks)
 
 		def update_map(macs):
 			for mac_ID in macs:
@@ -412,7 +410,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 						p.start()
 						procs.append(p)
 					else:
-						macs = ToyodaMethod.balance_partial(self.w_cpu, self.w_mem, None, self.machines_state, self.tasks_state, mac_lsts[i], task_lsts[i])
+						macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_lsts[i], task_lsts[i])
 						update_map(macs)
 				
 				for i in range(0, self.n_jobs-1):
@@ -423,7 +421,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			else:
 				print "UP"
 
-				macs = ToyodaMethod.balance_partial(self.w_cpu, self.w_mem, None, self.machines_state, self.tasks_state, mac_list, task_list)
+				macs = ToyodaMethod.balance_partial(None, self.machines_state, self.tasks_state, mac_list, task_list)
 				update_map(macs)
 
 		###
