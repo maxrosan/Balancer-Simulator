@@ -90,8 +90,8 @@ elif var_locals["method"] == "ffd":
 
 	method = methods.ffdmethod.FFDMethod(
 		var_locals["interval_mig"],
-		var_locals["w_cpu"],
-		var_locals["w_mem"],
+		var_locals["mac_key_sort"],
+		var_locals["task_key_sort"],
 		var_locals["mac_sorted"])
 
 else:
