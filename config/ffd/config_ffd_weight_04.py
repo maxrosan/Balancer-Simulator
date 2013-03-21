@@ -15,7 +15,7 @@ def mac_key_sort(mac):
 	return mac.free_CPU()
 
 def task_key_sort(task):
-	dcpu = self.w_cpu * task.CPU_usage
-	dmem = self.w_mem * task.mem_usage
+	dcpu = w_cpu * task.CPU_usage
+	dmem = w_mem * task.mem_usage
 	return (dcpu + dmem)
 
