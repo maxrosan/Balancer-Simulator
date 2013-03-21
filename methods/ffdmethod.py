@@ -8,7 +8,7 @@ import threading, multiprocessing, time, sys
 ## FFD without prediction
 class FFDMethod(binpackingmethod.BinPackingMethod):
 
-	def __init__(self, threshold, , mac_sorted):
+	def __init__(self, threshold, mac_key_sort, task_key_sort, mac_sorted):
 		binpackingmethod.BinPackingMethod.__init__(self, threshold)
 
 		self.mac_key_sort  = mac_key_sort
