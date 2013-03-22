@@ -1,5 +1,5 @@
 
-method              = 'toyoda'
+method              = 'ffd'
 num_of_jobs         = 8
 interval_mig        = 100
 dataset_path        = "/var/tmp/mr/gs_cluster/"
