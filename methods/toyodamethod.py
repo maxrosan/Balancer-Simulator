@@ -131,14 +131,22 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		return (macs)
 
-	def __init__(self, threshold, mac_key_sort, task_key_sort, score_task_knapsack, mac_key_pq):
+	def __init__(self, threshold, mac_key_sort, task_key_sort, score_task_knapsack, mac_key_pq, method_sel_macs):
 		loadbalacing.LoadBalacing.__init__(self)
 
 		self.machines_state      = {}
 		self.tasks_state         = {}
 		self.tasks_input         = {}
 
-		self.pq                  = Queue.PriorityQueue(0)
+		self.method_sel_macs     = method_sel_macs
+
+		if method_sel_macs == 'priority_queue':
+			self.pq           = Queue.PriorityQueue(0)
+		elif method_sel_macs == 'list':
+			self.pq           = []
+		else:
+			print "Unknown method"
+			exit()
 
 		self.threshold_migration = int(threshold)
 		self.mac_key_sort        = mac_key_sort
@@ -215,15 +223,32 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				task = self.tasks_state[task_ID] = self.tasks_input[task_ID]
 				task.first_round = (self.n_round + 1)
 				task.last_round  = (self.n_round + 1)
-			
-				if not self.pq.empty():
-					mac = self.pq.get()[1]
-					while not (mac.machine_ID in self.machines_state):
+		
+				if self.method_sel_macs == 'priority_queue':
+	
+					if not self.pq.empty():
 						mac = self.pq.get()[1]
-					if mac.can_run(task):
-						mac.add_task(task)
-						task.machine_ID = mac.machine_ID
-					self.pq.put((-self.mac_key_sort(mac) , mac))
+						while not (mac.machine_ID in self.machines_state):
+							mac = self.pq.get()[1]
+						if mac.can_run(task):
+							mac.add_task(task)
+							task.machine_ID = mac.machine_ID
+						self.pq.put((-self.mac_key_sort(mac) , mac))
+
+				else:
+
+					mac_value = 0
+					mac_max   = None
+
+					for mac in self.pq:
+						if mac.can_run(task) and self.score_task_knapsack(task, mac) > mac_value:
+							mac_value = self.score_task_knapsack(task, mac)
+							mac_max   = mac
+
+					if mac_max != None:
+						mac_max.add_task(task)
+						task.machine_ID = mac_max.machine_ID
+						
 			else:
 				new_task = self.tasks_input[task_ID]
 				old_task = self.tasks_state[task_ID]
@@ -312,13 +337,20 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		return res
 
 	def __calc_heap(self):
-		print "Calculating PQ"
-		while not self.pq.empty():
-			self.pq.get()
-		for mac in self.machines_state:
-			if self.machines_state[mac].n_tasks != 0:
-				self.pq.put((-self.mac_key_sort(self.machines_state[mac]), self.machines_state[mac])) 
-		print "done"
+
+		if self.method_sel_macs == 'priority_queue':
+
+			print "Calculating PQ"
+			while not self.pq.empty():
+				self.pq.get()
+			for mac in self.machines_state:
+				if self.machines_state[mac].n_tasks != 0:
+					self.pq.put((-self.mac_key_sort(self.machines_state[mac]), self.machines_state[mac])) 
+			print "done"
+
+		else:
+
+			self.pq = [self.machines_state[mac] for mac in self.machines_state if self.machines_state[mac].n_tasks != 0]
 
 	def __calc_usage(self):
 		print "Printing tasks......",
