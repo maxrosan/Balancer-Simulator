@@ -223,7 +223,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					if mac.can_run(task):
 						mac.add_task(task)
 						task.machine_ID = mac.machine_ID
-					self.pq.put((-mac_key_sort(mac) , mac))
+					self.pq.put((-self.mac_key_sort(mac) , mac))
 			else:
 				new_task = self.tasks_input[task_ID]
 				old_task = self.tasks_state[task_ID]
@@ -317,7 +317,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			self.pq.get()
 		for mac in self.machines_state:
 			if self.machines_state[mac].n_tasks != 0:
-				self.pq.put((-mac_key_sort(self.machines_state[mac]), self.machines_state[mac])) 
+				self.pq.put((-self.mac_key_sort(self.machines_state[mac]), self.machines_state[mac])) 
 		print "done"
 
 	def __calc_usage(self):
