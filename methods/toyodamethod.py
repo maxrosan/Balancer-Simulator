@@ -257,6 +257,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				old_task.last_round = self.n_round + 1
 				from_mach = old_task.machine_ID
 
+				if not (old_task.machine_ID in self.machines_state):
+					old_task.machines_state = -1
+
 				if old_task.machine_ID != -1:
 
 					self.machines_state[from_mach].remove_task(old_task)
