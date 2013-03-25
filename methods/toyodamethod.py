@@ -198,7 +198,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			task = self.tasks_state[task_ID]
 			if not (task_ID in self.tasks_input):
 				if task.machine_ID != -1:
-					self.machines_state[task.machine_ID].remove_task(self.tasks_state[task_ID])
+					if task.machine_ID in self.machines_state:
+						self.machines_state[task.machine_ID].remove_task(self.tasks_state[task_ID])
 				
 				self.removePrediction(task_ID)
 				del self.tasks_state[task_ID]
