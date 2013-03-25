@@ -64,7 +64,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				if (numpy.dot(Pu, Pu) == 0.):
 					for i in Tc:
 						d    = sum(P[i])
-						G[i] = (score_task_knapsack(m_tasks[tasks[i]]) * cnt)/d
+						G[i] = (score_task_knapsack(m_tasks[tasks[i]], mac) * cnt)/d
 				# (b)
 				else:
 					mod_Pu = math.sqrt(numpy.dot(Pu, Pu))
@@ -72,7 +72,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				
 					for i in Tc:
 						d    = numpy.dot(P[i], E)
-						G[i] = score_task_knapsack(m_tasks[tasks[i]]) / d
+						G[i] = score_task_knapsack(m_tasks[tasks[i]], mac) / d
 
 				#print "4"
 
