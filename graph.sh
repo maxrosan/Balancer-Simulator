@@ -14,19 +14,41 @@
 #				self.total_tasks ( 13 ),
 #				self.SLA_breaks ( 14 )))
 
-FILE=$1
-TITLE=$2
+OP=$1
 
-FILE_TO_CMP=$3
-TITLE_CMP=$4
+if [ "x$OP" == "xCMP" ]; then
 
-COL=$5
+	FILE=$2
+	TITLE=$3
 
-OUTPUT="${FILE}.svg"
+	FILE_TO_CMP=$4
+	TITLE_CMP=$5
 
-if [ -e $OUTPUT ]; then
-	rm $OUTPUT
+	COL=$6
+
+	OUTPUT="${FILE}_cmp.svg"
+
+	if [ -e $OUTPUT ]; then
+		rm $OUTPUT
+	fi;
+
+	gnuplot -e "set output \"${OUTPUT}\"; set terminal svg; \
+		    plot \"${FILE}\" using 1:$COL title \"${TITLE}\" with lines, \"${FILE_TO_CMP}\" using 1:$COL title \"${TITLE_CMP}\" with lines "
+
+elif [ "x$OP" == "SNG" ]; then
+
+	FILE=$2
+	TITLE=$3
+
+	COL=$4
+
+	OUTPUT="${FILE}_sing.svg"
+
+	if [ -e $OUTPUT ]; then
+		rm $OUTPUT
+	fi;
+
+	gnuplot -e "set output \"${OUTPUT}\"; set terminal svg; \
+		    plot \"${FILE}\" using 1:$COL title \"${TITLE}\" with lines"
+
 fi;
-
-gnuplot -e "set output \"${OUTPUT}\"; set terminal svg; \
-	    plot \"${FILE}\" using 1:$COL title \"${TITLE}\" with lines, \"${FILE_TO_CMP}\" using 1:$COL title \"${TITLE_CMP}\" with lines "
