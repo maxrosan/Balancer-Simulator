@@ -257,8 +257,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				old_task.last_round = self.n_round + 1
 				from_mach = old_task.machine_ID
 
-				if not (old_task.machine_ID in self.machines_state):
-					old_task.machines_state = -1
+				if not (from_mach in self.machines_state):
+					old_task.machine_ID = -1
 
 				if old_task.machine_ID != -1:
 
