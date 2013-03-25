@@ -15,7 +15,7 @@ def task_key_sort(task):
 	return max(task.CPU_usage, task.mem_usage)
 
 def score_task_knapsack(task):
-	#cpu = task.CPU_usage * 0.4
-	#mem = task.mem_usage * 0.6
+	cpu = task.CPU_usage
+	mem = task.mem_usage
 
 	return max(cpu, mem)
