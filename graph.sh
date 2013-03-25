@@ -35,7 +35,7 @@ if [ "x$OP" == "xCMP" ]; then
 	gnuplot -e "set output \"${OUTPUT}\"; set terminal svg; \
 		    plot \"${FILE}\" using 1:$COL title \"${TITLE}\" with lines, \"${FILE_TO_CMP}\" using 1:$COL title \"${TITLE_CMP}\" with lines "
 
-elif [ "x$OP" == "SNG" ]; then
+elif [ "x$OP" == "xSNG" ]; then
 
 	FILE=$2
 	TITLE=$3

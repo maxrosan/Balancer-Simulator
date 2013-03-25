@@ -11,6 +11,9 @@ total_time          = (60 * 60 * 24) * 1
 def mac_key_sort(mac):
 	return mac.capacity_CPU * mac.capacity_memory
 
+def mac_key_pq(mac):
+	return mac.free_CPU() * mac.free_mem()
+
 def task_key_sort(task):
 	return max(task.CPU_usage, task.mem_usage)
 

@@ -131,7 +131,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		return (macs)
 
-	def __init__(self, threshold, mac_key_sort, task_key_sort, score_task_knapsack):
+	def __init__(self, threshold, mac_key_sort, task_key_sort, score_task_knapsack, mac_key_pq):
 		loadbalacing.LoadBalacing.__init__(self)
 
 		self.machines_state      = {}
@@ -143,7 +143,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.threshold_migration = int(threshold)
 		self.mac_key_sort        = mac_key_sort
 		self.task_key_sort       = task_key_sort
-		self.score_task_knapsack = score_task_knapsack 
+		self.score_task_knapsack = score_task_knapsack
+		self.mac_key_pq          = mac_key_pq
 
 
 	def add_machine_event(self, mac):
@@ -222,7 +223,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					if mac.can_run(task):
 						mac.add_task(task)
 						task.machine_ID = mac.machine_ID
-					self.pq.put((-mac.free_CPU(), mac))
+					self.pq.put((-mac_key_sort(mac) , mac))
 			else:
 				new_task = self.tasks_input[task_ID]
 				old_task = self.tasks_state[task_ID]
@@ -316,7 +317,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			self.pq.get()
 		for mac in self.machines_state:
 			if self.machines_state[mac].n_tasks != 0:
-				self.pq.put((-self.machines_state[mac].free_CPU(), self.machines_state[mac])) 
+				self.pq.put((-mac_key_sort(self.machines_state[mac]), self.machines_state[mac])) 
 		print "done"
 
 	def __calc_usage(self):
