@@ -502,7 +502,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		macs = sorted([mac_id for mac_id in self.machines_state if self.machines_state[mac_id].n_tasks > 0],
 		              key=lambda mac_id:self.mac_key_sort(self.machines_state[mac_id]), reverse=True) + \
 		       sorted([mac_id for mac_id in self.machines_state if self.machines_state[mac_id].n_tasks == 0],
-		              key=lambda mac_id:self.mac_key_sort(self.machines_state[mac_id), reverse=True)
+		              key=lambda mac_id:self.mac_key_sort(self.machines_state[mac_id]), reverse=True)
 
 		tasks = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1],
 		                    key=lambda task:self.task_key_sort(self.tasks_state[task]), reverse=True)
