@@ -510,7 +510,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		bal(macs, tasks)
 				
 		# Gather the task weren't mapped earlier
-		#tasks_without_mac = [task for task in self.tasks_state if self.tasks_state[task].machine_ID == -1]
+		tasks_without_mac = [task for task in self.tasks_state if self.tasks_state[task].machine_ID == -1]
 		if len(tasks_without_mac) > 0:
 
 			mac_n_used  = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks == 0],
