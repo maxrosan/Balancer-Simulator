@@ -29,6 +29,7 @@ class BranchAndBoundMethod(binpackingmethod.BinPackingMethod):
 
 			return mx
 		else:
+			print "X"
 			return 0
 
 	def bin_packing(self, tasks, macs):
