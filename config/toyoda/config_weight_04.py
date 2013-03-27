@@ -19,4 +19,4 @@ def task_key_sort(task):
 	return max(task.CPU_usage, task.mem_usage)
 
 def score_task_knapsack(task, mac):
-	return (task.CPU_usage*mac.capacity_CPU +  task.mem_usage*mac.capacity_memory)
+	return (task.CPU_usage * mac.free_CPU() +  task.mem_usage*mac.free_mem())
