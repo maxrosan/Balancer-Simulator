@@ -17,6 +17,7 @@ class BranchAndBoundMethod(binpackingmethod.BinPackingMethod):
 		print "__bbm"
 
 		if M > value:
+			print "Y"
 			return 0
 		elif i == N:
 			return M
