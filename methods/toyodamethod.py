@@ -479,6 +479,12 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.task_new = self.__count_new_tasks()
 
 		self.beforeBalancing()
+
+		for mac in self.machines_state:
+			if self.machines_state[mac].SLA_break():
+				for task in self.machines_state[mac].tasks:
+					self.migrate(self.tasks_state[task])
+					self.machines_state[mac].remove_task(self.tasks_state[task])
 	
 		print "Processing"
 
