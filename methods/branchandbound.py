@@ -13,14 +13,9 @@ class BranchAndBoundMethod(binpackingmethod.BinPackingMethod):
 		self.Gv = 0
 
 	def __bbm(self, tasks, mac, i, M, N, value):
-
-		print "__bbm"
-
 		if M > value:
-			print "Y"
 			return 0
 		elif i == N:
-			print "C"
 			return M
 		elif (((N - i - 1) + M) * 0.7) > self.Gv:
 			x = self.__bbm(tasks, mac, i+1, M + tasks[i].CPU_usage*mac.free_CPU() + tasks[i].mem_usage*mac.free_mem(), N, value)
@@ -31,7 +26,6 @@ class BranchAndBoundMethod(binpackingmethod.BinPackingMethod):
 
 			return mx
 		else:
-			print "X"
 			return 0
 
 	def bin_packing(self, tasks, macs):
@@ -41,4 +35,5 @@ class BranchAndBoundMethod(binpackingmethod.BinPackingMethod):
 		tasks_lst = sorted([self.tasks_state[task_ID] for task_ID in tasks], key=lambda task: (1. + task.CPU_usage)*(1. + task.mem_usage), reverse=True)
 		print self.__bbm(tasks_lst, self.machines_state[macs[0]], 0, 0., len(tasks_lst), self.machines_state[macs[0]].capacity_CPU * self.machines_state[macs[0]].capacity_memory)
 
-		exit()
+		if len(tasks_lst) == 0:
+			exit()
