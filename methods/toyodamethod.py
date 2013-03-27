@@ -479,23 +479,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.task_new = self.__count_new_tasks()
 
 		self.beforeBalancing()
-
-		#mac_used   = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks > 0], 
-		#                    key=lambda mac:self.mac_key_sort(self.machines_state[mac]), reverse=True)
-		#task_w_mac = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1],
-		#                    key=lambda task:self.task_key_sort(self.tasks_state[task]), reverse=True)
-
-		#if len(mac_used) > 0 and len(task_w_mac) > 0:
-		#	print "Macs used"
-		#	bal(mac_used, task_w_mac)
-
-		#mac_n_used  = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks == 0],
-		#                      key=lambda mac:self.mac_key_sort(self.machines_state[mac]), reverse=True)
-		#task_wo_mac = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1],
-		#                      key=lambda task:self.task_key_sort(self.tasks_state[task]), reverse=True)
-
-		#print "Macs not used"
-		#bal(mac_n_used, task_wo_mac)
 	
 		print "Processing"
 
@@ -513,18 +496,29 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		tasks_without_mac = [task for task in self.tasks_state if self.tasks_state[task].machine_ID == -1]
 		if len(tasks_without_mac) > 0:
 
-			mac_n_used  = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks == 0],
-			                     key=lambda mac:self.mac_key_sort(self.machines_state[mac]), reverse=True)
+			#mac_n_used  = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks == 0],
+			#                     key=lambda mac:self.mac_key_sort(self.machines_state[mac]), reverse=True)
+
 			task_wo_mac = sorted([task for task in self.tasks_state if self.tasks_state[task].machine_ID == -1],
 			                     key=lambda task:self.task_key_sort(self.tasks_state[task]), reverse=True)
 
-			i = 0
-			n_macs = len(mac_n_used)
-			n_tasks = len(task_wo_mac)
-			while i < n_macs and i < n_tasks:
-				self.machines_state[mac_n_used[i]].add_task(self.tasks_state[task_wo_mac[i]])
-				self.tasks_state[task_wo_mac[i]].machine_ID = mac_n_used[i]
-				i = i + 1
+			for task_id in task_wo_mac:
+				mac_max = None
+				mac_val = 0
+				task    = self.tasks_state[task_id]
+			
+				for mac_id in self.machines_state:
+					mac = self.machines_state[mac_id]
+					dcpu = mac.free_CPU() - task.CPU_usage
+					dmem = mac.free_mem() - task.mem_usage
+					val = dcpu*dcpu + dmem*dmem
+
+					if val > mac_valx:
+						mac_val = val
+						mac_max = mac
+
+				
+				
 		
 		self.__calc_heap()
 
