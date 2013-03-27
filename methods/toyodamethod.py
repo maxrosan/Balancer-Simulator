@@ -521,6 +521,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					dmem = mac.free_mem() - task.mem_usage
 					val = dcpu*dcpu + dmem*dmem
 
+					if not mac.can_run(task):
+						val = val + 100
+
 					if val < mac_val:
 						mac_val = val
 						mac_min = mac
