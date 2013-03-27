@@ -2,7 +2,8 @@
 #
 
 import simulator, usage, machine, sets
-import methods.toyodamethod, methods.tasksstats, methods.toyodamethodwithmovingaverage, methods.googlemethod, methods.ffdmethod
+import methods.toyodamethod, methods.tasksstats, methods.toyodamethodwithmovingaverage, methods.googlemethod, methods.ffdmethod, \
+methods.branchandbound
 import sys
 
 class BalancerSimulator:
@@ -97,6 +98,10 @@ elif var_locals["method"] == "ffd":
 		var_locals["mac_key_sort"],
 		var_locals["task_key_sort"],
 		var_locals["mac_sorted"])
+
+elif var_locals["method"] == "bbm":
+
+	method = methods.branchandbound.BranchAndBoundMethod(var_locals["interval"])
 
 else:
 	method = None
