@@ -103,7 +103,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		
 		print "processing %d %d" % (len(machines), len(tasks))
 
-		mac_list = [mac for mac in mac_list if m_mac_state[mac].free_CPU() > 1e-10 and m_mac_state[mac].free_mem() > 1e-10]
+		mac_list = [mac for mac in machines if m_mac_state[mac].free_CPU() > 1e-10 and m_mac_state[mac].free_mem() > 1e-10]
 
 		tasks_list = list(tasks)
 
