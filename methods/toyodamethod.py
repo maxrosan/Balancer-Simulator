@@ -496,6 +496,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		tasks_without_mac = [task for task in self.tasks_state if self.tasks_state[task].machine_ID == -1]
 		if len(tasks_without_mac) > 0:
 
+			print "Remaining tasks"
+
 			#mac_n_used  = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks == 0],
 			#                     key=lambda mac:self.mac_key_sort(self.machines_state[mac]), reverse=True)
 
