@@ -11,6 +11,7 @@ class BranchAndBoundMethod(binpackingmethod.BinPackingMethod):
 		binpackingmethod.BinPackingMethod.__init__(self, threshold)
 
 		self.Gv = 0
+		sys.setrecursionlimit(200000)
 
 	def __bbm(self, tasks, mac, i, M, N, value):
 		if M > value:
