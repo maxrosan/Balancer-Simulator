@@ -521,7 +521,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 				if mac_min != None:
 					mac_min.add_task(task)
-					task.machine_ID = mac_mac.machine_ID
+					task.machine_ID = mac_min.machine_ID
 
 		
 		self.__calc_heap()
