@@ -505,8 +505,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			                     key=lambda task:self.task_key_sort(self.tasks_state[task]), reverse=True)
 
 			for task_id in task_wo_mac:
-				mac_max = None
-				mac_val = 0
+				mac_min = None
+				mac_val = 100
 				task    = self.tasks_state[task_id]
 			
 				for mac_id in self.machines_state:
@@ -515,12 +515,12 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					dmem = mac.free_mem() - task.mem_usage
 					val = dcpu*dcpu + dmem*dmem
 
-					if val > mac_val:
+					if val < mac_val:
 						mac_val = val
-						mac_max = mac
+						mac_min = mac
 
-				if mac_max != None:
-					mac_max.add_task(task)
+				if mac_min != None:
+					mac_min.add_task(task)
 					task.machine_ID = mac_mac.machine_ID
 
 		
