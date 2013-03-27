@@ -519,8 +519,10 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 						mac_val = val
 						mac_max = mac
 
-				
-				
+				if mac_max != None:
+					mac_max.add_task(task)
+					task.machine_ID = mac_mac.machine_ID
+
 		
 		self.__calc_heap()
 
