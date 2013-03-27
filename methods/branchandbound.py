@@ -35,5 +35,5 @@ class BranchAndBoundMethod(binpackingmethod.BinPackingMethod):
 		tasks_lst = sorted([self.tasks_state[task_ID] for task_ID in tasks], key=lambda task: (1. + task.CPU_usage)*(1. + task.mem_usage), reverse=True)
 		print self.__bbm(tasks_lst, self.machines_state[macs[0]], 0, 0., len(tasks_lst), self.machines_state[macs[0]].capacity_CPU * self.machines_state[macs[0]].capacity_memory)
 
-		if len(tasks_lst) == 0:
+		if len(tasks_lst) > 0:
 			exit()
