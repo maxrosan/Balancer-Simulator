@@ -103,7 +103,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		
 		print "processing %d %d" % (len(machines), len(tasks))
 
-		mac_list = sorted(machines, key=lambda mac: mac_key_sort(m_mac_state[mac]), reverse=True)
 		mac_list = [mac for mac in mac_list if m_mac_state[mac].free_CPU() > 1e-10 and m_mac_state[mac].free_mem() > 1e-10]
 
 		tasks_list = list(tasks)
@@ -481,25 +480,37 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		self.beforeBalancing()
 
-		mac_used   = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks > 0], 
-		                    key=lambda mac:self.mac_key_sort(self.machines_state[mac]), reverse=True)
-		task_w_mac = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1],
+		#mac_used   = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks > 0], 
+		#                    key=lambda mac:self.mac_key_sort(self.machines_state[mac]), reverse=True)
+		#task_w_mac = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1],
+		#                    key=lambda task:self.task_key_sort(self.tasks_state[task]), reverse=True)
+
+		#if len(mac_used) > 0 and len(task_w_mac) > 0:
+		#	print "Macs used"
+		#	bal(mac_used, task_w_mac)
+
+		#mac_n_used  = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks == 0],
+		#                      key=lambda mac:self.mac_key_sort(self.machines_state[mac]), reverse=True)
+		#task_wo_mac = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1],
+		#                      key=lambda task:self.task_key_sort(self.tasks_state[task]), reverse=True)
+
+		#print "Macs not used"
+		#bal(mac_n_used, task_wo_mac)
+	
+		print "Processing"
+
+		macs = sorted([mac_id for mac_id in self.machines_state if self.machines_state[mac_id].n_tasks > 0],
+		              key=lambda mac_id:self.mac_key_sort(self.machines_state[mac_id]), reverse=True) + \
+		       sorted([mac_id for mac_id in self.machines_state if self.machines_state[mac_id].n_tasks == 0],
+		              key=lambda mac_id:self.mac_key_sort(self.machines_state[mac_id), reverse=True)
+
+		tasks = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1],
 		                    key=lambda task:self.task_key_sort(self.tasks_state[task]), reverse=True)
 
-		if len(mac_used) > 0 and len(task_w_mac) > 0:
-			print "Macs used"
-			bal(mac_used, task_w_mac)
-
-		mac_n_used  = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks == 0],
-		                      key=lambda mac:self.mac_key_sort(self.machines_state[mac]), reverse=True)
-		task_wo_mac = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1],
-		                      key=lambda task:self.task_key_sort(self.tasks_state[task]), reverse=True)
-
-		print "Macs not used"
-		bal(mac_n_used, task_wo_mac)
+		bal(macs, tasks)
 				
 		# Gather the task weren't mapped earlier
-		tasks_without_mac = [task for task in self.tasks_state if self.tasks_state[task].machine_ID == -1]
+		#tasks_without_mac = [task for task in self.tasks_state if self.tasks_state[task].machine_ID == -1]
 		if len(tasks_without_mac) > 0:
 
 			mac_n_used  = sorted([mac for mac in self.machines_state if self.machines_state[mac].n_tasks == 0],
