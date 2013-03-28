@@ -495,18 +495,21 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				for task in self.machines_state[mac].tasks:
 					self.migrate(self.tasks_state[task])
 					self.machines_state[mac].remove_task(self.tasks_state[task])
-	
-		print "Processing"
 
-		macs = sorted([mac_id for mac_id in self.machines_state if self.machines_state[mac_id].n_tasks > 0],
-		              key=lambda mac_id:self.mac_key_sort(self.machines_state[mac_id]), reverse=True) + \
-		       sorted([mac_id for mac_id in self.machines_state if self.machines_state[mac_id].n_tasks == 0],
-		              key=lambda mac_id:self.mac_key_sort(self.machines_state[mac_id]), reverse=True)
+		for i in range(0, 2):
 
-		tasks = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1],
+
+			print "Processing %d" % (i)
+
+			macs = sorted([mac_id for mac_id in self.machines_state if self.machines_state[mac_id].n_tasks > 0],
+			              key=lambda mac_id:self.mac_key_sort(self.machines_state[mac_id]), reverse=True) + \
+			       sorted([mac_id for mac_id in self.machines_state if self.machines_state[mac_id].n_tasks == 0],
+		        	      key=lambda mac_id:self.mac_key_sort(self.machines_state[mac_id]), reverse=True)
+
+			tasks = sorted([task for task in list(self.tasks_state) if self.tasks_state[task].machine_ID == -1],
 		                    key=lambda task:self.task_key_sort(self.tasks_state[task]), reverse=True)
 
-		bal(macs, tasks)
+			bal(macs, tasks)
 				
 		# Gather the task weren't mapped earlier
 		tasks_without_mac = [task for task in self.tasks_state if self.tasks_state[task].machine_ID == -1]
