@@ -537,7 +537,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					val = dcpu*dcpu + dmem*dmem
 
 					if not mac.can_run(task):
-						val = val + 4.
+						val = val + 4. + mac.n_tasks
 
 					if val < mac_val:
 						mac_val = val
