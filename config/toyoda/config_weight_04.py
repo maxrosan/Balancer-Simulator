@@ -19,7 +19,7 @@ def task_key_sort(task):
 	return (1. + task.CPU_usage)*(1. + task.mem_usage)
 
 def score_task_knapsack(task, mac):
-	return (task.CPU_usage*mac.free_CPU() +  task.mem_usage*mac.free_mem())
+	return (task.CPU_usage*mac.free_CPU()*0.3 +  task.mem_usage*mac.free_mem()*0.7)
 
 def must_migrate(old_task, new_task, machine):
 	#return ((1. + old_task.CPU_usage)*(1. + old_task.mem_usage) < (1. + new_task.CPU_usage)*(1. + new_task.mem_usage))
