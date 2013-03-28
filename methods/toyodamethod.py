@@ -232,7 +232,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 						if mac.can_run(task):
 							mac.add_task(task)
 							task.machine_ID = mac.machine_ID
-						self.pq.put((-self.mac_key_sort(mac) , mac))
+						self.pq.put((-self.mac_key_pq(mac) , mac))
 
 				else:
 
@@ -347,7 +347,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				self.pq.get()
 			for mac in self.machines_state:
 				if self.machines_state[mac].n_tasks != 0:
-					self.pq.put((-self.mac_key_sort(self.machines_state[mac]), self.machines_state[mac])) 
+					self.pq.put((-self.mac_key_pq(self.machines_state[mac]), self.machines_state[mac])) 
 			print "done"
 
 		else:

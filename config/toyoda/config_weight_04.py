@@ -13,10 +13,10 @@ def mac_key_sort(mac):
 	return mac.capacity_CPU * mac.capacity_memory
 
 def mac_key_pq(mac):
-	return mac.free_CPU() * mac.free_mem()
+	return max(mac.free_CPU(), mac.free_mem())
 
 def task_key_sort(task):
-	return (task.CPU_usage + 1.)*(task.mem_usage + 1.)
+	return max(task.CPU_usage, task.mem_usage)
 
 def score_task_knapsack(task, mac):
 	return (task.CPU_usage * mac.free_CPU() +  task.mem_usage*mac.free_mem())
