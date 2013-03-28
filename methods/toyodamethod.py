@@ -526,8 +526,6 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				mac_min = None
 				mac_val = 100
 				task    = self.tasks_state[task_id]
-
-				print "(%f, %f) " % (task.CPU_usage, task.mem_usage), 
 			
 				for mac_id in self.machines_state:
 					mac = self.machines_state[mac_id]
@@ -545,6 +543,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				if mac_min != None:
 					mac_min.add_task(task)
 					task.machine_ID = mac_min.machine_ID
+					print "(%f, %f / %f, %f) " % (task.CPU_usage, task.mem_usage, mac.free_CPU(), mac.free_mem()), 
 
 			print " "
 
