@@ -10,7 +10,7 @@ total_time          = (60 * 60 * 24) * 1
 method_sel_macs     = 'nothing'
 
 def mac_key_sort(mac):
-	return max(mac.capacity_CPU, mac.capacity_memory)
+	return mac.capacity_CPU*mac.capacity_memory
 
 def mac_key_pq(mac):
 	return mac.free_CPU()
