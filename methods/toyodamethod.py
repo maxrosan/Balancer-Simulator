@@ -143,6 +143,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			self.pq           = Queue.PriorityQueue(0)
 		elif method_sel_macs == 'list':
 			self.pq           = []
+		elif method_sel_macs == 'nothing':
+			self.pq           = None
 		else:
 			print "Unknown method"
 			exit()
@@ -234,7 +236,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 							task.machine_ID = mac.machine_ID
 						self.pq.put((-self.mac_key_pq(mac) , mac))
 
-				else:
+				elif self.method_sel_macs == 'list':
 
 					mac_value = 0
 					mac_max   = None
@@ -247,6 +249,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					if mac_max != None:
 						mac_max.add_task(task)
 						task.machine_ID = mac_max.machine_ID
+
+				elif self.method_sel_macs == 'nothing':
+					pass
 						
 			else:
 				new_task = self.tasks_input[task_ID]
@@ -350,9 +355,10 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					self.pq.put((-self.mac_key_pq(self.machines_state[mac]), self.machines_state[mac])) 
 			print "done"
 
-		else:
-
+		elif self.method_sel_macs == 'list':
 			self.pq = [self.machines_state[mac] for mac in self.machines_state if self.machines_state[mac].n_tasks != 0]
+		elif self.method_sel_macs == 'nothing':
+			pass
 
 	def __calc_usage(self):
 		print "Printing tasks......",
