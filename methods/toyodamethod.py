@@ -418,8 +418,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			res = [None] * self.n_jobs
 
 			for i in range(0, len(lst)):
-				#ind = i % self.n_jobs
-				ind = (i / (len(lst) / self.n_jobs)) % self.n_jobs
+				ind = i % self.n_jobs
 				if res[ind] == None:
 					res[ind] = []
 				res[ind].append(lst[i])
