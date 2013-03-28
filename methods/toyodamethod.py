@@ -534,7 +534,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 					val = dcpu*dcpu + dmem*dmem
 
 					if not mac.can_run(task):
-						val = val + 2.
+						val = val + 4.
 
 					if val < mac_val:
 						mac_val = val
@@ -543,7 +543,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				if mac_min != None:
 					mac_min.add_task(task)
 					task.machine_ID = mac_min.machine_ID
-					print "(%f, %f / %f, %f) " % (task.CPU_usage, task.mem_usage, mac.free_CPU(), mac.free_mem()), 
+					print "(%f, %f / %f, %f / %f) " % (task.CPU_usage, task.mem_usage, mac.free_CPU(), mac.free_mem(), val), 
 
 			print " "
 
