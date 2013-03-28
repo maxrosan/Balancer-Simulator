@@ -24,6 +24,6 @@ def score_task_knapsack(task, mac):
 
 def must_migrate(old_task, new_task, machine):
 	use = (machine.CPU_usage * machine.mem_usage)/(machine.capacity_CPU * machine.capacity_memory)
-	return  (use > 0.5) and ((1. + old_task.CPU_usage)*(1. + old_task.mem_usage) < (1. + new_task.CPU_usage)*(1. + new_task.mem_usage))
+	return  (use < 0.5) # and ((1. + old_task.CPU_usage)*(1. + old_task.mem_usage) < (1. + new_task.CPU_usage)*(1. + new_task.mem_usage))
 	#return False
 		
