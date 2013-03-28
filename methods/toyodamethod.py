@@ -130,7 +130,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 		return (macs)
 
-	def __init__(self, threshold, mac_key_sort, task_key_sort, score_task_knapsack, mac_key_pq, method_sel_macs):
+	def __init__(self, threshold, mac_key_sort, task_key_sort, score_task_knapsack, mac_key_pq, method_sel_macs, must_migrate):
 		loadbalacing.LoadBalacing.__init__(self)
 
 		self.machines_state      = {}
@@ -154,6 +154,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 		self.task_key_sort       = task_key_sort
 		self.score_task_knapsack = score_task_knapsack
 		self.mac_key_pq          = mac_key_pq
+
+		self.must_migrate        = must_migrate
 
 
 	def add_machine_event(self, mac):
@@ -274,7 +276,9 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 					if old_task.age_round <= self.threshold_migration:
 						#if (old_task.CPU_usage < new_task.CPU_usage or old_task.mem_usage < new_task.mem_usage):
-						if not self.machines_state[from_mach].can_run(new_task):
+
+						if self.must_migrate(old_task, task, self.machines_state[from_mach]) or \ 
+						 (not self.machines_state[from_mach].can_run(new_task)):
 							self.migrate(old_task)
 						else:
 							old_task.move       = False

@@ -66,7 +66,8 @@ if   var_locals["method"] == "toyoda":
 		var_locals["task_key_sort"],
 		var_locals["score_task_knapsack"],
 		var_locals["mac_key_pq"],
-		var_locals["method_sel_macs"])
+		var_locals["method_sel_macs"],
+		var_locals["must_migrate"])
 
 elif var_locals["method"] == "stats":
 
@@ -85,6 +86,7 @@ elif var_locals["method"] == "toyodaWithMovingAverage":
 		var_locals["score_task_knapsack"],
 		var_locals["mac_key_pq"],
 		var_locals["method_sel_macs"],
+		var_locals["must_migrate"],
 		var_locals["n_entries"])
 
 elif var_locals["method"] == "google":
