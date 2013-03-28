@@ -519,11 +519,15 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 			task_wo_mac = sorted([task for task in self.tasks_state if self.tasks_state[task].machine_ID == -1],
 			                     key=lambda task:self.task_key_sort(self.tasks_state[task]), reverse=True)
+		
+			print "WO MAC: ", 
 
 			for task_id in task_wo_mac:
 				mac_min = None
 				mac_val = 100
 				task    = self.tasks_state[task_id]
+
+				print "(%f, %f) " % (task.CPU_usage, task.mem_usage), 
 			
 				for mac_id in self.machines_state:
 					mac = self.machines_state[mac_id]
@@ -541,6 +545,8 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 				if mac_min != None:
 					mac_min.add_task(task)
 					task.machine_ID = mac_min.machine_ID
+
+			print " "
 
 		
 		self.__calc_heap()
