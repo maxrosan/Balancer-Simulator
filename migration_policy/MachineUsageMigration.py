@@ -1,7 +1,7 @@
 
 import migration_policy.Migration
 
-class MachineUsageMigration(methods.Migration.Migration):
+class MachineUsageMigration(migration_policy.Migration.Migration):
 
 	def __init__(self):
 		methods.Migration.Migration(self)
