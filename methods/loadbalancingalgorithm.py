@@ -5,7 +5,7 @@ import methods.loadbalacing
 class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 	
 	def __init__(self, prediction, migration):
-		loadbalacing.LoadBalacing.__init__(prediction)
+		methods.loadbalacing.LoadBalacing.__init__()
 
 		self.machines    = {}
 		self.tasks       = {}
