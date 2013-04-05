@@ -210,7 +210,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			task = self.tasks_state[task_ID]
 			if not (task_ID in self.tasks_input):
 				if task.machine_ID != -1:
-					if task.machine_ID in self.machines_state:
+					if task.machine_ID in self.machines_state and task_ID in self.machines_state[task.machine_ID].task:
 						self.machines_state[task.machine_ID].remove_task(self.tasks_state[task_ID])
 				
 				self.removePrediction(task_ID)
@@ -231,11 +231,14 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 	
 					if not self.pq.empty():
 						mac = self.pq.get()[1]
+
 						while not (mac.machine_ID in self.machines_state):
 							mac = self.pq.get()[1]
+
 						if mac.can_run(task):
 							mac.add_task(task)
 							task.machine_ID = mac.machine_ID
+
 						self.pq.put((-self.mac_key_pq(mac) , mac))
 
 				elif self.method_sel_macs == 'list':
