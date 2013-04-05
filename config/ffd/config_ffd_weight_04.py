@@ -1,7 +1,7 @@
 
 method              = 'ffd'
 num_of_jobs         = 8
-interval_mig        = 100
+interval_mig        = 400
 dataset_path        = "/var/tmp/mr/gs_cluster/"
 mapping_log         = "/var/tmp/mr/log/mapping_ffd_04_brucutu.log"
 balancing_log       = "/var/tmp/mr/log/balancing_ffd_04_brucutu.log"
