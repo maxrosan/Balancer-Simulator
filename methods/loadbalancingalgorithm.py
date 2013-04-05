@@ -27,7 +27,7 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 		return self.tasks[taskId]
 
 	def migrate(self, task):
-		get_mac(task.machine_ID).remove_task(task)
+		self.get_mac(task.machine_ID).remove_task(task)
 
 		task.move       = True
 		task.mig_origin = task.machine_ID
@@ -114,8 +114,8 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 					self.migrate(task)
 				else:
 					if task.machine_ID != -1:
-						get_mac(task.machine_ID).remove_task(task)
-						get_mac(task.machine_ID).add_task(task_update)
+						self.get_mac(task.machine_ID).remove_task(task)
+						self.get_mac(task.machine_ID).add_task(task_update)
 
 				task.CPU_usage = task_update.CPU_usage
 				task.mem_usage = task_update.mem_usage
