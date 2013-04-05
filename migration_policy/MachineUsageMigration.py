@@ -1,5 +1,5 @@
 
-import methods.Migration
+import migration_policy.Migration
 
 class MachineUsageMigration(methods.Migration.Migration):
 
