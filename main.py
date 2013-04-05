@@ -58,57 +58,7 @@ if sys.argv[1] == "help":
 else:
 	execfile(sys.argv[1], var_globals, var_locals)
 
-if   var_locals["method"] == "toyoda":
-
-	method = methods.toyodamethod.ToyodaMethod(
-		var_locals["interval_toyoda"],
-		var_locals["mac_key_sort"],
-		var_locals["task_key_sort"],
-		var_locals["score_task_knapsack"],
-		var_locals["mac_key_pq"],
-		var_locals["method_sel_macs"],
-		var_locals["must_migrate"])
-
-elif var_locals["method"] == "stats":
-
-	method = methods.tasksstats.TasksStats(
-		var_locals["logfile"],
-		var_locals["task_log"],
-		var_locals["n_writes_limit"],
-		var_locals["len_hist_max"])
-
-elif var_locals["method"] == "toyodaWithMovingAverage":
-
-	method = methods.toyodamethod.ToyodaMethod(
-		var_locals["interval_toyoda"],
-		var_locals["mac_key_sort"],
-		var_locals["task_key_sort"],
-		var_locals["score_task_knapsack"],
-		var_locals["mac_key_pq"],
-		var_locals["method_sel_macs"],
-		var_locals["must_migrate"],
-		var_locals["n_entries"])
-
-elif var_locals["method"] == "google":
-
-	method = methods.googlemethod.GoogleMethod()
-
-elif var_locals["method"] == "ffd":
-
-	method = methods.ffdmethod.FFDMethod(
-		var_locals["interval_mig"],
-		var_locals["mac_key_sort"],
-		var_locals["task_key_sort"],
-		var_locals["mac_sorted"])
-
-elif var_locals["method"] == "bbm":
-
-	method = methods.branchandbound.BranchAndBoundMethod(var_locals["interval"])
-
-else:
-	method = None
-
-method.n_jobs = var_locals["num_of_jobs"]
+method = var_locals["method"]
 
 sim = simulator.Simulator()
 balsim = BalancerSimulator(var_locals["dataset_path"], method, var_locals["balancing_log"], var_locals["mapping_log"], var_locals["total_time"])

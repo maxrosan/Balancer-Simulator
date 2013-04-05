@@ -59,6 +59,9 @@ class MachineEventRegister:
 		self.CPU_usage_real = 0
 		self.mem_usage_real = 0
 
+	 	del self.tasks
+		self.tasks = []
+
 	def calculate_consumption(self, map_tasks):
 		self.CPU_usage = 0
 		self.mem_usage = 0
