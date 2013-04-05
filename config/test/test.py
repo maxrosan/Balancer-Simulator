@@ -4,7 +4,7 @@ site.addsitedir("/var/tmp/mr/simulator/Balancer-Simulator/")
 
 import methods.loadbalancingalgorithm, prediction.NoPrediction, migration_policy
 
-method         = methods.loadbalancingalgorithm.LoadBalancingAlgorithm(prediction.NoPredictionNo.Prediction(), 
+method         = methods.loadbalancingalgorithm.LoadBalancingAlgorithm(prediction.NoPrediction.NoPrediction(), 
  migration_policy.MachineUsageMigration.MachineUsageMigration())
 
 dataset_path   = "/var/tmp/mr/gs_cluster/"
