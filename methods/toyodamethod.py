@@ -163,10 +163,10 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			self.machines_state[mac.machine_ID] = mac
 		elif mac.event_type == mac.UPDATE_EVENT:
 
-			if self.machines_state[mac.machine_ID].capacity_CPU > mac.capacity_CPU or self.machines_state[mac.machine_ID].capacity_memory > mac.capacity_memory:
-				for task in self.machines_state[mac.machine_ID].tasks:
-					self.migrate(self.tasks_state[task])
-					self.machines_state[mac.machine_ID].remove_task(self.tasks_state[task])
+			#if self.machines_state[mac.machine_ID].capacity_CPU > mac.capacity_CPU or self.machines_state[mac.machine_ID].capacity_memory > mac.capacity_memory:
+			#	for task in self.machines_state[mac.machine_ID].tasks:
+			#		self.migrate(self.tasks_state[task])
+			#		self.machines_state[mac.machine_ID].remove_task(self.tasks_state[task])
 
 			self.machines_state[mac.machine_ID].capacity_CPU    = mac.capacity_CPU
 			self.machines_state[mac.machine_ID].capacity_memory = mac.capacity_memory
@@ -210,7 +210,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 			task = self.tasks_state[task_ID]
 			if not (task_ID in self.tasks_input):
 				if task.machine_ID != -1:
-					if task.machine_ID in self.machines_state and task.task_ID in self.machines_state[task.machine_ID].tasks:
+					if task.machine_ID in self.machines_state:
 						self.machines_state[task.machine_ID].remove_task(self.tasks_state[task_ID])
 				
 				self.removePrediction(task_ID)
@@ -447,6 +447,7 @@ class ToyodaMethod(loadbalacing.LoadBalacing):
 
 				mac_lsts  = div_list(mac_list)
 				task_lsts = div_list(task_list)
+												
 
 				for i in range(0, self.n_jobs):
 					t = None
