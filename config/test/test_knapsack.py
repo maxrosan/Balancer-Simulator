@@ -12,7 +12,7 @@ def score_task_knapsack(task, mac):
 	return max(task.CPU_usage, task.mem_usage)
 
 method         = methods.toyodaknapsack.ToyodaKnapsack(prediction.NoPrediction.NoPrediction(), 
- migration_policy.MachineUsageMigration.MachineUsageMigration(), 4, score_task_knapsack,
+ migration_policy.MachineUsageMigration.MachineUsageMigration(), 8, score_task_knapsack,
  mac_key_sort, task_key_sort)
 
 host = commands.getoutput("hostname")
