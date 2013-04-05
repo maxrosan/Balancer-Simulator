@@ -2,7 +2,7 @@
 import site
 site.addsitedir("/var/tmp/mr/simulator/Balancer-Simulator/")
 
-import methods.loadbalancingalgorithm, prediction.NoPrediction, migration_policy.MachineUsage
+import methods.loadbalancingalgorithm, prediction.NoPrediction, migration_policy.MachineUsageMigration
 
 method         = methods.loadbalancingalgorithm.LoadBalancingAlgorithm(prediction.NoPrediction.NoPrediction(), 
  migration_policy.MachineUsageMigration.MachineUsageMigration())
