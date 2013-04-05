@@ -11,19 +11,19 @@ method_sel_macs     = 'priority_queue'
 #method_sel_macs     = 'nothing'
 
 def mac_key_sort(mac):
-	return (mac.free_CPU(), mac.free_mem())
+	return (mac.free_CPU() * mac.free_mem())
 
 def mac_key_pq(mac):
-	return mac.free_CPU()
+	return (mac.free_CPU() * mac.free_mem())
 
 def task_key_sort(task):
-	return (task.CPU_usage, task.mem_usage)
+	return max(task.CPU_usage, task.mem_usage)
 
 def score_task_knapsack(task, mac):
-	return (task.CPU_usage*mac.free_CPU() +  task.mem_usage*mac.free_mem())
+	return max(task.CPU_usage, task.mem_usage)
 
 def must_migrate(old_task, new_task, machine):
-	use = (machine.CPU_usage * machine.mem_usage)/(machine.capacity_CPU * machine.capacity_memory)
-	return  (use < 0.5) # and ((1. + old_task.CPU_usage)*(1. + old_task.mem_usage) < (1. + new_task.CPU_usage)*(1. + new_task.mem_usage))
-	#return False
+	#use = (machine.CPU_usage * machine.mem_usage)/(machine.capacity_CPU * machine.capacity_memory)
+	#return  (use < 0.5) # and ((1. + old_task.CPU_usage)*(1. + old_task.mem_usage) < (1. + new_task.CPU_usage)*(1. + new_task.mem_usage))
+	return False
 		
