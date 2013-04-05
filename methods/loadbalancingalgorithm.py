@@ -1,6 +1,6 @@
 
 import io, time
-import loadbalacing.LoadBalacing
+import methods.loadbalacing.LoadBalacing
 
 class LoadBalacingAlgorithm(loadbalacing.LoadBalacing):
 	
