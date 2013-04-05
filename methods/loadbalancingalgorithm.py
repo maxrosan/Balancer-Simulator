@@ -2,7 +2,7 @@
 import io, time
 import methods.loadbalacing
 
-class LoadBalacingAlgorithm(methods.loadbalacing.LoadBalacing):
+class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 	
 	def __init__(self, prediction, migration):
 		loadbalacing.LoadBalacing.__init__(prediction)
