@@ -8,7 +8,7 @@ class MachineUsageMigration(migration_policy.Migration.Migration):
 
 	def must_migrate(self, old_task, new_task, machine):
 
-		if machine == None:
+		if machine is None:
 			return False
 
 		cpu = max(1., machine.CPU_usage_real)
