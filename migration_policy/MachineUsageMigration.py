@@ -1,5 +1,7 @@
 
-class MachineUsageMigration:
+import methods.Migration
+
+class MachineUsageMigration(methods.Migration.Migration):
 
 	def __init__(self):
 		pass

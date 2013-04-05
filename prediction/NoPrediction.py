@@ -1,7 +1,7 @@
 
 import prediction.Prediction
 
-class NoPrediction(prediction.Prediction):
+class NoPrediction(prediction.Prediction.Prediction):
 	
 	def __init__(self):
 		prediction.Prediction.__init__()
