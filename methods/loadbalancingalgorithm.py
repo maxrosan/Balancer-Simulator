@@ -42,7 +42,7 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 
 		else:
 			for task in self.machines[mac.machine_ID].tasks:
-				self.migrate(self.tasks_state[task])
+				self.migrate(self.tasks[task])
 
 			del self.machines[mac.machine_ID]
 
@@ -151,7 +151,7 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 			if self.machines[mac].n_tasks > 0:
 				self.mac_usage[mac] = (self.machines[mac], lst_tasks)
 				for task in self.machines[mac].tasks:
-					lst_tasks.append(self.tasks_state[task])
+					lst_tasks.append(self.tasks[task])
 
 				mac_obj = self.mac_usage[mac][0]
 				usage_vec.append((mac_obj.CPU_usage_real * mac_obj.mem_usage_real) / (mac_obj.capacity_CPU * mac_obj.capacity_memory))
