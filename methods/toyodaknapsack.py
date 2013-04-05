@@ -153,7 +153,7 @@ class ToyodaKnapsack(methods.loadbalancingalgorithm.LoadBalancingAlgorithm):
 	def __update_map(self, macs):
 		for mac_ID in macs:
 			for task in macs[mac_ID]:
-				self.machines[mac_ID].add_task(self.tasks_state[task])
+				self.machines[mac_ID].add_task(self.tasks[task])
 				self.tasks[task].machine_ID = mac_ID
 
 	def __run_algorithm(self, mac_list, task_list):
@@ -200,7 +200,7 @@ class ToyodaKnapsack(methods.loadbalancingalgorithm.LoadBalancingAlgorithm):
 		else:
 			print "UP"
 			macs = ToyodaMethod.__balance_partial(self.score_task_knapsack,
-			          None, self.machines_state, self.tasks_state, mac_list, task_list)
+			          None, self.machines, self.tasks, mac_list, task_list)
 			self.__update_map(macs)
 
 	## end privs
