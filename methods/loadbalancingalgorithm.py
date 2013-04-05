@@ -5,7 +5,7 @@ import methods.loadbalacing
 class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 	
 	def __init__(self, prediction, migration):
-		methods.loadbalacing.LoadBalacing.__init__()
+		methods.loadbalacing.LoadBalacing.__init__(self)
 
 		self.machines    = {}
 		self.tasks       = {}
@@ -41,10 +41,10 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 			self.machines[mac.machine_ID].capacity_memory = mac.capacity_memory
 
 		else:
-			for task in self.machines_state[mac.machine_ID].tasks:
+			for task in self.machines[mac.machine_ID].tasks:
 				self.migrate(self.tasks_state[task])
 
-			del self.machines_state[mac.machine_ID]
+			del self.machines[mac.machine_ID]
 
 	def add_task_usage(self, task):
 		if task.getID() in self.tasks_input:
@@ -54,20 +54,24 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 			self.tasks_input[task.getID()] = task
 
 	def remove_task(self, task_ID):
-		task = getTask(task_ID)
+		task = self.get_task(task_ID)
 
 		if task.machine_ID != -1:
 			get_mac(task.machine_ID).remove_task(task)
 
 		del self.tasks[task_ID]
 
-	def add_new_task(self, task): # new task event
-		self.prediction.calculate_prediction_for_new_task(task)
+	def add_new_task(self, task):
+		pass
 
-	def calculate_prediction(self, task):
+	def __add_new_task(self, task): # new task event
+		self.prediction.calculate_prediction_for_new_task(task)
+		self.add_new_task(task)
+
+	def __calculate_prediction(self, task):
 		self.prediction.calculate_prediction(task)
 
-	def must_migrate(self, old_task, new_task, machine):
+	def __must_migrate(self, old_task, new_task, machine):
 		return self.migration.must_migrate(old_task, new_task, machine)
 
 	def algorithm(self):
@@ -76,31 +80,34 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 	def balance(self):
 
 		self.n_round = self.n_round + 1
+
+		self.reset_stats()
 					
 		# Remove tasks finished
 		for task_ID in list(self.tasks):
 			if not (task_ID in self.tasks_input):
-				remove_task(task_ID)
+				self.remove_task(task_ID)
+				self.finished_tasks = self.finished_tasks + 1
 
 		for task_ID in self.tasks_input:
 			if not (task_ID in self.tasks): # new task coming
 
 				task = self.tasks_input[task_ID]
 				task.first_round = task.last_round = self.n_round
-				self.add_new_task(task)
+				self.__add_new_task(task)
 				self.tasks[task_ID] = task
 
 			else: # old task
 
-				task        = get_task(task_ID)
+				task        = self.get_task(task_ID)
 				task_update = self.tasks_input[task_ID]
 					
 				task.inc_age()
 				task.last_round = self.n_round
 	
-				self.calculate_prediction(task_update)
+				self.__calculate_prediction(task_update)
 
-				if self.must_migrate(task, task_update, get_mac(task.machine_ID)):
+				if self.__must_migrate(task, task_update, self.get_mac(task.machine_ID)):
 					self.migrate(task)
 				else:
 					if task.machine_ID != -1:
@@ -129,6 +136,7 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 		self.n_migrations             = self.__count_migrations()
 		(self.task_mapped_successfully, self.task_failed_to_map) = self.__count_mapped()
 		(self.machines_used, self.machines_not_used)             = self.__count_macs()
+		self.task_new                 = self.__count_new_tasks()
 
 	def __calc_usage(self):
 
@@ -138,7 +146,7 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 		usage_cpu = []
 		usage_mem = []
 
-		for mac in self.machines_state:
+		for mac in self.machines:
 			lst_tasks = []
 			if self.machines[mac].n_tasks > 0:
 				self.mac_usage[mac] = (self.machines[mac], lst_tasks)
