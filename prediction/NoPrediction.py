@@ -4,7 +4,7 @@ import prediction.Prediction
 class NoPrediction(prediction.Prediction.Prediction):
 	
 	def __init__(self):
-		prediction.Prediction.Prediction.__init__()
+		prediction.Prediction.Prediction.__init__(self)
 
 	def calculate_prediction_for_new_task(task):
 		self.calculate_prediction(task)

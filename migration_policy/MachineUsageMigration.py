@@ -4,7 +4,7 @@ import methods.Migration
 class MachineUsageMigration(methods.Migration.Migration):
 
 	def __init__(self):
-		pass
+		methods.Migration.Migration(self)
 
 	def must_migrate(old_task, new_task, machine):
 
