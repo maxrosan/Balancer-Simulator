@@ -48,7 +48,9 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 				self.migrate(self.tasks[task])
 				print task, " ",
 
+			# XXX
 			print "; Machine removed: ", mac.machine_ID
+			# XXX
 
 			del self.machines[mac.machine_ID]
 
@@ -121,15 +123,25 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 				self.__calculate_prediction(task_update)
 
 				# XXX
-
 				if task.machine_ID == 4820073668:
-					print "T (%s, %d)" % (task.getID(), task.machine_ID)
-
+					print "update (%s, %d)" % (task.getID(), task.machine_ID)
 				# XXX
 
 				if self.__must_migrate(task, task_update, self.get_mac(task.machine_ID)):
+
+					# XXX
+					if task.machine_ID == 4820073668:
+						print "move"
+					# XXX
+
 					self.migrate(task)
 				else:
+
+					# XXX
+					if task.machine_ID == 4820073668:
+						print "don't move"
+					# XXX
+
 					if task.machine_ID != -1:
 						self.get_mac(task.machine_ID).remove_task(task)
 						self.get_mac(task.machine_ID).add_task(task_update)
