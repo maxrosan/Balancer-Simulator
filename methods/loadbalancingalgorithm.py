@@ -60,7 +60,8 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 		task = self.get_task(task_ID)
 
 		if task.machine_ID != -1:
-			self.get_mac(task.machine_ID).remove_task(task)
+			if task.machine_ID in self.machines: # The machine was possiblly removed
+				self.get_mac(task.machine_ID).remove_task(task)
 
 		del self.tasks[task_ID]
 
