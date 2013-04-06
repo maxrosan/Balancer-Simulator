@@ -44,7 +44,7 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 			self.machines[mac.machine_ID].capacity_memory = mac.capacity_memory
 
 		else:
-			for task in self.machines[mac.machine_ID].tasks:
+			for task in list(self.machines[mac.machine_ID].tasks):
 				self.migrate(self.tasks[task])
 				print task, " ",
 
