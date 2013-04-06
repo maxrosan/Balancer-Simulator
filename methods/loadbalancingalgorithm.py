@@ -146,6 +146,9 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 						self.get_mac(task.machine_ID).remove_task(task)
 						self.get_mac(task.machine_ID).add_task(task_update)
 
+						if not (task_ID in self.get_mac(task.machine_ID).tasks):
+							raise Exception("Task not added")
+
 				task.CPU_usage = task_update.CPU_usage
 				task.mem_usage = task_update.mem_usage
 				task.CPU_usage_real = task_update.CPU_usage_real
