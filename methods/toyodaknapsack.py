@@ -216,7 +216,7 @@ class ToyodaKnapsack(methods.loadbalancingalgorithm.LoadBalancingAlgorithm):
 			for mac in macs_sorted:
 				if self.machines[mac].can_run(self.tasks[task]):
 
-					obj            = self.tasks_state[task]
+					obj            = self.tasks[task]
 					obj.machine_ID = mac
 
 					self.machines[mac].add_task(obj)
