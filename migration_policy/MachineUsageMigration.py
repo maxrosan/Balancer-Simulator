@@ -11,6 +11,9 @@ class MachineUsageMigration(migration_policy.Migration.Migration):
 		if machine is None:
 			return False
 
+		if not machine.can_run(new_task):
+			return True
+
 		cpu = max(1., machine.CPU_usage_real)
 		mem = max(1., machine.mem_usage_real)
 

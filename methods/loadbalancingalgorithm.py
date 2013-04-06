@@ -159,9 +159,13 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 					lst_tasks.append(self.tasks[task])
 
 				mac_obj = self.mac_usage[mac][0]
-				usage_vec.append((mac_obj.CPU_usage_real * mac_obj.mem_usage_real) / (mac_obj.capacity_CPU * mac_obj.capacity_memory))
-				usage_cpu.append(mac_obj.CPU_usage_real / mac_obj.capacity_CPU)
-				usage_mem.append(mac_obj.mem_usage_real / mac_obj.capacity_memory)
+
+				cpu = max(1., mac.CPU_usage_real)
+				mem = max(1., mac.mem_usage_real)
+
+				usage_vec.append((cpu * mem) / (mac_obj.capacity_CPU * mac_obj.capacity_memory))
+				usage_cpu.append(cpu / mac_obj.capacity_CPU)
+				usage_mem.append(mem / mac_obj.capacity_memory)
 
 		if len(usage_vec) > 0:
 			self.usage_mean_per = numpy.mean(usage_vec)
