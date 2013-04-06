@@ -160,8 +160,8 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 
 				mac_obj = self.mac_usage[mac][0]
 
-				cpu = max(1., mac.CPU_usage_real)
-				mem = max(1., mac.mem_usage_real)
+				cpu = max(1., mac_obj.CPU_usage_real)
+				mem = max(1., mac_obj.mem_usage_real)
 
 				usage_vec.append((cpu * mem) / (mac_obj.capacity_CPU * mac_obj.capacity_memory))
 				usage_cpu.append(cpu / mac_obj.capacity_CPU)
