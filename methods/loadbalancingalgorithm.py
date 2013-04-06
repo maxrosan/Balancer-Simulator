@@ -47,6 +47,8 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 			for task in self.machines[mac.machine_ID].tasks:
 				self.migrate(self.tasks[task])
 
+			print "Machine removed: ", mac.machine_ID
+
 			del self.machines[mac.machine_ID]
 
 	def add_task_usage(self, task):
@@ -60,7 +62,7 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 		task = self.get_task(task_ID)
 
 		if task.machine_ID != -1:
-			if task.machine_ID in self.machines: # The machine was possiblly removed
+			if task.machine_ID in self.machines:
 				self.get_mac(task.machine_ID).remove_task(task)
 
 		del self.tasks[task_ID]
