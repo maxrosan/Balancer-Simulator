@@ -203,6 +203,27 @@ class ToyodaKnapsack(methods.loadbalancingalgorithm.LoadBalancingAlgorithm):
 			          None, self.machines, self.tasks, mac_list, task_list)
 			self.__update_map(macs)
 
+	def __ffd_algorithm(self, macs, tasks):
+
+		tasks_sorted = sorted(tasks, key=lambda task_ID: self.task_key_sort(self.tasks[task_ID]), reverse=True)
+
+		macs_sorted  = sorted([mac for mac in macs if self.machines[mac].count_tasks() > 0], 
+			 key=lambda mac_ID: self.task_key_sort(self.machines[mac_ID]), reverse=True) + \
+			 sorted([mac for mac in macs if self.machines[mac].count_tasks() == 0],
+			  key=lambda mac_ID: self.task_key_sort(self.machines[mac_ID]), reverse=True)
+
+		for task in tasks_sorted:
+			for mac in macs_sorted:
+				if self.machines[mac].can_run(self.tasks[task]):
+
+					obj            = self.tasks_state[task]
+					obj.machine_ID = mac
+
+					self.machines[mac].add_task(obj)
+
+					break
+
+
 	## end privs
 
 	def add_new_task(self, task):
@@ -219,5 +240,7 @@ class ToyodaKnapsack(methods.loadbalancingalgorithm.LoadBalancingAlgorithm):
 		tasks = sorted([task for task in list(self.tasks) if self.tasks[task].machine_ID == -1],
                     key=lambda task:self.task_key_sort(self.tasks[task]), reverse=True)
 
-
-		self.__run_algorithm(macs, tasks)
+		if self.n_round == 1:
+			self.__ffd_algorithm(macs, tasks)
+		else:
+			self.__run_algorithm(macs, tasks)
