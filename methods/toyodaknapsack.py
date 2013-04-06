@@ -172,7 +172,7 @@ class ToyodaKnapsack(methods.loadbalancingalgorithm.LoadBalancingAlgorithm):
 
 		print "Go! %d %d %d" % (self.n_threads, n_macs, n_tasks)
 		##
-		if len(task_list) > 10000:
+		if len(task_list) > 30000:
 
 			print "MP"
 
