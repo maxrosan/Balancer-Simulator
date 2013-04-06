@@ -62,6 +62,13 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 	def remove_task(self, task_ID):
 		task = self.get_task(task_ID)
 
+		# XXX
+
+		if task.machine_ID == 4820073668:
+			print "Rem (%d, %s)" % (task.machine_ID, task.task_ID)
+
+		# XXX
+
 		if task.machine_ID != -1:
 			self.get_mac(task.machine_ID).remove_task(task)
 
