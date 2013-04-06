@@ -240,7 +240,7 @@ class ToyodaKnapsack(methods.loadbalancingalgorithm.LoadBalancingAlgorithm):
 		tasks = sorted([task for task in list(self.tasks) if self.tasks[task].machine_ID == -1],
                     key=lambda task:self.task_key_sort(self.tasks[task]), reverse=True)
 
-		if self.n_round == 1:
+		if self.n_round == 3:
 			self.__ffd_algorithm(macs, tasks)
 		else:
 			self.__run_algorithm(macs, tasks)
