@@ -46,7 +46,7 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 		else:
 			for task in self.machines[mac.machine_ID].tasks:
 				self.migrate(self.tasks[task])
-				print task.task_ID, " ",
+				print task.task, " ",
 
 			print "; Machine removed: ", mac.machine_ID
 
