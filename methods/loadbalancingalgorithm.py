@@ -65,7 +65,7 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 		# XXX
 
 		if task.machine_ID == 4820073668:
-			print "Rem (%d, %s)" % (task.machine_ID, task.task_ID)
+			print "Rem ", task.machine_ID, " ", task.getID()
 
 		# XXX
 
@@ -123,7 +123,7 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 				# XXX
 
 				if task.machine_ID == 4820073668:
-					print "T (%d, %d)" % (task.task_ID, task.machine_ID)
+					print "T (%s, %d)" % (task.getID(), task.machine_ID)
 
 				# XXX
 
