@@ -244,3 +244,34 @@ class ToyodaKnapsack(methods.loadbalancingalgorithm.LoadBalancingAlgorithm):
 			self.__ffd_algorithm(macs, tasks)
 		else:
 			self.__run_algorithm(macs, tasks)
+
+			macs = sorted([mac_id for mac_id in self.machines if self.machines[mac_id].n_tasks > 0],
+			    key=lambda mac_id:self.mac_key_sort(self.machines[mac_id]), reverse=True) + \
+			  sorted([mac_id for mac_id in self.machines if self.machines[mac_id].n_tasks == 0],
+			    key=lambda mac_id:self.mac_key_sort(self.machines[mac_id]), reverse=True)
+
+			tasks = sorted([task for task in list(self.tasks) if self.tasks[task].machine_ID == -1],
+        	            key=lambda task:self.task_key_sort(self.tasks[task]), reverse=True)
+
+			for task_id in tasks:
+				mac_min = None
+				mac_val = 100
+				task    = self.tasks[task_id]
+			
+				for mac_id in self.machines:
+					mac = self.machines[mac_id]
+					dcpu = mac.free_CPU() - task.CPU_usage
+					dmem = mac.free_mem() - task.mem_usage
+					val = dcpu*dcpu + dmem*dmem
+
+					if not mac.can_run(task):
+						val = val + 4. + mac.n_tasks
+
+					if val < mac_val:
+						mac_val = val
+						mac_min = mac
+
+				if mac_min != None:
+					mac_min.add_task(task)
+					task.machine_ID = mac_min.machine_ID
+			
