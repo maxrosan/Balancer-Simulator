@@ -259,12 +259,14 @@ class ToyodaKnapsack(methods.loadbalancingalgorithm.LoadBalancingAlgorithm):
 
 		### Debug
 		print "Macs: ",
-		for mac_id in range(0, min(10, len(macs))):
+		for mac_i in range(0, min(10, len(macs))):
+			mac_id = macs[mac_i]
 			print "(%d, %.5f, %.5f) " % (self.get_mac(mac_id).machine_ID, self.get_mac(mac_id).free_CPU(), self.get_mac(mac_id).free_mem()),
 		print "..."
 
 		print "Tasks: ",
-		for task_id in range(0, min(10, len(tasks))):
+		for task_i in range(0, min(10, len(tasks))):
+			task_id = tasks[task_i]
 			print "(%s, %.5f, %.5f) " % (self.get_task(task_id).getID(), self.get_task(task_id).CPU_usage, self.get_task(task_id).mem_usage),
 		print "..."
 		###
