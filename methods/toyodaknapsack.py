@@ -19,7 +19,9 @@ class ToyodaKnapsack(methods.loadbalancingalgorithm.LoadBalancingAlgorithm):
 	## privs
 
 	def __div_list(self, lst):
-		#res = [None] * self.n_threads
+
+		res = [None] * self.n_threads
+
 		#for i in range(0, len(lst)):
 		#	ind = i % self.n_threads
 		#	if res[ind] == None:
