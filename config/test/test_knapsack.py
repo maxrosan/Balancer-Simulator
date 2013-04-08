@@ -16,7 +16,7 @@ migration_policies = [ migration_policy.MachineUsageMigration.MachineUsageMigrat
                        migration_policy.SLABreakMigration.SLABreakMigration() ]
 
 method         = methods.toyodaknapsack.ToyodaKnapsack(prediction.NoPrediction.NoPrediction(), 
- migration_policies, 8, score_task_knapsack,
+ migration_policies, 4, score_task_knapsack,
  mac_key_sort, task_key_sort)
 
 host = commands.getoutput("hostname")
