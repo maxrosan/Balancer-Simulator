@@ -7,7 +7,7 @@ def mac_key_sort(mac):
 	return (mac.free_CPU(), mac.free_mem())
 
 def task_key_sort(task):
-	return (1. + task.CPU_usage)*(1.+ task.mem_usage)
+	return (task.CPU_usage*0.4 + task.mem_usage*0.6)
 
 def score_task_knapsack(task, mac):
 	return max(task.CPU_usage, task.mem_usage)
