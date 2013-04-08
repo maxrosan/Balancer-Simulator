@@ -4,17 +4,17 @@ import methods.toyodaknapsack, prediction.NoPrediction
 import migration_policy.MachineUsageMigration, migration_policy.SLABreakMigration
 
 def mac_key_sort(mac):
-	gain = (mac.free_CPU() + mac.free_mem())
+	gain = (mac.free_CPU()*mac.free_CPU() + mac.free_mem()*mac.free_mem())
 	pun  = 1./(1. + abs(mac.free_CPU() - mac.free_mem()))
 	return gain*pun
 
 def task_key_sort(task):
-	gain = (task.CPU_usage + task.mem_usage)
+	gain = (task.CPU_usage*task.CPU_usage + task.mem_usage*task.mem_usage)
 	pun  = 1./(1. + abs(task.CPU_usage - task.mem_usage))
 	return gain*pun
 
 def score_task_knapsack(task, mac):
-	return max(task.CPU_usage, task.mem_usage)
+	return max(task.CPU_usage*mac.capacity_CPU, task.mem_usage*mac.capacity_memory)
 
 migration_policies = [ migration_policy.SLABreakMigration.SLABreakMigration() ]
 
