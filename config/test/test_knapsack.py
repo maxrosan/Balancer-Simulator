@@ -7,7 +7,7 @@ def mac_key_sort(mac):
 	return (mac.free_CPU(), mac.free_mem())
 
 def task_key_sort(task):
-	return (task.CPU_usage * 0.6 + task.mem_usage * 0.4)
+	return (task.CPU_usage * 0.4 + task.mem_usage * 0.6)
 
 def score_task_knapsack(task, mac):
 	return max(task.CPU_usage, task.mem_usage)
@@ -37,4 +37,4 @@ else:
 	mapping_log   = "/home/max/Src/simulator/logop/mapping_toyodaknapsack_test_brucutu.log"
 	balancing_log = "/home/max/Src/simulator/logop/balancing_toyodaknapsack_test_brucutu.log"
 
-total_time     = (60 * 60 * 24) * 1
+total_time     = 60 * 60 * 6
