@@ -19,12 +19,23 @@ class ToyodaKnapsack(methods.loadbalancingalgorithm.LoadBalancingAlgorithm):
 	## privs
 
 	def __div_list(self, lst):
-		res = [None] * self.n_threads
-		for i in range(0, len(lst)):
-			ind = i % self.n_threads
-			if res[ind] == None:
-				res[ind] = []
-			res[ind].append(lst[i])
+		#res = [None] * self.n_threads
+		#for i in range(0, len(lst)):
+		#	ind = i % self.n_threads
+		#	if res[ind] == None:
+		#		res[ind] = []
+		#	res[ind].append(lst[i])
+
+		n = len(lst)
+		l = n / self.n_threads
+
+		for i in range(0, self.n_threads):
+			start  = i * l
+			end    = (i + 1)*l
+			res[i] = list(lst[start:end])
+
+		res[self.n_threads - 1] = res[self.n_threads - 1] + lst[(self.n_threads * l):n]
+
 		return res
 
 	@staticmethod
@@ -177,8 +188,7 @@ class ToyodaKnapsack(methods.loadbalancingalgorithm.LoadBalancingAlgorithm):
 			print "MP"
 
 			mac_lsts  = self.__div_list(mac_list)
-			task_lsts = self.__div_list(task_list)
-												
+			task_lsts = self.__div_list(task_list)									
 
 			for i in range(0, self.n_threads):
 				t = None
