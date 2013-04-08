@@ -75,7 +75,12 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 		self.prediction.calculate_prediction(task)
 
 	def __must_migrate(self, old_task, new_task, machine):
-		return self.migration.must_migrate(old_task, new_task, machine)
+		migrate = False
+		for policy in self.migration:
+			if policy.must_migrate(old_task, new_task, machine):
+				migrate = True
+				break
+		return migrate
 
 	def algorithm(self):
 		pass
