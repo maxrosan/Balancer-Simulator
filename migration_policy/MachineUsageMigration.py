@@ -4,7 +4,7 @@ import migration_policy.Migration
 class MachineUsageMigration(migration_policy.Migration.Migration):
 
 	def __init__(self, min_usage):
-		migration_policy.Migration.Migration.__init__()
+		migration_policy.Migration.Migration.__init__(self)
 		
 		self.min_usage = min_usage
 
