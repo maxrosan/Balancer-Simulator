@@ -3,8 +3,10 @@ import migration_policy.Migration
 
 class MachineUsageMigration(migration_policy.Migration.Migration):
 
-	def __init__(self):
-		migration_policy.Migration.Migration()
+	def __init__(self, min_usage):
+		migration_policy.Migration.Migration.__init__()
+		
+		self.min_usage = min_usage
 
 	def must_migrate(self, old_task, new_task, machine):
 
@@ -19,4 +21,4 @@ class MachineUsageMigration(migration_policy.Migration.Migration):
 
 		usage = (cpu * mem) / (machine.capacity_CPU * machine.capacity_memory)
 
-		return (usage < 0.3)
+		return (usage < self.min_usage)

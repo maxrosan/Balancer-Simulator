@@ -12,7 +12,7 @@ def task_key_sort(task):
 def score_task_knapsack(task, mac):
 	return max(task.CPU_usage, task.mem_usage)
 
-migration_policies = [ migration_policy.MachineUsageMigration.MachineUsageMigration(), \
+migration_policies = [ migration_policy.MachineUsageMigration.MachineUsageMigration(0.4), \
                        migration_policy.SLABreakMigration.SLABreakMigration() ]
 
 method         = methods.toyodaknapsack.ToyodaKnapsack(prediction.NoPrediction.NoPrediction(), 
