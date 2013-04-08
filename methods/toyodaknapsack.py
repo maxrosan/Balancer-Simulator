@@ -257,6 +257,18 @@ class ToyodaKnapsack(methods.loadbalancingalgorithm.LoadBalancingAlgorithm):
 		tasks = sorted([task for task in list(self.tasks) if self.tasks[task].machine_ID == -1],
                     key=lambda task:self.task_key_sort(self.tasks[task]), reverse=True)
 
+		### Debug
+		print "Macs: ",
+		print mac_id in range(0, min(10, len(macs))):
+			print "(%d, %.5f, %.5f) " % (get_mac(mac_id).machine_ID, get_mac(mac_id).free_CPU(), get_mac(mac_id).free_mem()),
+		print "..."
+
+		print "Tasks: ",
+		print task_id in range(0, min(10, len(tasks))):
+			print "(%s, %.5f, %.5f) " % (get_task(task_id).getID(), get_task(task_id).CPU_usage, get_task(task_id).mem_usage),
+		print "..."
+		###
+
 		if self.n_round == -1:
 			self.__ffd_algorithm(macs, tasks)
 		else:
