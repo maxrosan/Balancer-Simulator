@@ -6,6 +6,7 @@ import migration_policy.MachineUsageMigration, migration_policy.SLABreakMigratio
 def mac_key_sort(mac):
 	gain = (mac.free_CPU() + mac.free_mem())
 	pub  = 1./(1. + abs(mac.free_CPU() - mac.free_mem()))
+	return gain*pun
 
 def task_key_sort(task):
 	gain = (task.CPU_usage + task.mem_usage)
