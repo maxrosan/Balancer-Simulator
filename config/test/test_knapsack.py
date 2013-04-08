@@ -1,6 +1,7 @@
 
 import site, commands
-import methods.toyodaknapsack, prediction.NoPrediction, migration_policy.MachineUsageMigration
+import methods.toyodaknapsack, prediction.NoPrediction
+import migration_policy.MachineUsageMigration, migration_policy.SLABreakMigration
 
 def mac_key_sort(mac):
 	return (1. + mac.free_CPU())*(1. + mac.free_mem())
