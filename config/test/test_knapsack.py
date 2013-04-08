@@ -4,7 +4,8 @@ import methods.toyodaknapsack, prediction.NoPrediction
 import migration_policy.MachineUsageMigration, migration_policy.SLABreakMigration
 
 def mac_key_sort(mac):
-	return (mac.free_CPU(), mac.free_mem())
+	gain = (mac.free_CPU() + mac.free_mem())
+	pub  = 1./(1. + abs(mac.free_CPU() - mac.free_mem()))
 
 def task_key_sort(task):
 	gain = (task.CPU_usage + task.mem_usage)
