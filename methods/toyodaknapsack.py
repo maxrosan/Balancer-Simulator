@@ -36,7 +36,7 @@ class ToyodaKnapsack(methods.loadbalancingalgorithm.LoadBalancingAlgorithm):
 			end    = (i + 1)*l
 			res[i] = list(lst[start:end])
 
-		res[self.n_threads - 1] = res[self.n_threads - 1] + lst[(self.n_threads * l):n]
+		res[self.n_threads - 1] = res[self.n_threads - 1] + list(lst[(self.n_threads * l):n])
 
 		return res
 
