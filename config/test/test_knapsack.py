@@ -8,9 +8,9 @@ def mac_key_sort(mac):
 	return gain
 
 def task_key_sort(task):
-	gain = (task.CPU_usage*task.CPU_usage + task.mem_usage*task.mem_usage)
-	pun  = 1./(1. + abs(task.CPU_usage - task.mem_usage))
-	return gain*pun
+	#gain = (task.CPU_usage*task.CPU_usage + task.mem_usage*task.mem_usage)
+	#pun  = 1./(1. + abs(task.CPU_usage - task.mem_usage))
+	return max(task.CPU_usage, task.mem_usage)
 
 def score_task_knapsack(task, mac):
 	return max(task.CPU_usage*mac.capacity_CPU, task.mem_usage*mac.capacity_memory)
