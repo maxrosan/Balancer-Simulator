@@ -7,7 +7,7 @@ def mac_key_sort(mac):
 	return (mac.free_CPU(), mac.free_mem())
 
 def task_key_sort(task):
-	gain = (task.CPU_usage*0.4 + task.mem_usage*0.6)
+	gain = (task.CPU_usage + task.mem_usage)
 	pun  = 1./(1. + abs(task.CPU_usage - task.mem_usage))
 	return gain*pun
 
