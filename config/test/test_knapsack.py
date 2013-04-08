@@ -4,10 +4,10 @@ import methods.toyodaknapsack, prediction.NoPrediction
 import migration_policy.MachineUsageMigration, migration_policy.SLABreakMigration
 
 def mac_key_sort(mac):
-	return (mac.free_CPU() + mac.free_mem())
+	return (mac.free_CPU(), mac.free_mem())
 
 def task_key_sort(task):
-	return (task.CPU_usage*task.CPU_usage + task.mem_usage*task.mem_usage)
+	return (0.7*task.CPU_usage + 0.3*task.mem_usage)
 
 def score_task_knapsack(task, mac):
 	return max(task.CPU_usage, task.mem_usage)
