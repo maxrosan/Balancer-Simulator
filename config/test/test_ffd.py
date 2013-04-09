@@ -18,8 +18,8 @@ method             = methods.ffdbinpacking.FFDBinPacking(prediction.NoPrediction
 
 host = commands.getoutput("hostname")
 
-mapping_fname = "mapping_toyodaknapsack_test_brucutu.log"
-balancing_fname = "balancing_toyodaknapsack_test_brucutu.log"
+mapping_fname = "mapping_ffd_test.log"
+balancing_fname = "balancing_ffd_test.log"
 
 dataset_path = ""
 path_log     = ""
