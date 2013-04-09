@@ -32,8 +32,8 @@ if host == "brucutu":
 elif host == "godzilla":
 
 	dataset_path  = "/home/maxrosan/src/gs_cluster/"
-	mapping_log   = "/home/maxrosan/simulator/Balancer-Simulator/mapping_toyodaknapsack_test_brucutu.log"
-	balancing_log = "/home/maxrosan/simulator/Balancer-Simulator/balancing_toyodaknapsack_test_brucutu.log"	
+	mapping_log   = "/home/maxrosan/simulator/Balancer-Simulator/log/mapping_toyodaknapsack_test_brucutu.log"
+	balancing_log = "/home/maxrosan/simulator/Balancer-Simulator/log/balancing_toyodaknapsack_test_brucutu.log"	
 
 else:
 	dataset_path  = "/home/max/Src/simulator/gscluster/"
