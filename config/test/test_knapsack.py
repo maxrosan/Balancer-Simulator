@@ -46,4 +46,4 @@ else:
 mapping_log   = path_log + mapping_fname
 balancing_log = path_log + balancing_fname
 
-total_time     = 60 * 60 * 24
+total_time     = (60 * 60 * 24) * 7

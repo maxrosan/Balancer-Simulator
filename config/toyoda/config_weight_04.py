@@ -6,7 +6,7 @@ interval_toyoda     = 400
 dataset_path        = "/var/tmp/mr/gs_cluster/"
 mapping_log         = "/var/tmp/mr/log/mapping_toyoda_04_brucutu.log"
 balancing_log       = "/var/tmp/mr/log/balancing_toyoda_04_brucutu.log"
-total_time          = (60 * 60 * 24) * 1
+total_time          = (60 * 60 * 24) * 7
 method_sel_macs     = 'priority_queue'
 #method_sel_macs     = 'nothing'
 
