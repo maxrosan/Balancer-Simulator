@@ -1,5 +1,5 @@
 
-import io, time
+import io, time, gzip
 		
 class LoadBalacing:
 	
@@ -42,7 +42,8 @@ class LoadBalacing:
 
 	def open_log_file(self, filename_balancing, filename_mapping):
 		self.balancing_fobj = open(filename_balancing, "w+")
-		self.mapping_fobj   = open(filename_mapping, "w+")
+		#self.mapping_fobj   = open(filename_mapping, "w+")
+		self.mapping_fobj   = gzip.open(filename_mapping + ".gz", "wb+")
 
 	def add_machine_event(self, machine):
 		pass		
