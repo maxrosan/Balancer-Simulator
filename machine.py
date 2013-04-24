@@ -162,9 +162,9 @@ class MachineEvent:
 			else:
 				read_ok = True
 
-				for i in chk_index: # Some entries have no value for CPU and memory
-					if len(self.line[i]) == 0:
-						read_ok = False
+				#for i in chk_index: # Some entries have no value for CPU and memory
+				#	if len(self.line[i]) == 0:
+				#		read_ok = False
 
 				if read_ok:	
 					machine = MachineEventRegister()
