@@ -40,7 +40,7 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 				print "#### MAC ADDED"
 			elif mac.event_type == mac.UPDATE_EVENT:
 				print "#### MAC UPDATED"
-			else
+			else:
 				pinrt "#### MAC DELETED"
 
 		if mac.event_type == mac.ADD_EVENT:
