@@ -172,8 +172,16 @@ class MachineEvent:
 					machine.machine_ID = int(self.line[1])
 					machine.event_type = int(self.line[2])
 					machine.platform_ID = self.line[3]
-					machine.capacity_CPU = float(self.line[4])
-					machine.capacity_memory = float(self.line[5])
+
+					if len(self.line[4]) == 0:
+						machine.capacity_CPU = 0
+					else:
+						machine.capacity_CPU = float(self.line[4])
+
+					if len(self.line[5]) == 0:
+						machine.capacity_memory = 0
+					else:
+						machine.capacity_memory = float(self.line[5])
 
 					#machine.print_info()
 
