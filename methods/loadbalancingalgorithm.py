@@ -35,6 +35,14 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 
 	def add_machine_event(self, mac):
 
+		if mac.machine_ID == 6264344062:
+			if mac.event_type == mac.ADD_EVENT:
+				print "#### MAC ADDED"
+			elif mac.event_type == mac.UPDATE_EVENT:
+				print "#### MAC UPDATED"
+			else
+				pinrt "#### MAC DELETED"
+
 		if mac.event_type == mac.ADD_EVENT:
 			self.machines[mac.machine_ID] = mac
 
