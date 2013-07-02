@@ -41,8 +41,8 @@ class AveragePrediction(prediction.Prediction.Prediction):
 		mema = numpy.mean([mem for (_, mem) in pred])
 
 		if (task.age_pred % self.lst_len) == 0:
-			new_task.CPU_usage = new_task.CPU_usage_real * cpua
-			new_task.mem_usage = new_task.mem_usage_real * mema
+			new_task.CPU_usage = new_task.CPU_usage_real * max(1., cpua)
+			new_task.mem_usage = new_task.mem_usage_real * max(1., mema)
 		else:
 			new_task.CPU_usage = new_task.CPU_usage_real
 			new_task.mem_usage = new_task.mem_usage_real
