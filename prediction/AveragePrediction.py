@@ -25,8 +25,8 @@ class AveragePrediction(prediction.Prediction.Prediction):
 
 		if len(pred) > 0:
 			
-			cpuv = task.CPU_usage / (pred[-1][0] if pred[-1][0] > 0 else 1.)
-			memv = task.mem_usage / (pred[-1][1] if pred[-1][1] > 0 else 1.)
+			cpuv = new_task.CPU_usage / (pred[-1][0] if pred[-1][0] > 0. else 1.)
+			memv = new_task.mem_usage / (pred[-1][1] if pred[-1][1] > 0. else 1.)
 
 			pred.append((cpuv, memv))
 
