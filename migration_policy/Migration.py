@@ -9,5 +9,5 @@ class Migration:
 	def must_migrate(self, old_task, new_task, machine):
 		pass
 
-	def print_info(self):
+	def print_info(self, tasks):
 		pass

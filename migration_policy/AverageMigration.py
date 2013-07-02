@@ -48,7 +48,7 @@ class AverageMigration(migration_policy.Migration.Migration):
 
 		return not can_r
 
-	def print_info(tasks):
+	def print_info(self, tasks):
 		for tid in list(tasks)[:5]:
 			t = tasks[tid]
 			if hasattr(t, "average"):
