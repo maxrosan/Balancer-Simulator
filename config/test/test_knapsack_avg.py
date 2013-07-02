@@ -1,6 +1,6 @@
 import site, commands
 import methods.toyodaknapsack, prediction.NoPrediction
-import migration_policy.MachineUsageMigration, migration_policy.SLABreakMigration
+import migration_policy.MachineUsageMigration, migration_policy.SLABreakMigration, migration_policy.AverageMigration
 
 def mac_key_sort(mac):
 	gain = (mac.free_CPU()*mac.free_CPU() + mac.free_mem()*mac.free_mem())
@@ -14,7 +14,7 @@ def task_key_sort(task):
 def score_task_knapsack(task, mac):
 	return task.CPU_usage*task.CPU_usage + task.mem_usage*task.mem_usage
 
-migration_policies = [ migration.policy.AverageMigration.AverageMigration(5), migration_policy.SLABreakMigration.SLABreakMigration() ]
+migration_policies = [ migration_policy.AverageMigration.AverageMigration(5), migration_policy.SLABreakMigration.SLABreakMigration() ]
 
 method         = methods.toyodaknapsack.ToyodaKnapsack(prediction.NoPrediction.NoPrediction(), 
  migration_policies, 8, score_task_knapsack,
