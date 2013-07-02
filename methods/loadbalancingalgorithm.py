@@ -79,8 +79,8 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 		self.prediction.calculate_prediction_for_new_task(task)
 		self.add_new_task(task)
 
-	def __calculate_prediction(self, task):
-		self.prediction.calculate_prediction(task)
+	def __calculate_prediction(self, task, new_task):
+		self.prediction.calculate_prediction(task, new_task)
 
 	def __must_migrate(self, old_task, new_task, machine):
 		migrate = False
