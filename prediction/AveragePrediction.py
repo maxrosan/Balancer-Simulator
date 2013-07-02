@@ -23,12 +23,16 @@ class AveragePrediction(prediction.Prediction.Prediction):
 		pred = task.avg_pred
 		task.age_pred = task.age_pred + 1
 
+		cpuv = 1.
+		memv = 1. 
+
 		if len(pred) > 0:
 			
-			cpuv = new_task.CPU_usage / (pred[-1][0] if pred[-1][0] > 0. else 1.)
-			memv = new_task.mem_usage / (pred[-1][1] if pred[-1][1] > 0. else 1.)
+			cpuv = new_task.CPU_usage / (task.CPU_usage if task.CPU_usage > 0. else 1.)
+			memv = new_task.mem_usage / (task.mem_usage if task.mem_usage > 0. else 1.)
 
-			pred.append((cpuv, memv))
+		pred.append((cpuv, memv))
+	
 
 		if len(pred) > self.lst_len:
 			pred.pop(0)
