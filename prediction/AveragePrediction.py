@@ -1,4 +1,5 @@
 
+import prediction.Prediction
 import numpypy as numpy
 
 class AveragePrediction(prediction.Prediction.Prediction):
