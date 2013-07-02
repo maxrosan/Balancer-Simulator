@@ -14,7 +14,7 @@ def task_key_sort(task):
 def score_task_knapsack(task, mac):
 	return task.CPU_usage*task.CPU_usage + task.mem_usage*task.mem_usage
 
-migration_policies = [ migration_policy.AverageMigration.AverageMigration(10), migration_policy.SLABreakMigration.SLABreakMigration() ]
+migration_policies = [ migration_policy.AverageMigration.AverageMigration(2), migration_policy.SLABreakMigration.SLABreakMigration() ]
 
 method         = methods.toyodaknapsack.ToyodaKnapsack(prediction.NoPrediction.NoPrediction(), 
  migration_policies, 8, score_task_knapsack,
@@ -22,8 +22,8 @@ method         = methods.toyodaknapsack.ToyodaKnapsack(prediction.NoPrediction.N
 
 host = commands.getoutput("hostname")
 
-mapping_fname = "mapping_knapsack_test_avg.log"
-balancing_fname = "balancing_knapsack_test_avg.log"
+mapping_fname = "mapping_knapsack_test_avg_2.log"
+balancing_fname = "balancing_knapsack_test_avg_2.log"
 
 dataset_path = ""
 path_log     = ""
