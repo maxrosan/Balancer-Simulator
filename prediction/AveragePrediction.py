@@ -16,8 +16,8 @@ class AveragePrediction(prediction.Prediction.Prediction):
 		task.age_pred = 0
 		task.last_max = (0, 0)
 
-		task.CPU_usage = task.CPU_usage_real
-		task.mem_usage = task.mem_usage_real
+		task.CPU_usage = task.CPU_usage_real * 1.2
+		task.mem_usage = task.mem_usage_real * 1.2
 
 	def calculate_prediction(self, task, new_task):
 
@@ -32,8 +32,8 @@ class AveragePrediction(prediction.Prediction.Prediction):
 #			cpuv = new_task.CPU_usage / (task.CPU_usage if task.CPU_usage > 0. else 1.)
 #			memv = new_task.mem_usage / (task.mem_usage if task.mem_usage > 0. else 1.)
 
-		cpuv = new_task.CPU_usage_real
-		memv = new_task.mem_usage_real
+		cpuv = task.CPU_usage_real
+		memv = task.mem_usage_real
 
 		pred.append((cpuv, memv))
 	
@@ -51,5 +51,5 @@ class AveragePrediction(prediction.Prediction.Prediction):
 		elif task.age_pred > self.lst_len:
 			(new_task.CPU_usage, new_task.mem_usage) = task.last_max
 		else:
-			new_task.CPU_usage = new_task.CPU_usage_real
-			new_task.mem_usage = new_task.mem_usage_real
+			new_task.CPU_usage = task.CPU_usage_real * 1.2
+			new_task.mem_usage = task.mem_usage_real * 1.2
