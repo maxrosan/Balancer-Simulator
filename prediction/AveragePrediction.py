@@ -10,10 +10,13 @@ class AveragePrediction(prediction.Prediction.Prediction):
 		self.lst_len = lst_len
 
 	def calculate_prediction_for_new_task(self, task):
-		self.calculate_prediction(task)
+		#self.calculate_prediction(task)
 
 		task.avg_pred = []
 		task.age_pred = 0
+
+		task.CPU_usage = task.CPU_usage_real
+		task.mem_usage = task.mem_usage_real
 
 	def calculate_prediction(self, task):
 
