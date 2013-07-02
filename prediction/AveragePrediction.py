@@ -48,7 +48,7 @@ class AveragePrediction(prediction.Prediction.Prediction):
 
 			new_task.CPU_usage = cpua
 			new_task.mem_usage = mema
-		else if task.age_pred > self.lst_len:
+		elif task.age_pred > self.lst_len:
 			(new_task.CPU_usage, new_task.mem_usage) = task.last_max
 		else:
 			new_task.CPU_usage = new_task.CPU_usage_real
