@@ -1,5 +1,5 @@
 import site, commands
-import methods.toyodaknapsack, prediction.NoPrediction
+import methods.toyodaknapsack, prediction.NoPrediction, prediction.AveragePrediction
 import migration_policy.MachineUsageMigration, migration_policy.SLABreakMigration, migration_policy.AverageMigration
 
 def mac_key_sort(mac):
@@ -14,9 +14,9 @@ def task_key_sort(task):
 def score_task_knapsack(task, mac):
 	return task.CPU_usage*task.CPU_usage + task.mem_usage*task.mem_usage
 
-migration_policies = [ migration_policy.AverageMigration.AverageMigration(2), migration_policy.SLABreakMigration.SLABreakMigration() ]
+migration_policies = [ migration_policy.SLABreakMigration.SLABreakMigration() ]
 
-method         = methods.toyodaknapsack.ToyodaKnapsack(prediction.NoPrediction.NoPrediction(), 
+method         = methods.toyodaknapsack.ToyodaKnapsack(prediction.AveragePrediction.AveragePrediction(5), 
  migration_policies, 8, score_task_knapsack,
  mac_key_sort, task_key_sort)
 
