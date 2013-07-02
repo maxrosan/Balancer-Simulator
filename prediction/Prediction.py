@@ -7,5 +7,5 @@ class Prediction:
 	def calculate_prediction_for_new_task(self, task):
 		pass
 
-	def calculate_prediction(self, task):
+	def calculate_prediction(self, task, new_task):
 		pass

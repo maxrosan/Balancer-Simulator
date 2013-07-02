@@ -121,7 +121,7 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 				task.inc_age()
 				task.last_round = self.n_round
 	
-				self.__calculate_prediction(task_update)
+				self.__calculate_prediction(task, task_update)
 
 				if self.__must_migrate(task, task_update, self.get_mac(task.machine_ID)):
 
