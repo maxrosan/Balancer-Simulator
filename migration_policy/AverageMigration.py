@@ -6,7 +6,7 @@ class AverageMigration(migration_policy.Migration.Migration):
 
 	def __init__(self, num):
 		migration_policy.Migration.Migration()
-		migration_policy.Migration.has_print_info = True
+		self.has_print_info = True
 
 		self.num = num
 
