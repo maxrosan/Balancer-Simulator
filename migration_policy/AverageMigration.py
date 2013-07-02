@@ -21,15 +21,18 @@ class AverageMigration(migration_policy.Migration.Migration):
 		else:
 
 			if len(old_task.average) == self.num:
-				old_task.pop(0)
+				old_task.average.pop(0)
 
-			cpu = max(1., new_task.CPU_usage / (old_task.CPU_usage if old_task.CPU_usage > 0. else 1.))
-			mem = max(1., new_task.mem_usage / (old_task.mem_usage if old_task.mem_usage > 0. else 1.))
+			cpu = max(2., new_task.CPU_usage / (old_task.CPU_usage if old_task.CPU_usage > 0. else 1.))
+			mem = max(2., new_task.mem_usage / (old_task.mem_usage if old_task.mem_usage > 0. else 1.))
 
 			old_task.average.append((cpu, mem))
 
 			cpu_mean = numpy.mean([cpu_v for (cpu_v, _) in old_task.average])
 			mem_mean = numpy.mean([mem_v for (_, mem_v) in old_task.average])
+
+		if len(old_task.average) < self.num:
+			return False
 
 		old_cpu = new_task.CPU_usage
 		old_mem = new_task.mem_usage
