@@ -156,6 +156,14 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 		(self.machines_used, self.machines_not_used)             = self.__count_macs()
 		self.task_new                 = self.__count_new_tasks()
 
+		self.print_info()
+
+	def print_info(self):
+		for policy in self.migration:
+			if policy.has_print_info:
+				policy.print_info(self.tasks)
+					
+
 	def __calc_usage(self):
 
 		self.mac_usage.clear()

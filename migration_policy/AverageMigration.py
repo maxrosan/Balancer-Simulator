@@ -6,6 +6,7 @@ class AverageMigration(migration_policy.Migration.Migration):
 
 	def __init__(self, num):
 		migration_policy.Migration.Migration()
+		migration_policy.Migration.has_print_info = True
 
 		self.num = num
 
@@ -46,3 +47,10 @@ class AverageMigration(migration_policy.Migration.Migration):
 		new_task.mem_usage = old_mem
 
 		return not can_r
+
+	def print_info(tasks):
+		for tid in list(tasks)[:5]:
+			t = tasks[tid]
+			if hasattr(t, "average"):
+				print t.average
+				
