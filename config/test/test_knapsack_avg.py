@@ -14,7 +14,7 @@ def task_key_sort(task):
 def score_task_knapsack(task, mac):
 	return task.CPU_usage*task.CPU_usage + task.mem_usage*task.mem_usage
 
-migration_policies = [ migration_policy.AverageMigration.AverageMigration(5), migration_policy.SLABreakMigration.SLABreakMigration() ]
+migration_policies = [ migration_policy.AverageMigration.AverageMigration(10), migration_policy.SLABreakMigration.SLABreakMigration() ]
 
 method         = methods.toyodaknapsack.ToyodaKnapsack(prediction.NoPrediction.NoPrediction(), 
  migration_policies, 8, score_task_knapsack,
