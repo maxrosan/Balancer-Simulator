@@ -71,9 +71,9 @@ class LogReader:
 		
 		macs = [e.machines_used + e.machines_not_used for e in entries]
 			
-		print "Max. num. de maquinas: %d \n" % (max(macs))
-		print "Min. num. de maquinas: %d \n" % (min(macs))
-		print "Med. num. de maquinas: %f \n" % (numpy.mean(macs))
+		print "Max. num. de maquinas: %d" % (max(macs))
+		print "Min. num. de maquinas: %d" % (min(macs))
+		print "Med. num. de maquinas: %f" % (numpy.mean(macs))
 
 
 
