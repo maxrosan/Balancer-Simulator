@@ -57,10 +57,10 @@ class LogReader:
 				log_entry.SLA_breaks               = int(entries[13])
 
 
-				if self.n_round >= start and self.n_round <= end:
+				if log_entry.n_round >= start and log_entry.n_round <= end:
 					result.append(log_entry)
 				
-				if self.n_round > end:
+				if log_entry.n_round > end:
 					keep_reading = False
 
 		return result
