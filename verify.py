@@ -73,7 +73,7 @@ class LogReader:
 			
 		print "Max. num. de maquinas: %d \n" % (max(macs))
 		print "Min. num. de maquinas: %d \n" % (min(macs))
-		print "Med. num. de maquinas: %f \n" % (self.mean(macs))
+		print "Med. num. de maquinas: %f \n" % (numpy.mean(macs))
 
 
 
