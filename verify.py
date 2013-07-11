@@ -74,6 +74,7 @@ class LogReader:
 		print "Max. num. de maquinas: %d" % (max(macs))
 		print "Min. num. de maquinas: %d" % (min(macs))
 		print "Med. num. de maquinas: %f" % (numpy.mean(macs))
+		print "Var. num. de maquinas: %f" % (numpy.std(macs))
 
 
 
