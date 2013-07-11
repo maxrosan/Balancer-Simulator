@@ -69,14 +69,18 @@ class LogReader:
 
 		entries = self.read_rounds(start, end)
 		
-		macs = [e.machines_used + e.machines_not_used for e in entries]
+		macs  = [e.machines_used + e.machines_not_used for e in entries]
+		tasks = [e.total_tasks for e in entries]
 			
 		print "Max. num. de maquinas: %d" % (max(macs))
 		print "Min. num. de maquinas: %d" % (min(macs))
 		print "Med. num. de maquinas: %f" % (numpy.mean(macs))
 		print "Var. num. de maquinas: %f" % (numpy.std(macs))
 
-
+		print "Max. num. de tarefas: %d" % (max(tasks))
+		print "Min. num. de tarefas: %d" % (min(tasks))
+		print "Med. num. de tarefas: %f" % (numpy.mean(tasks))
+		print "Var. num. de tarefas: %f" % (numpy.std(tasks))
 
 if __name__ == "__main__":
 
