@@ -93,7 +93,6 @@ class LogMappingReader:
 		for m in self.tar.getmembers():
 			if m == memberfn:
 				filers = self.tar.extractfile(m)
-				break
 
 		if filers == None:
 			print "Member not found"
@@ -118,3 +117,6 @@ if __name__ == "__main__":
 		member = sys.argv[3]
 
 		mappingLog = LogMappingReader(fn, member)
+
+	else:
+		print "command not found"
