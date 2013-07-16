@@ -2,6 +2,7 @@
 
 import io, sys
 import numpypy as numpy
+import tarfile
 
 class LogEntry:
 
@@ -82,11 +83,38 @@ class LogReader:
 		print "Med. num. de tarefas: %f" % (numpy.mean(tasks))
 		print "Var. num. de tarefas: %f" % (numpy.std(tasks))
 
+class LogMappingReader:
+
+	def __init__(self, fn, memberfn):
+
+		tar = tarfile.open(fn, "r|gz")
+
+		filers = None
+		for m in self.tar.getmembers():
+			if m == memberfn:
+				filers = self.tar.extractfile(m)
+				break
+
+		if filers == None:
+			print "Member not found"
+		else:
+			print "Member found"
+
+		self.fileres = filers
+
 if __name__ == "__main__":
 
-	fn    = sys.argv[1]
-	start = int(sys.argv[2])
-	end   = int(sys.argv[3])
+	if sys.argv[1] == "logreader":
 
-	reader = LogReader(fn)
-	reader.get_stats(start, end)
+		fn     = sys.argv[2]
+		start  = int(sys.argv[3])
+		end    = int(sys.argv[4])
+		reader = LogReader(fn)
+		reader.get_stats(start, end)
+
+	elif sys.argv[1] == "mappingreader":
+
+		fn     = sys.argv[2]
+		member = sys.argv[3]
+
+		mappingLog = LogMappingReader(fn, member)
