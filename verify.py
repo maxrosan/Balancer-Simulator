@@ -85,9 +85,9 @@ class LogReader:
 
 class LogMappingReader:
 
-	def __init__(self, fn, memberfn):
+	def __init__(self, fn, memberfn, fmt):
 
-		tar = tarfile.open(fn, "r|gz")
+		tar = tarfile.open(fn, "r|" + fmt)
 
 		filers = None
 		for m in self.tar.getmembers():
@@ -115,8 +115,9 @@ if __name__ == "__main__":
 
 		fn     = sys.argv[2]
 		member = sys.argv[3]
+		fmt    = sys.argv[4]
 
-		mappingLog = LogMappingReader(fn, member)
+		mappingLog = LogMappingReader(fn, member, fmt)
 
 	else:
 		print "command not found"
