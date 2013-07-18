@@ -2,7 +2,7 @@
 
 import io, sys
 import numpypy as numpy
-import tarfile
+import tarfile, re
 
 class LogEntry:
 
@@ -85,21 +85,48 @@ class LogReader:
 
 class LogMappingReader:
 
-	def __init__(self, fn, memberfn, fmt):
+	def __init__(self):
+		pass
 
-		tar = tarfile.open(fn, "r|" + fmt)
+	def read_from_stdin(self, start):
+	
+		line_start = "Round " + str(start) + "--------------\n"
+		contents = ""
+		line_end   = "--------------\n"
 
-		filers = None
-		for m in self.tar.getmembers():
-			if m == memberfn:
-				filers = self.tar.extractfile(m)
+		macs = []
 
-		if filers == None:
-			print "Member not found"
-		else:
-			print "Member found"
+		print "Looking for round"
+		while sys.stdin.readline() != line_start:
+			pass
 
-		self.fileres = filers
+		print "Round found"
+
+		ln = sys.stdin.readline()
+		i = 0
+		while ln != line_end:
+			contents = contents + ln
+			ln = sys.stdin.readline()
+			#print "\r n of lns = %d " % (i),
+			i = i + 1
+
+		print "\nRound read"
+
+		for entry in contents.split("##"):
+			srv = entry.split(":")[0].replace(",", "").replace("(","").replace(")","").split(" ")[1:]
+			if len(srv) == 8:
+				macs.append(srv)
+			#print srv
+
+		print "Split done => %d " % (len(macs))
+
+		print macs[-1]
+
+		macs = sorted(macs, key=lambda mac:3.*float(mac[1])*float(mac[2]) + float(mac[5])*float(mac[6]), reverse=True)
+
+		for mac in macs:
+			print "%f %f" % (float(mac[1]) * float(mac[2]), float(mac[5]) * float(mac[6]))
+		
 
 if __name__ == "__main__":
 
@@ -113,11 +140,8 @@ if __name__ == "__main__":
 
 	elif sys.argv[1] == "mappingreader":
 
-		fn     = sys.argv[2]
-		member = sys.argv[3]
-		fmt    = sys.argv[4]
-
-		mappingLog = LogMappingReader(fn, member, fmt)
+		mappingLog = LogMappingReader()
+		mappingLog.read_from_stdin(int(sys.argv[2]))
 
 	else:
 		print "command not found"
