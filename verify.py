@@ -72,6 +72,7 @@ class LogReader:
 		
 		macs  = [e.machines_used + e.machines_not_used for e in entries]
 		tasks = [e.total_tasks for e in entries]
+		tasks_new = [e.task_new for e in entries]
 			
 		print "Max. num. de maquinas: %d" % (max(macs))
 		print "Min. num. de maquinas: %d" % (min(macs))
@@ -82,6 +83,24 @@ class LogReader:
 		print "Min. num. de tarefas: %d" % (min(tasks))
 		print "Med. num. de tarefas: %f" % (numpy.mean(tasks))
 		print "Var. num. de tarefas: %f" % (numpy.std(tasks))
+
+		print "Max. num. de nov. tarefas: %d" % (max(tasks_new))
+		print "Min. num. de nov. tarefas: %d" % (min(tasks_new))
+		print "Med. num. de nov. tarefas: %f" % (numpy.mean(tasks_new))
+		print "Var. num. de nov. tarefas: %f" % (numpy.std(tasks_new))
+
+		std_min = 1000.
+		std_i   = 0
+		i       = 0
+
+		for e in entries:
+			if e.usage_stan_per < std_min:
+				std_i = i
+				std_min = e.usage_stan_per
+			i = i + 1
+
+		print "Min. round std: %d" % (std_i)
+		print "Min. std: %f" % (std_min)
 
 class LogMappingReader:
 
