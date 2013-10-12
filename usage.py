@@ -4,22 +4,23 @@ import io, sys, os, commands
 
 class TaskUsageRegister:
 
+	start_time = 0.0
+	end_time   = 0.0
+	job_ID     = 0
+	task_ID    = 0
+	machine_ID = 0
+	CPU_usage  = 0.0
+	mem_usage  = 0.0
+	age_round  = 0
+	last_round = 0
+	altererd   = False
+	move       = False
+	mig_origin = -1
+	CPU_usage_real = 0.
+	mem_usage_real = 0.
+	machine_trace  = -1
+
 	def TaskUsageRegister(self):
-		self.start_time = 0.0
-		self.end_time   = 0.0
-		self.job_ID     = 0
-		self.task_ID    = 0
-		self.machine_ID = 0
-		self.CPU_usage  = 0.0
-		self.mem_usage  = 0.0
-		self.age_round  = 0
-		self.last_round = 0
-		self.altererd   = False
-		self.move       = False
-		self.mig_origin = -1
-		self.CPU_usage_real = 0.
-		self.mem_usage_real = 0.
-		self.machine_trace  = -1
 
 	def updateWithRealValues(self):
 		self.CPU_usage = self.CPU_usage_real

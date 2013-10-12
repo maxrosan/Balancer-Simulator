@@ -89,18 +89,29 @@ class LogReader:
 		print "Med. num. de nov. tarefas: %f" % (numpy.mean(tasks_new))
 		print "Var. num. de nov. tarefas: %f" % (numpy.std(tasks_new))
 
-		std_min = 1000.
-		std_i   = 0
-		i       = 0
+		std_min   = 1000.
+		std_max   = 0.
+		std_i     = 0
+		std_max_i = 0
+		std_max   = 0.
+		i         = 0
 
-		for e in entries:
+		for e in entries[3:]:
+
 			if e.usage_stan_per < std_min:
 				std_i = i
 				std_min = e.usage_stan_per
+
+			if e.usage_stan_per > std_max:
+				std_max_i = i
+				std_max = e.usage_stan_per
+
 			i = i + 1
 
 		print "Min. round std: %d" % (std_i)
 		print "Min. std: %f" % (std_min)
+		print "Max. round std: %d" % (std_max_i)
+		print "Max. std: %f" % (std_max)
 
 class LogMappingReader:
 
