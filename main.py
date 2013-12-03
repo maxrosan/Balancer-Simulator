@@ -2,15 +2,13 @@
 #
 
 import simulator, usage, machine, sets
-import methods.toyodamethod, methods.tasksstats, methods.toyodamethodwithmovingaverage, methods.googlemethod, methods.ffdmethod, \
-methods.branchandbound
 import sys
 
 class BalancerSimulator:
 
-	def __init__(self, main_path, balacing_method, balancing_log, mapping_log, total_time):
+	def __init__(self, main_path, balacing_method, balancing_log, mapping_log, total_time, machine_events_folder):
 		self.taskusage          = usage.TaskUsage(main_path + "task_usage", 0)
-		self.macevents          = machine.MachineEvent(main_path + "machine_events", 0)
+		self.macevents          = machine.MachineEvent(main_path + machine_events_folder, 0)
 		self.time               = 300
 		self.interval           = 300
 		self.start_time         = 0
@@ -61,7 +59,7 @@ else:
 method = var_locals["method"]
 
 sim = simulator.Simulator()
-balsim = BalancerSimulator(var_locals["dataset_path"], method, var_locals["balancing_log"], var_locals["mapping_log"], var_locals["total_time"])
+balsim = BalancerSimulator(var_locals["dataset_path"], method, var_locals["balancing_log"], var_locals["mapping_log"], var_locals["total_time"], var_locals["machine_events_folder"])
 
 sim.add_event(simulator.Event(0., BalancerSimulator.add_event, (sim, balsim)))
 

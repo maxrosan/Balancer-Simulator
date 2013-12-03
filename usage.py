@@ -21,6 +21,7 @@ class TaskUsageRegister:
 	machine_trace  = -1
 
 	def TaskUsageRegister(self):
+		pass
 
 	def updateWithRealValues(self):
 		self.CPU_usage = self.CPU_usage_real
