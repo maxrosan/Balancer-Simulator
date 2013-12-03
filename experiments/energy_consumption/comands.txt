@@ -1,0 +1,27 @@
+
+ssocr -d 4 crop 250 150 360 250 -t 30 remove_isolated closing 1  op/video4.jpg -o op/op.jpg
+LD_LIBRARY_PATH=/usr/local/lib ffmpeg -i MOV01145.AVI -an -ss 00:00:10 -t 00:00:10 -r 1 -y -s op/video%d.jpg
+
+ffmpeg -i MOV01273.AVI -r 1 -f image2 op/video%d.jp
+
+ffmpeg -i experimentos/MOV01316.AVI -r 1 -f image2 op/video%d.jpg -threads 4
+
+rm op/*.jpg; ffmpeg -i experimentos/MOV01316.AVI -r 1 -f image2 op/video%d.jpg -threads 4 (1 mv)
+rm op/*.jpg; ffmpeg -i experimentos/MOV01317.AVI -r 1 -f image2 op/video%d.jpg -threads 4 (2 mvs)
+rm op/*.jpg; ffmpeg -i experimentos/MOV01318.AVI -r 1 -f image2 op/video%d.jpg -threads 4 (3 mvs)
+rm op/*.jpg; ffmpeg -i experimentos/MOV01319.AVI -r 1 -f image2 op/video%d.jpg -threads 4 (4 mvs)
+rm op/*.jpg; ffmpeg -i experimentos/MOV01320.AVI -r 1 -f image2 op/video%d.jpg -threads 4 (5 mvs)
+rm op/*.jpg; ffmpeg -i experimentos/MOV01321.AVI -r 1 -f image2 op/video%d.jpg -threads 4 (6 mvs)
+rm op/*.jpg; ffmpeg -i experimentos/MOV01322.AVI -r 1 -f image2 op/video%d.jpg -threads 4 (7 mvs)
+rm op/*.jpg; ffmpeg -i experimentos/MOV01323.AVI -r 1 -f image2 op/video%d.jpg -threads 4 (8 mvs)
+rm op/*.jpg; ffmpeg -i experimentos/MOV01324.AVI -r 1 -f image2 op/video%d.jpg -threads 4 (9 mvs)
+rm op/*.jpg; ffmpeg -i experimentos/MOV01325.AVI -r 1 -f image2 op/video%d.jpg -threads 4 (10 mvs)
+rm op/*.jpg; ffmpeg -i experimentos/MOV01326.AVI -r 1 -f image2 op/video%d.jpg -threads 4 (11 mvs)
+rm op/*.jpg; ffmpeg -i experimentos/MOV01327.AVI -r 1 -f image2 op/video%d.jpg -threads 4 (12 mvs)
+rm op/*.jpg; ffmpeg -i experimentos/MOV01330.AVI -r 1 -f image2 op/video%d.jpg -threads 4 (0 mvs)
+rm op/*.jpg; ffmpeg -i experimentos/MOV01332.AVI -r 1 -f image2 op/video%d.jpg -threads 4 (0 mvs - 8threads)
+
+cp results*.txt /home/max/Dropbox/trabalhos/dissdoc/
+cp cmd_plot.txt /home/max/Dropbox/trabalhos/dissdoc/
+cp cmd.sh /home/max/Dropbox/trabalhos/dissdoc/
+cp *.png /home/max/Dropbox/trabalhos/dissdoc/tese-exemplo/tese-exemplo-alpha-ime/figuras

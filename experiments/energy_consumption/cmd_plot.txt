@@ -1,0 +1,41 @@
+gnuplot -e "set output \"kw_1.png\"; set term png truecolor; set grid; set terminal png;  set xlabel \"Tempo (s)\"; set ylabel \"Potência (W)\"; set yrange[0:100]; plot \"results_1mv.txt\" using 3 title \"1 MV\" with lines"
+
+gnuplot -e "set output \"kw_2.png\"; set term png truecolor; set grid; set terminal png;  set xlabel \"Tempo (s)\"; set ylabel \"Potência (W)\"; set yrange[0:100]; plot \"results_2mv.txt\" using 3 title \"2 MVs\" with lines"
+
+gnuplot -e "set output \"kw_3.png\"; set term png truecolor; set grid; set terminal png;  set xlabel \"Tempo (s)\"; set ylabel \"Potência (W)\"; set yrange[0:100]; plot \"results_3mv.txt\" using 3 title \"3 MVs\" with lines"
+
+gnuplot -e "set output \"kw_4.png\"; set term png truecolor; set grid; set terminal png;  set xlabel \"Tempo (s)\"; set ylabel \"Potência (W)\"; set yrange[0:100]; plot \"results_4mv.txt\" using 3 title \"4 MVs\" with lines"
+
+gnuplot -e "set output \"kw_5.png\"; set term png truecolor; set grid; set terminal png;  set xlabel \"Tempo (s)\"; set ylabel \"Potência (W)\"; set yrange[0:100]; plot \"results_5mv.txt\" using 3 title \"5 MVs\" with lines"
+
+gnuplot -e "set output \"kw_6.png\"; set term png truecolor; set grid; set terminal png;  set xlabel \"Tempo (s)\"; set ylabel \"Potência (W)\"; set yrange[0:100]; plot \"results_6mv.txt\" using 3 title \"6 MVs\" with lines"
+
+gnuplot -e "set output \"kw_7.png\"; set term png truecolor; set grid; set terminal png;  set xlabel \"Tempo (s)\"; set ylabel \"Potência (W)\"; set yrange[0:100]; plot \"results_7mv.txt\" using 3 title \"7 MVs\" with lines"
+
+gnuplot -e "set output \"kw_8.png\"; set term png truecolor; set grid; set terminal png;  set xlabel \"Tempo (s)\"; set ylabel \"Potência (W)\"; set yrange[0:100]; plot \"results_8mv.txt\" using 3 title \"8 MVs\" with lines"
+
+gnuplot -e "set output \"kw_9.png\"; set term png truecolor; set grid; set terminal png;  set xlabel \"Tempo (s)\"; set ylabel \"Potência (W)\"; set yrange[0:100]; plot \"results_9mv.txt\" using 3 title \"9 MVs\" with lines"
+
+gnuplot -e "set output \"kw_10.png\"; set term png truecolor; set grid; set terminal png;  set xlabel \"Tempo (s)\"; set ylabel \"Potência (W)\"; set yrange[0:100]; plot \"results_10mv.txt\" using 3 title \"10 MVs\" with lines"
+
+gnuplot -e "set output \"kw_11.png\"; set term png truecolor; set grid; set terminal png;  set xlabel \"Tempo (s)\"; set ylabel \"Potência (W)\"; set yrange[0:100]; plot \"results_11mv.txt\" using 3 title \"11 MVs\" with lines"
+
+gnuplot -e "set output \"kw_12.png\"; set term png truecolor; set grid; set terminal png;  set xlabel \"Tempo (s)\"; set ylabel \"Potência (W)\"; set yrange[0:100]; plot \"results_12mv.txt\" using 3 title \"12 MVs\" with lines"
+
+gnuplot -e "set output \"kw_0.png\"; set term png truecolor; set grid; set terminal png;  set xlabel \"Tempo (s)\"; set ylabel \"Potência (W)\"; set yrange[0:100]; plot \"results_0mv.txt\" using 3 title \"0 MVs\" with lines"
+
+gnuplot -e "set output \"kw_0_8threads.png\"; set term png truecolor; set grid; set terminal png;  set xlabel \"Tempo (s)\"; set ylabel \"Potência (W)\"; set yrange[0:100]; plot \"results_0mv_8threads.txt\" using 3 title \"0 MVs - 8 threads\" with lines"
+
+
+gnuplot -e "set output \"kw_all.png\"; set key outside; set term png truecolor; set grid; set terminal png;  set xlabel \"Tempo (s)\"; set ylabel \"Potência (W)\"; set yrange[0:100]; plot \"results_0mv.txt\" using 3 title \"0 MVs\" with lines, \"results_1mv.txt\" using 3 title \"1 MV\" with lines, \"results_2mv.txt\" using 3 title \"2 MVs\" with lines, \"results_3mv.txt\" using 3 title \"3 MVs\" with lines, \"results_4mv.txt\" using 3 title \"4 MVs\" with lines, \"results_5mv.txt\" using 3 title \"5 MVs\" with lines, \"results_6mv.txt\" using 3 title \"6 MVs\" with lines, \"results_7mv.txt\" using 3 title \"7 MVs\" with lines, \"results_8mv.txt\" using 3 title \"8 MVs\" with lines, \"results_9mv.txt\" using 3 title \"9 MVs\" with lines, \"results_10mv.txt\" using 3 title \"10 MVs\" with lines, \"results_11mv.txt\" using 3 title \"11 MVs\" with lines, \"results_12mv.txt\" using 3 title \"12 MVs\" with lines"
+
+gnuplot -e "set output \"kw_0_8threads_8mvs.png\"; set term png truecolor; set grid; set terminal png;  set xlabel \"Tempo (s)\"; set ylabel \"Potência (W)\"; set yrange[0:100]; plot \"results_0mv_8threads.txt\" using 3 title \"0 MVs - 8 threads\" with lines, \"results_8mv.txt\" using 3 title \"8 MVs\" with lines"
+
+gnuplot -e "set output \"kw_1_0.png\"; set term png truecolor; set grid; set terminal png;  set xlabel \"Tempo (s)\"; set ylabel \"Potência (W)\"; set yrange[0:100]; plot \"results_0mv.txt\" using 3 title \"0 MVs\" with lines, \"results_1mv.txt\" using 3 title \"1 MV\" with lines"
+
+gnuplot -e "set output \"kw.png\"; set term png truecolor; set grid; set terminal png;  set xlabel \"Tempo (s)\"; set ylabel \"Potência (W)\"; set yrange[0:100]; plot \"results.txt\" using 3 title \"0 MB\" with lines"
+
+
+0 - 33 : 1 MV
+
+gnuplot -e "set output \"kw.png\"; set term png truecolor; set grid; set terminal png;  set xlabel \"Tempo (s)\"; set ylabel \"Potência (W)\"; set yrange[0:100]; plot \"tmp/mem_0/results.txt\" using 1:2 title \"0 MB\" with lines, \"tmp/mem_32M/results.txt\" using 1:2 title \"32 MB\" with lines, \"tmp/mem_64M/results.txt\" using 1:2 title \"64 MB\" with lines, \"tmp/mem_128M/results.txt\" using 1:2 title \"128 MB\" with lines, \"tmp/mem_512M/results.txt\" using 1:2 title \"512 MB\" with lines, \"tmp/mem_1G/results.txt\" using 1:2 title \"1 GB\" with lines, \"tmp/mem_2G/results.txt\" using 1:2 title \"2 GB\" with lines, \"tmp/mem_4G/results.txt\" using 1:2 title \"4 GB\" with lines, \"tmp/mem_6G/results.txt\" using 1:2 title \"6 GB\" with lines"
