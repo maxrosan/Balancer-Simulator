@@ -1,9 +1,14 @@
 
+import imp
 import io, time
 import methods.loadbalacing
-import numpypy as numpy
 import math, random, Queue
 import sys
+
+try:
+	import numpypy as numpy
+except ImportError:
+	import numpy
 
 class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 	
@@ -34,14 +39,6 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 		task.machine_ID = -1
 
 	def add_machine_event(self, mac):
-
-		if mac.machine_ID == 6264344062:
-			if mac.event_type == mac.ADD_EVENT:
-				print "#### MAC ADDED"
-			elif mac.event_type == mac.UPDATE_EVENT:
-				print "#### MAC UPDATED"
-			else:
-				print "#### MAC DELETED"
 
 		if mac.event_type == mac.ADD_EVENT:
 			self.machines[mac.machine_ID] = mac

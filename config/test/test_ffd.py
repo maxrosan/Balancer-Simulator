@@ -21,7 +21,7 @@ host = commands.getoutput("hostname")
 mapping_fname = "mapping_ffd_test.log"
 balancing_fname = "balancing_ffd_test.log"
 
-machine_events_folder = "machine_constant_events"
+machine_events_folder = "machine_events"
 
 dataset_path = ""
 path_log     = ""
@@ -37,10 +37,10 @@ elif host == "godzilla":
 	path_log   = "/home/maxrosan/simulator/Balancer-Simulator/log/"	
 
 else:
-	dataset_path  = "/run/media/max/media/gsutil/resource/clusterdata-2011-1/"
-	path_log   = "/run/media/max/media/gsutil/resource/clusterdata-2011-1/log/"
+	dataset_path  = "/run/media/max/media/gsutil/generated/10_vms/"
+	path_log      = "/run/media/max/media/gsutil/generated/10_vms/log/"
 
 mapping_log   = path_log + mapping_fname
 balancing_log = path_log + balancing_fname
 
-total_time     = (60 * 60 * 24) * 7
+total_time     = 300 * 10

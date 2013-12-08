@@ -1,0 +1,4 @@
+read problem.lp
+optimize
+write results.sol
+quit

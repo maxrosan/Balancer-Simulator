@@ -5,7 +5,7 @@ import sys
 
 if __name__ == "__main__":
 
-	fileName = sys.argv[1]
+	fileName = sys.argv[1] + "/part-00000-of-00001.csv"
 	numOfMachines = int(sys.argv[2])
 
 	fp = open(fileName, "w+")

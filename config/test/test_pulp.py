@@ -1,6 +1,6 @@
 
 import site, commands
-import methods.toyodaknapsack, prediction.NoPrediction
+import methods.glpkalgorithm, prediction.NoPrediction
 import migration_policy.MachineUsageMigration, migration_policy.SLABreakMigration
 
 def mac_key_sort(mac):
@@ -12,19 +12,14 @@ def task_key_sort(task):
 	#pun  = 1./(1. + abs(task.CPU_usage - task.mem_usage))
 	return max(task.CPU_usage, task.mem_usage)
 
-def score_task_knapsack(task, mac):
-	return task.CPU_usage*task.CPU_usage + task.mem_usage*task.mem_usage
-
 migration_policies = [ migration_policy.SLABreakMigration.SLABreakMigration() ]
-
-method         = methods.toyodaknapsack.ToyodaKnapsack(prediction.NoPrediction.NoPrediction(), 
- migration_policies, 8, score_task_knapsack,
- mac_key_sort, task_key_sort)
+method             = methods.glpkalgorithm.GLPK(prediction.NoPrediction.NoPrediction(), migration_policies,
+	"/run/media/max/media/gsutil/generated/10_vms/log")
 
 host = commands.getoutput("hostname")
 
-mapping_fname = "mapping_knapsack_test.log"
-balancing_fname = "balancing_knapsack_test.log"
+mapping_fname = "mapping_glpk_test.log"
+balancing_fname = "balancing_glpk_test.log"
 
 machine_events_folder = "machine_events"
 
@@ -42,9 +37,8 @@ elif host == "godzilla":
 	path_log   = "/home/maxrosan/simulator/Balancer-Simulator/log/"	
 
 else:
-
-	dataset_path  = "/run/media/max/media/gsutil/generated/50_vms/"
-	path_log      = "/run/media/max/media/gsutil/generated/50_vms/log/"
+	dataset_path  = "/run/media/max/media/gsutil/generated/10_vms/"
+	path_log      = "/run/media/max/media/gsutil/generated/10_vms/log/"
 
 mapping_log   = path_log + mapping_fname
 balancing_log = path_log + balancing_fname

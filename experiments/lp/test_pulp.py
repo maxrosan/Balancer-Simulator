@@ -6,8 +6,8 @@ prob = LpProblem("test1", LpMinimize)
 
 VMs = []
 
-n_servers = 1000
-n_VMs     = 1000
+n_servers = 100
+n_VMs     = 60
 
 for i in range(0, n_VMs):
 
@@ -27,7 +27,7 @@ x = []
 for i in range(0, n_VMs):
 	_var = []
 	for j in range(0, n_servers):
-		_var.append(LpVariable("x[" + str(i) + "][" + str(j) + "]", 0., 1.))
+		_var.append(LpVariable("x[" + str(i) + "][" + str(j) + "]", 0, 1, "Integer"))
 	x.append(_var)
 
 #x = LpVariable("x", 0., 1.)
@@ -59,11 +59,13 @@ print "Problem defined"
 #prob += x+z >= 10
 #prob += -y+z == 7
 
-print prob
+#print prob
+
+prob.writeLP("problem.lp")
 
 GLPK().solve(prob)
 
 for v in prob.variables():
 	print v.name, " = ", v.varValue
 
-#print "obj = ", value(prob.objective)
+print "obj = ", value(prob.objective)

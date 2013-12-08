@@ -243,12 +243,6 @@ class ToyodaKnapsack(methods.loadbalancingalgorithm.LoadBalancingAlgorithm):
 
 	def algorithm(self):
 
-		for mac in self.machines:
-			if self.machines[mac].SLA_break():
-				for task in list(self.machines[mac].tasks):
-					self.migrate(self.tasks[task])
-					self.machines[mac].remove_task(self.tasks[task])
-
 		macs = sorted([mac_id for mac_id in self.machines if self.machines[mac_id].n_tasks > 0],
 		    key=lambda mac_id:self.mac_key_sort(self.machines[mac_id]), reverse=True) + \
 		  sorted([mac_id for mac_id in self.machines if self.machines[mac_id].n_tasks == 0],
