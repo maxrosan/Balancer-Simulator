@@ -1,26 +1,18 @@
 
 import site, commands
-import methods.ffdbinpacking, prediction.NoPrediction
+import methods.glpkalgorithm, prediction.NoPrediction
 import migration_policy.MachineUsageMigration, migration_policy.SLABreakMigration
 
-def mac_key_sort(mac):
-	gain = (mac.free_CPU()*mac.free_CPU() + mac.free_mem()*mac.free_mem())
-	return gain
-
-def task_key_sort(task):
-	cpu = task.CPU_usage + 1.
-	mem = task.mem_usage + 1.
-	cost = cpu*cpu + mem*mem
-	return cpu/cost
+n_VMS = "10_vms"
 
 migration_policies = [ migration_policy.SLABreakMigration.SLABreakMigration() ]
-method             = methods.ffdbinpacking.FFDBinPacking(prediction.NoPrediction.NoPrediction(), 
- migration_policies, mac_key_sort, task_key_sort, False)
+method             = methods.glpkalgorithm.GLPK(prediction.NoPrediction.NoPrediction(), migration_policies,
+	"/run/media/max/media/gsutil/generated/" + n_VMS + "/log")
 
 host = commands.getoutput("hostname")
 
-mapping_fname = "mapping_ffd_test.log"
-balancing_fname = "balancing_ffd_test.log"
+mapping_fname = "mapping_glpk_test.log"
+balancing_fname = "balancing_glpk_test.log"
 
 machine_events_folder = "machine_events"
 
@@ -38,8 +30,8 @@ elif host == "godzilla":
 	path_log   = "/home/maxrosan/simulator/Balancer-Simulator/log/"	
 
 else:
-	dataset_path  = "/run/media/max/media/gsutil/generated/10_vms/"
-	path_log      = "/run/media/max/media/gsutil/generated/10_vms/log/"
+	dataset_path  = "/run/media/max/media/gsutil/generated/" + n_VMS + "/"
+	path_log      = "/run/media/max/media/gsutil/generated/" + n_VMS + "/log/"
 
 mapping_log   = path_log + mapping_fname
 balancing_log = path_log + balancing_fname

@@ -38,8 +38,8 @@ elif host == "godzilla":
 	path_log   = "/home/maxrosan/simulator/Balancer-Simulator/log/"	
 
 else:
-	dataset_path  = "/run/media/max/media/gsutil/generated/10_vms/"
-	path_log      = "/run/media/max/media/gsutil/generated/10_vms/log/"
+	dataset_path  = "/run/media/max/media/gsutil/generated/500_vms/"
+	path_log      = "/run/media/max/media/gsutil/generated/500_vms/log/"
 
 mapping_log   = path_log + mapping_fname
 balancing_log = path_log + balancing_fname

@@ -1,4 +1,7 @@
-read problem.lp
+set logfile /var/tmp/mr/log/cplex_log.log
+set threads 10
+set workdir /var/tmp/mr/
+set workmem 80000
 optimize
 write results.sol
 quit

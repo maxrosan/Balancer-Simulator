@@ -9,9 +9,7 @@ def mac_key_sort(mac):
 
 def task_key_sort(task):
 	cpu = task.CPU_usage + 1.
-	mem = task.mem_usage + 1.
-	cost = cpu*cpu + mem*mem
-	return cpu/cost
+	return cpu
 
 migration_policies = [ migration_policy.SLABreakMigration.SLABreakMigration() ]
 method             = methods.ffdbinpacking.FFDBinPacking(prediction.NoPrediction.NoPrediction(), 

@@ -1,9 +1,13 @@
 
 import methods.loadbalancingalgorithm
-import numpypy as numpy
 import math, random, Queue
 
 import threading, multiprocessing, time, sys
+
+try:
+	import numpypy as numpy
+except ImportError, e:
+	import numpy
 
 class ToyodaKnapsack(methods.loadbalancingalgorithm.LoadBalancingAlgorithm):
 	

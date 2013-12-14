@@ -8,12 +8,16 @@ def mac_key_sort(mac):
 	return gain
 
 def task_key_sort(task):
-	#gain = (task.CPU_usage*task.CPU_usage + task.mem_usage*task.mem_usage)
-	#pun  = 1./(1. + abs(task.CPU_usage - task.mem_usage))
-	return max(task.CPU_usage, task.mem_usage)
+	cpu = task.CPU_usage + 1.
+	mem = task.mem_usage + 1.
+	cost = cpu*cpu + mem*mem
+	return cpu/cost
 
 def score_task_knapsack(task, mac):
-	return task.CPU_usage*task.CPU_usage + task.mem_usage*task.mem_usage
+	cpu = task.CPU_usage + 1.
+	mem = task.mem_usage + 1.
+	cost = cpu*cpu + mem*mem
+	return cpu/cost
 
 migration_policies = [ migration_policy.SLABreakMigration.SLABreakMigration() ]
 
@@ -43,8 +47,8 @@ elif host == "godzilla":
 
 else:
 
-	dataset_path  = "/run/media/max/media/gsutil/generated/50_vms/"
-	path_log      = "/run/media/max/media/gsutil/generated/50_vms/log/"
+	dataset_path  = "/run/media/max/media/gsutil/generated/10_vms/"
+	path_log      = "/run/media/max/media/gsutil/generated/10_vms/log/"
 
 mapping_log   = path_log + mapping_fname
 balancing_log = path_log + balancing_fname
