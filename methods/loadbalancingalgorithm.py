@@ -41,6 +41,7 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 	def add_machine_event(self, mac):
 
 		if mac.event_type == mac.ADD_EVENT:
+
 			self.machines[mac.machine_ID] = mac
 
 		elif mac.event_type == mac.UPDATE_EVENT:
@@ -55,10 +56,14 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 			del self.machines[mac.machine_ID]
 
 	def add_task_usage(self, task):
+
 		if task.getID() in self.tasks_input:
-			self.tasks_input[task.getID()].CPU_usage_real = max(self.tasks_input[task.getID()].CPU_usage_real, task.CPU_usage_real)
-			self.tasks_input[task.getID()].mem_usage_real = max(self.tasks_input[task.getID()].mem_usage_real, task.mem_usage_real)
+
+			self.tasks_input[task.getID()].CPU_usage = max(self.tasks_input[task.getID()].CPU_usage, task.CPU_usage)
+			self.tasks_input[task.getID()].mem_usage = max(self.tasks_input[task.getID()].mem_usage, task.mem_usage)
+
 		else:
+
 			self.tasks_input[task.getID()] = task
 
 	def remove_task(self, task_ID):
@@ -131,10 +136,6 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 
 				task.CPU_usage = task_update.CPU_usage
 				task.mem_usage = task_update.mem_usage
-				task.CPU_usage_real = task_update.CPU_usage_real
-				task.mem_usage_real = task_update.mem_usage_real
-				
-
 
 		s_time = time.time()
 
@@ -178,8 +179,8 @@ class LoadBalancingAlgorithm(methods.loadbalacing.LoadBalacing):
 
 				mac_obj = self.mac_usage[mac][0]
 
-				cpu = min(1., mac_obj.CPU_usage_real)
-				mem = min(1., mac_obj.mem_usage_real)
+				cpu = min(1., mac_obj.CPU_usage)
+				mem = min(1., mac_obj.mem_usage)
 
 				usage_vec.append((cpu * mem) / (mac_obj.capacity_CPU * mac_obj.capacity_memory))
 				usage_cpu.append(cpu / mac_obj.capacity_CPU)

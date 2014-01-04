@@ -9,9 +9,7 @@ def mac_key_sort(mac):
 
 def task_key_sort(task):
 	cpu = task.CPU_usage + 1.
-	mem = task.mem_usage + 1.
-	cost = cpu*cpu + mem*mem
-	return cpu/cost
+	return cpu
 
 migration_policies = [ migration_policy.SLABreakMigration.SLABreakMigration() ]
 method             = methods.ffdbinpacking.FFDBinPacking(prediction.NoPrediction.NoPrediction(), 
@@ -35,13 +33,13 @@ if host == "brucutu":
 elif host == "godzilla":
 
 	dataset_path  = "/home/maxrosan/src/gs_cluster/"
-	path_log   = "/home/maxrosan/simulator/Balancer-Simulator/log/"	
+	path_log   = "/home/maxrosan/simulator/PL/ssh/log/"	
 
 else:
-	dataset_path  = "/run/media/max/media/gsutil/generated/10_vms/"
-	path_log      = "/run/media/max/media/gsutil/generated/10_vms/log/"
+	dataset_path  = "/run/media/max/media/gsutil/resource/clusterdata-2011-1/"
+	path_log      = "log/"
 
 mapping_log   = path_log + mapping_fname
 balancing_log = path_log + balancing_fname
 
-total_time     = 300 * 10
+total_time     = 2506199.0

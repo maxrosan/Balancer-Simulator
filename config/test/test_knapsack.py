@@ -4,20 +4,16 @@ import methods.toyodaknapsack, prediction.NoPrediction
 import migration_policy.MachineUsageMigration, migration_policy.SLABreakMigration
 
 def mac_key_sort(mac):
-	gain = (mac.free_CPU()*mac.free_CPU() + mac.free_mem()*mac.free_mem())
+	gain = mac.free_CPU()
 	return gain
 
 def task_key_sort(task):
 	cpu = task.CPU_usage + 1.
-	mem = task.mem_usage + 1.
-	cost = cpu*cpu + mem*mem
-	return cpu/cost
+	return cpu
 
 def score_task_knapsack(task, mac):
 	cpu = task.CPU_usage + 1.
-	mem = task.mem_usage + 1.
-	cost = cpu*cpu + mem*mem
-	return cpu/cost
+	return cpu
 
 migration_policies = [ migration_policy.SLABreakMigration.SLABreakMigration() ]
 
@@ -43,7 +39,7 @@ if host == "brucutu":
 elif host == "godzilla":
 
 	dataset_path  = "/home/maxrosan/src/gs_cluster/"
-	path_log   = "/home/maxrosan/simulator/Balancer-Simulator/log/"	
+	path_log   = "/home/maxrosan/simulator/PL/ssh/log/"	
 
 else:
 
@@ -53,4 +49,4 @@ else:
 mapping_log   = path_log + mapping_fname
 balancing_log = path_log + balancing_fname
 
-total_time     = 300 * 10
+total_time     = 2506199.0

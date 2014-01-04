@@ -47,8 +47,8 @@ elif host == "godzilla":
 
 else:
 
-	dataset_path  = "/run/media/max/media/gsutil/generated/100_vms/"
-	path_log      = "/run/media/max/media/gsutil/generated/100_vms/log/"
+	dataset_path  = "/home/max/Src/gsutil/generated/100vms/"
+	path_log      = "/home/max/Src/gsutil/generated/100vms/log/"
 
 mapping_log   = path_log + mapping_fname
 balancing_log = path_log + balancing_fname

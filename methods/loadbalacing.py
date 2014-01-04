@@ -88,8 +88,8 @@ class LoadBalacing:
 
 		for mac_ID in self.mac_usage:
 			if self.mac_usage[mac_ID][0].count_tasks() > 0:
-				W_total = W_total + (self.W_on_l_25 if self.mac_usage[mac_ID][0].CPU_usage_real < 0.25 else self.W_on_g_25)
-				W_total = W_total + (self.W_cpu_l_25 if self.mac_usage[mac_ID][0].CPU_usage_real < 0.25 else self.W_cpu_g_25) * self.mac_usage[mac_ID][0].CPU_usage_real
+				W_total = W_total + (self.W_on_l_25 if self.mac_usage[mac_ID][0].CPU_usage < 0.25 else self.W_on_g_25)
+				W_total = W_total + (self.W_cpu_l_25 if self.mac_usage[mac_ID][0].CPU_usage < 0.25 else self.W_cpu_g_25) * self.mac_usage[mac_ID][0].CPU_usage
 
 		W_total = W_total + self.W_mig * self.n_migrations
 
@@ -121,37 +121,29 @@ class LoadBalacing:
 
 			for mac_ID in self.mac_usage:
 				
-				self.mapping_fobj.write("## %d (%f, %f, %f, %f, %f, %f) : " % (
+				self.mapping_fobj.write("## %d (%f, %f, %f, %f) : " % (
 					mac_ID, 
 					self.mac_usage[mac_ID][0].capacity_CPU, self.mac_usage[mac_ID][0].capacity_memory, 
-					self.mac_usage[mac_ID][0].CPU_usage, self.mac_usage[mac_ID][0].mem_usage,
-					self.mac_usage[mac_ID][0].CPU_usage_real, self.mac_usage[mac_ID][0].mem_usage_real
+					self.mac_usage[mac_ID][0].CPU_usage, self.mac_usage[mac_ID][0].mem_usage
 					))
 
-				self.usage_obj.write("%d %f %f\n" % (mac_ID, self.mac_usage[mac_ID][0].CPU_usage_real, self.mac_usage[mac_ID][0].mem_usage_real))
+				self.usage_obj.write("%d %f %f\n" % (mac_ID, self.mac_usage[mac_ID][0].CPU_usage, self.mac_usage[mac_ID][0].mem_usage))
 
 				cpu_total = 0.
 				mem_total = 0.
 
-				cpu_total_real = 0.
-				mem_total_real = 0.
-
 				SLA_status = ("SLA = %d" % (self.mac_usage[mac_ID][0].count_tasks())) if self.mac_usage[mac_ID][0].SLA_break() else "No SLA" 
 
 				for task in self.mac_usage[mac_ID][1]:
-					self.mapping_fobj.write("(%s, %f, %f, %f, %f) ; " % (
+					self.mapping_fobj.write("(%s, %f, %f) ; " % (
 					 task.getID(), 
 					task.CPU_usage, task.mem_usage,
-					task.CPU_usage_real, task.mem_usage_real
 					))
 					
 					cpu_total = cpu_total + task.CPU_usage
 					mem_total = mem_total + task.mem_usage
 
-					cpu_total_real = cpu_total_real + task.CPU_usage_real
-					mem_total_real = mem_total_real + task.mem_usage_real
-
-				self.mapping_fobj.write(" === (%f, %f, %f, %f)[%s]\n\n" % (cpu_total, mem_total, cpu_total_real, mem_total_real, SLA_status))
+				self.mapping_fobj.write(" === (%f, %f)[%s]\n\n" % (cpu_total, mem_total, SLA_status))
 
 			self.mapping_fobj.write("--------------\n")
 			self.mapping_fobj.flush()

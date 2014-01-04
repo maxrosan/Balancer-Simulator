@@ -10,5 +10,4 @@ class NoPrediction(prediction.Prediction.Prediction):
 		self.calculate_prediction(task, task)
 
 	def calculate_prediction(self, task, new_task):
-		task.CPU_usage = task.CPU_usage_real
-		task.mem_usage = task.mem_usage_real
+		pass

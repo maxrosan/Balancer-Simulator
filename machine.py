@@ -12,12 +12,13 @@ class MachineEventRegister:
 		self.machine_ID = 0
 		self.event_type = 0
 		self.platform_ID = 0
+
 		self.capacity_CPU = 0.
 		self.capacity_memory = 0.
+
 		self.CPU_usage = 0
 		self.mem_usage = 0
-		self.CPU_usage_real = 0.
-		self.mem_usage_real = 0.
+
 		self.used = 0
 		self.n_tasks = 0
 
@@ -47,49 +48,37 @@ class MachineEventRegister:
 		self.CPU_usage = task.CPU_usage + self.CPU_usage
 		self.mem_usage = task.mem_usage + self.mem_usage
 
-		self.CPU_usage_real = task.CPU_usage_real + self.CPU_usage_real
-		self.mem_usage_real = task.mem_usage_real + self.mem_usage_real
-
 		self.n_tasks = self.n_tasks + 1
 
 	def reset_stats(self):
 		self.CPU_usage = 0
 		self.mem_usage = 0
 
-		self.CPU_usage_real = 0
-		self.mem_usage_real = 0
-
 	 	del self.tasks
 		self.tasks = []
 
 	def calculate_consumption(self, map_tasks):
+		
 		self.CPU_usage = 0
 		self.mem_usage = 0
 
-		self.CPU_usage_real = 0
-		self.mem_usage_real = 0
-
 		for task_ID in self.tasks:
+
 			self.CPU_usage = self.CPU_usage + map_tasks[task_ID].CPU_usage
 			self.mem_usage = self.mem_usage + map_tasks[task_ID].mem_usage
 
-			self.CPU_usage_real = self.CPU_usage_real + map_tasks[task_ID].CPU_usage_real
-			self.mem_usage_real = self.mem_usage_real + map_tasks[task_ID].mem_usage_real
-
 	def remove_task(self, task):
+
 		self.tasks.remove(task.getID())
 
 		self.CPU_usage = self.CPU_usage - task.CPU_usage
 		self.mem_usage = self.mem_usage - task.mem_usage
 
-		self.CPU_usage_real = self.CPU_usage_real - task.CPU_usage_real
-		self.mem_usage_real = self.mem_usage_real - task.mem_usage_real
-
 		self.n_tasks = self.n_tasks - 1
 
 
 	def SLA_break(self):
-		return ((self.CPU_usage_real - self.capacity_CPU) > 1e-10 or (self.mem_usage_real - self.capacity_memory) > 1e-10)
+		return ((self.CPU_usage - self.capacity_CPU) > 1e-10 or (self.mem_usage- self.capacity_memory) > 1e-10)
 
 	def free_CPU(self):
 		return (self.capacity_CPU - self.CPU_usage)

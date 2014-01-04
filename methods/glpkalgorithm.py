@@ -51,7 +51,7 @@ class GLPK(methods.loadbalancingalgorithm.LoadBalancingAlgorithm):
 
 		cplexFile.write("read " + self.problemFileName + "\n")
 		cplexFile.write("set logfile /var/tmp/mr/log/cplex_log.log" + "\n")
-		cplexFile.write("set threads 15" + "\n")
+		cplexFile.write("set threads 22" + "\n")
 		cplexFile.write("set workdir /var/tmp/mr/" + "\n")
 		cplexFile.write("set workmem 80000" + "\n")
 		cplexFile.write("optimize" + "\n")

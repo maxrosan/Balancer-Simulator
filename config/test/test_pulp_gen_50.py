@@ -12,12 +12,9 @@ def task_key_sort(task):
 	#pun  = 1./(1. + abs(task.CPU_usage - task.mem_usage))
 	return max(task.CPU_usage, task.mem_usage)
 
-
-n_VMS = "50_vms"
-
 migration_policies = [ migration_policy.SLABreakMigration.SLABreakMigration() ]
 method             = methods.glpkalgorithm.GLPK(prediction.NoPrediction.NoPrediction(), migration_policies,
-	"/run/media/max/media/gsutil/generated/" + n_VMS + "/log")
+	"/home/max/Src/gsutil/generated/50vms/log/")
 
 host = commands.getoutput("hostname")
 
@@ -40,8 +37,8 @@ elif host == "godzilla":
 	path_log   = "/home/maxrosan/simulator/Balancer-Simulator/log/"	
 
 else:
-	dataset_path  = "/run/media/max/media/gsutil/generated/" + n_VMS + "/"
-	path_log      = "/run/media/max/media/gsutil/generated/" + n_VMS + "/log/"
+	dataset_path  = "/home/max/Src/gsutil/generated/50vms/"
+	path_log      = "/home/max/Src/gsutil/generated/50vms/log/"
 
 mapping_log   = path_log + mapping_fname
 balancing_log = path_log + balancing_fname

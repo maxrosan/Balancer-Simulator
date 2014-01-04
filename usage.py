@@ -9,15 +9,15 @@ class TaskUsageRegister:
 	job_ID     = 0
 	task_ID    = 0
 	machine_ID = 0
+	
 	CPU_usage  = 0.0
 	mem_usage  = 0.0
+
 	age_round  = 0
 	last_round = 0
 	altererd   = False
 	move       = False
 	mig_origin = -1
-	CPU_usage_real = 0.
-	mem_usage_real = 0.
 	machine_trace  = -1
 
 	def TaskUsageRegister(self):
@@ -123,8 +123,10 @@ class TaskUsage:
 				task.job_ID      = int(self.line[2])
 				task.task_ID     = int(self.line[3])
 				task.machine_ID  = -1 # int(self.line[4])
+				
 				task.CPU_usage   = float(self.line[5])
 				task.mem_usage   = float(self.line[10])
+
 				task.age_round   = 0
 				task.last_round  = -1
 				task.first_round = 0
@@ -133,8 +135,6 @@ class TaskUsage:
 				task.mig_origin  = -1
 
 				task.machine_trace  = int(self.line[4])
-				task.CPU_usage_real = task.CPU_usage
-				task.mem_usage_real = task.mem_usage
 
 				if start <= task.start_time and task.end_time <= end:
 					callback(arg, task)

@@ -245,7 +245,25 @@ class ToyodaKnapsack(methods.loadbalancingalgorithm.LoadBalancingAlgorithm):
 	def add_new_task(self, task):
 		pass
 
+	def __remove_tasks_with_SLA_break(self):
+
+		for mac in list(self.machines):
+
+			if self.machines[mac].SLA_break():
+
+				machine = self.machines[mac]
+				tasks = sorted(list(machine.tasks), key=lambda task:self.task_key_sort(self.tasks[task]))
+				index_task = 0
+				len_tasks = len(tasks)
+
+				for task_ID in tasks:
+
+					task = self.tasks[task_ID]
+					self.migrate(task)
+
 	def algorithm(self):
+
+		self.__remove_tasks_with_SLA_break()
 
 		macs = sorted([mac_id for mac_id in self.machines if self.machines[mac_id].n_tasks > 0],
 		    key=lambda mac_id:self.mac_key_sort(self.machines[mac_id]), reverse=True) + \
@@ -282,25 +300,33 @@ class ToyodaKnapsack(methods.loadbalancingalgorithm.LoadBalancingAlgorithm):
 			tasks = sorted([task for task in list(self.tasks) if self.tasks[task].machine_ID == -1],
         	            key=lambda task:self.task_key_sort(self.tasks[task]), reverse=True)
 
-			for task_id in tasks:
-				mac_min = None
-				mac_val = 100
-				task    = self.tasks[task_id]
+			for task_ID in tasks:
+				task = self.tasks[task_ID]
+				for machine_ID in macs:
+					machine = self.machines[machine_ID]
+					if machine.can_run(task):
+						machine.add_task(task)
+						task.machine_ID = machine_ID
+
+			#for task_id in tasks:
+			#	mac_min = None
+			#	mac_val = 100
+			#	task    = self.tasks[task_id]
 			
-				for mac_id in self.machines:
-					mac = self.machines[mac_id]
-					dcpu = mac.free_CPU() - task.CPU_usage
-					dmem = mac.free_mem() - task.mem_usage
-					val = dcpu*dcpu + dmem*dmem
+			#	for mac_id in self.machines:
+			#		mac = self.machines[mac_id]
+			#		dcpu = mac.free_CPU() - task.CPU_usage
+			#		dmem = mac.free_mem() - task.mem_usage
+			#		val = dcpu*dcpu + dmem*dmem
 
-					if not mac.can_run(task):
-						val = val + 4. + mac.n_tasks
-
-					if val < mac_val:
-						mac_val = val
-						mac_min = mac
-
-				if mac_min != None:
-					mac_min.add_task(task)
-					task.machine_ID = mac_min.machine_ID
+			#		if not mac.can_run(task):
+			#			val = val + 4. + mac.n_tasks
+#
+#					if val < mac_val:
+#						mac_val = val
+#						mac_min = mac
+#
+#				if mac_min != None:
+#					mac_min.add_task(task)
+#					task.machine_ID = mac_min.machine_ID
 			

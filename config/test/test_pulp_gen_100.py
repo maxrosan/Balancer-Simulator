@@ -3,11 +3,9 @@ import site, commands
 import methods.glpkalgorithm, prediction.NoPrediction
 import migration_policy.MachineUsageMigration, migration_policy.SLABreakMigration
 
-n_VMS = "100_vms"
-
 migration_policies = [ migration_policy.SLABreakMigration.SLABreakMigration() ]
 method             = methods.glpkalgorithm.GLPK(prediction.NoPrediction.NoPrediction(), migration_policies,
-	"/run/media/max/media/gsutil/generated/" + n_VMS + "/log")
+	"/home/max/Src/gsutil/generated/100vms/log/")
 
 host = commands.getoutput("hostname")
 
@@ -30,8 +28,8 @@ elif host == "godzilla":
 	path_log   = "/home/maxrosan/simulator/Balancer-Simulator/log/"	
 
 else:
-	dataset_path  = "/run/media/max/media/gsutil/generated/" + n_VMS + "/"
-	path_log      = "/run/media/max/media/gsutil/generated/" + n_VMS + "/log/"
+	dataset_path  = "/home/max/Src/gsutil/generated/100vms/"
+	path_log      = "/home/max/Src/gsutil/generated/100vms/log/"
 
 mapping_log   = path_log + mapping_fname
 balancing_log = path_log + balancing_fname
